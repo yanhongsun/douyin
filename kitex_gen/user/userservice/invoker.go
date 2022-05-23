@@ -4,11 +4,11 @@ package userservice
 
 import (
 	"github.com/cloudwego/kitex/server"
-	"github.com/douyin/kitex_gen/douyin_user"
+	"github.com/douyin/kitex_gen/user"
 )
 
 // NewInvoker creates a server.Invoker with the given handler and options.
-func NewInvoker(handler douyin_user.UserService, opts ...server.Option) server.Invoker {
+func NewInvoker(handler user.UserService, opts ...server.Option) server.Invoker {
 	var options []server.Option
 
 	options = append(options, opts...)

@@ -1,4 +1,4 @@
-namespace go douyin_user
+namespace go user
 
 struct douyin_user_register_request {
     1:required string username
@@ -44,7 +44,7 @@ struct User {
 }
 
 service UserService {
-    douyin_user_register_response UserRegister(1:douyin_user_register_request req)
-    douyin_user_login_response UserLogin(1:douyin_user_login_request req)
-    douyin_user_response GetUserInfo(1:douyin_user_request req)
+    douyin_user_register_response CreateUser(1:douyin_user_register_request req)
+    douyin_user_login_response CheckUser(1:douyin_user_login_request req)
+    douyin_user_response GetUser(1:douyin_user_request req)
 }

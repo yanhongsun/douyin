@@ -11,7 +11,7 @@ CREATE TABLE users
   index index_name(u_name(11))
 ) ENGINE=InnoDB;
 
-CREATE TABLE vedios
+CREATE TABLE videos
 (
   id              BIGINT        NOT NULL  AUTO_INCREMENT  ,
   u_id            BIGINT        NOT NULL  COMMENT '用户ID',

@@ -1,0 +1,14 @@
+User:
+  Host: 127.0.0.1
+  Port: 8000
+Database:
+  DBType: mysql
+  Username: root
+  Password: 123456
+  Host: 127.0.0.1:3306
+  DBName: douyin
+  Charset: utf8
+  ParseTime: True
+  MaxIdleConns: 10
+  MaxOpenConns: 30
+  UserTableName: users

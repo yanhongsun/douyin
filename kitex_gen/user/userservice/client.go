@@ -6,14 +6,14 @@ import (
 	"context"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/client/callopt"
-	"github.com/douyin/kitex_gen/douyin_user"
+	"github.com/douyin/kitex_gen/user"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	UserRegister(ctx context.Context, req *douyin_user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *douyin_user.DouyinUserRegisterResponse, err error)
-	UserLogin(ctx context.Context, req *douyin_user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *douyin_user.DouyinUserLoginResponse, err error)
-	GetUserInfo(ctx context.Context, req *douyin_user.DouyinUserRequest, callOptions ...callopt.Option) (r *douyin_user.DouyinUserResponse, err error)
+	CreateUser(ctx context.Context, req *user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *user.DouyinUserRegisterResponse, err error)
+	CheckUser(ctx context.Context, req *user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *user.DouyinUserLoginResponse, err error)
+	GetUser(ctx context.Context, req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -45,17 +45,17 @@ type kUserServiceClient struct {
 	*kClient
 }
 
-func (p *kUserServiceClient) UserRegister(ctx context.Context, req *douyin_user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *douyin_user.DouyinUserRegisterResponse, err error) {
+func (p *kUserServiceClient) CreateUser(ctx context.Context, req *user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *user.DouyinUserRegisterResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.UserRegister(ctx, req)
+	return p.kClient.CreateUser(ctx, req)
 }
 
-func (p *kUserServiceClient) UserLogin(ctx context.Context, req *douyin_user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *douyin_user.DouyinUserLoginResponse, err error) {
+func (p *kUserServiceClient) CheckUser(ctx context.Context, req *user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *user.DouyinUserLoginResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.UserLogin(ctx, req)
+	return p.kClient.CheckUser(ctx, req)
 }
 
-func (p *kUserServiceClient) GetUserInfo(ctx context.Context, req *douyin_user.DouyinUserRequest, callOptions ...callopt.Option) (r *douyin_user.DouyinUserResponse, err error) {
+func (p *kUserServiceClient) GetUser(ctx context.Context, req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetUserInfo(ctx, req)
+	return p.kClient.GetUser(ctx, req)
 }

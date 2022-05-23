@@ -2,26 +2,26 @@ package main
 
 import (
 	"context"
-	"github.com/douyin/kitex_gen/douyin_user"
+	"github.com/douyin/kitex_gen/user"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
 type UserServiceImpl struct{}
 
-// UserRegister implements the UserServiceImpl interface.
-func (s *UserServiceImpl) UserRegister(ctx context.Context, req *douyin_user.DouyinUserRegisterRequest) (resp *douyin_user.DouyinUserRegisterResponse, err error) {
+// CreateUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *user.DouyinUserRegisterResponse, err error) {
 	// TODO: Your code here...
 	return
 }
 
-// UserLogin implements the UserServiceImpl interface.
-func (s *UserServiceImpl) UserLogin(ctx context.Context, req *douyin_user.DouyinUserLoginRequest) (resp *douyin_user.DouyinUserLoginResponse, err error) {
+// CheckUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLoginRequest) (resp *user.DouyinUserLoginResponse, err error) {
 	// TODO: Your code here...
 	return
 }
 
-// GetUserInfo implements the UserServiceImpl interface.
-func (s *UserServiceImpl) GetUserInfo(ctx context.Context, req *douyin_user.DouyinUserRequest) (resp *douyin_user.DouyinUserResponse, err error) {
+// GetUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
 	// TODO: Your code here...
 	return
 }
