@@ -40,16 +40,17 @@ struct GetPublishListResponse{
     2:list<Video>   video_list
 }
 struct GetFeedRequest{
-    1:required  i64     user_id
-    2:required  string  token
+    1:optional   i64     latest_time
+    2:optional   string  token
 }
 struct GetFeedResponse{
     1:BaseResp      base_resp
     2:list<Video>   video_list
+    3:optional      i64 next_time   
 }
 
-service PublishService{
-    PublishActionResponse   PublishAction(1:PublishActionRequest    req)
+service VideoService{
+    PublishVideoResponse   PublishVideo(1:PublishVideoRequest    req)
     GetPublishListResponse  GetPublishList(1:GetPublishListRequest  req)
-    GetFeedResponse  GetPublishList(1:GetFeedRequest  req)
+    GetFeedResponse  GetFeed(1:GetFeedRequest  req)
 }
