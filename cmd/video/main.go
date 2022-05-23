@@ -1,7 +1,7 @@
 package main
 
 import (
-	video "douyin/douyin/idl/kitex_gen/video/videoservice"
+	video "douyin/kitex_gen/video/videoservice"
 	"log"
 )
 

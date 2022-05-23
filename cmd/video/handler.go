@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"douyin/douyin/idl/kitex_gen/video"
+	"douyin/kitex_gen/video"
 )
 
 // VideoServiceImpl implements the last service interface defined in the IDL.
