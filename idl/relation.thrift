@@ -5,11 +5,14 @@ struct BaseResponse {
     2:optional  string status_msg
 }
 
-struct relationActionRequest{
+struct RelationActionRequest{
     1:required  i64  user_id
     2:required  string    token
     3:required  i64  to_user_id
     4:required  i32 action_type
+}
+struct RelationActionResponse{
+    1:BaseResponse base_resp
 }
 
 struct User{
@@ -20,24 +23,30 @@ struct User{
     5:required  bool    is_follow
 }
 
-struct GetFollwListRequest{
+struct GetFollowListRequest{
     1:required  i64 user_id
     2:required  string token
 }
 
-struct GetFollwListResponse{
+struct GetFollowListResponse{
     1:BaseResponse base_resp
     2:list<User> user_list
 }
 
-struct GetFollwerListRequest{
+struct GetFollowerListRequest{
     1:required  i64 user_id
     2:required  string token
 }
 
-struct GetFollwerListResponse{
+struct GetFollowerListResponse{
     1:BaseResponse base_resp
     2:list<User> user_list
+}
+
+service RelationService{
+    RelationActionResponse   RelationAction(1:RelationActionRequest    req)
+   GetFollowListResponse  GetFollowList(1:GetFollowListRequest  req)
+    GetFollowerListResponse  GetFollowerList(1:GetFollowerListRequest  req)
 }
 
 
