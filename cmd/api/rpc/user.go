@@ -12,13 +12,14 @@ var userClient userservice.Client
 
 // CreateUser 创建新用户
 func CreateUser(ctx context.Context, req *user.DouyinUserRegisterRequest) (int64, string, error) {
+	// 返回id, token, error
 	resp, err := userClient.CreateUser(ctx, req)
 	if err != nil {
 		return -1, "", err
 	}
 
 	if resp.StatusCode != 0 {
-		return -1, "", errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
+		return -1, "", errno.NewErrNo(resp.StatusCode, resp.GetStatusMsg())
 	}
 
 	return resp.UserId, resp.Token, nil
@@ -26,13 +27,14 @@ func CreateUser(ctx context.Context, req *user.DouyinUserRegisterRequest) (int64
 
 // CheckUser 检查用户是否存在
 func CheckUser(ctx context.Context, req *user.DouyinUserLoginRequest) (int64, string, error) {
+	// return id token error
 	resp, err := userClient.CheckUser(ctx, req)
 	if err != nil {
-		return 0, "", err
+		return -1, "", err
 	}
 
 	if resp.StatusCode != 0 {
-		return 0, "", errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
+		return -1, "", errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
 	}
 
 	return resp.UserId, resp.Token, nil
@@ -48,6 +50,7 @@ func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*handlers.Us
 		return nil, errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
 	}
 	// 正常, 返回用户信息
+	// TODO: rpc 调用handler中的结构体?
 	var userInfo handlers.UserInfo
 	userInfo.UserID = resp.User.Id
 	userInfo.Username = resp.User.Name

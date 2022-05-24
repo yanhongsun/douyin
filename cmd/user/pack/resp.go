@@ -1,22 +1,25 @@
 package pack
 
-import "github.com/douyin/kitex_gen/douyin_user"
+import (
+	"github.com/douyin/kitex_gen/user"
+	"github.com/douyin/pkg/errno"
+)
 
-func BuildUserRegisterResp(err error) *douyin_user.DouyinUserRegisterResponse {
+func BuildRegisterResp(err error) *user.DouyinUserRegisterResponse {
 	if err == nil {
-		return &douyin_user.DouyinUserRegisterResponse{
-			StatusCode: 0,		// TODO: errno
-			StatusMsg: "ok",		// TODO: errno
+		return &user.DouyinUserRegisterResponse{
+			StatusCode: errno.Success.ErrCode,
+			StatusMsg: &errno.Success.ErrMsg,
 			UserId:
+			Token: "",
 		}
 	}
-	return nil
 }
 
-func BuildUserLoginResp(err error) *douyin_user.DouyinUserLoginResponse {
-	return nil
+func BuildLoginResp(err error) *user.DouyinUserLoginResponse {
+
 }
 
-func BuildUserResp(err error) *douyin_user.DouyinUserResponse {
-	return nil
+func BuildUserResponse(err error) *user.DouyinUserResponse {
+
 }

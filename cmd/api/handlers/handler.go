@@ -6,17 +6,13 @@ import (
 	"net/http"
 )
 
-type Response struct {
-	Code    int32       `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-}
-
+// UserParam 用户登录/注册请求信息
 type UserParam struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
+// QueryUserParam 查询用户请求信息
 type QueryUserParam struct {
 	UserID int64  `json:"user_id"`
 	Token  string `json:"token"`
@@ -29,6 +25,13 @@ type UserInfo struct {
 	FollowCount   int64  `json:"follow_count"`
 	FollowerCount int64  `json:"follower_count"`
 	IsFollow      bool   `json:"is_follow"`
+}
+
+// Response 响应信息
+type Response struct {
+	Code    int32       `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 // SendResponse 返回响应信息

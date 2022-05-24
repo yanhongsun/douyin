@@ -2,8 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/douyin/cmd/user/dal/db"
-	"github.com/douyin/kitex_gen/douyin_user"
+	"github.com/douyin/kitex_gen/user"
 )
 
 type UserRegisterService struct {
@@ -16,6 +15,6 @@ func NewUserRegisterService(ctx context.Context) *UserRegisterService {
 	}
 }
 
-func (s *UserRegisterService) UserRegister(req *douyin_user.DouyinUserRegisterRequest) error {
-	users, err := db.QueryUser
+func (s *UserRegisterService) CreateUser(req *user.DouyinUserRegisterRequest) error {
+	return nil
 }

@@ -19,7 +19,7 @@ func Register(c *gin.Context) {
 	if len(registerVar.Username) == 0 || len(registerVar.Password) == 0 {
 		SendResponse(c, errno.ParamErr, nil)
 	}
-	// 开始创建用户
+	// 远程过程调用 - 创建用户, 返回用户id和token
 	userID, token, err := rpc.CreateUser(context.Background(), &user.DouyinUserRegisterRequest{
 		Username: registerVar.Username,
 		Password: registerVar.Password,

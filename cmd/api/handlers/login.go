@@ -19,7 +19,7 @@ func Login(c *gin.Context) {
 	if len(loginVar.Username) == 0 || len(loginVar.Password) == 0 {
 		SendResponse(c, errno.ParamErr, nil)
 	}
-	// 查询用户
+	// 远程过程调用 - 登录
 	userID, token, err := rpc.CheckUser(context.Background(), &user.DouyinUserLoginRequest{
 		Username: loginVar.Username,
 		Password: loginVar.Password,

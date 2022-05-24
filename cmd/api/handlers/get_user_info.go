@@ -16,8 +16,12 @@ func QueryUser(c *gin.Context) {
 	}
 
 	/*
-		如果token过期, 提示重新登录
+		TODO: 如果token过期, 提示重新登录
+		if token {
+		    SendResponse(c, errno.ConvertErr(err), nil)
+		}
 	*/
+
 	// 调用远程服务
 	userInfo, err := rpc.GetUserInfo(context.Background(), &user.DouyinUserRequest{
 		UserId: queryVar.UserID,
