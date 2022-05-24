@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/douyin/cmd/user/dal/db"
 	"github.com/douyin/kitex_gen/user"
 )
 
@@ -15,6 +16,11 @@ func NewUserRegisterService(ctx context.Context) *UserRegisterService {
 	}
 }
 
-func (s *UserRegisterService) CreateUser(req *user.DouyinUserRegisterRequest) error {
-	return nil
+// CreateUser call db to create a user
+func (s *UserRegisterService) CreateUser(req *user.DouyinUserRegisterRequest) (int64, string, error) {
+	userToken, err := db.CreateUser(s.ctx, req.Username, req.Password)
+	if err != nil {
+		return -1, "", err
+	}
+	return userToken.UserID, userToken.Token, nil
 }

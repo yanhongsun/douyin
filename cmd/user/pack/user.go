@@ -2,16 +2,23 @@ package pack
 
 import (
 	"github.com/douyin/cmd/user/dal/db"
-	"github.com/douyin/kitex_gen/douyin_user"
+	"github.com/douyin/kitex_gen/user"
 )
 
-func User(u *db.User) *douyin_user.User {
+func UserInfo(u *db.UserInfo) *user.User {
 	if u == nil {
 		return nil
 	}
 
-	return &douyin_user.User{
-		Id:   int64(u.ID),
-		Name: u.Username,
-	}
+	var userInfo *user.User
+	userInfo.SetId(int64(u.ID))
+	userInfo.SetName(u.Username)
+	userInfo.SetFollowCount(&u.FollowCount)
+	userInfo.SetFollowerCount(&u.FansCount)
+
+	return userInfo
+}
+
+func UserToken(u *db.UserToken) (int64, string) {
+	return u.UserID, u.Token
 }

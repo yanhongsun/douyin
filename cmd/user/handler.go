@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/douyin/cmd/user/pack"
 	"github.com/douyin/cmd/user/service"
 	"github.com/douyin/kitex_gen/user"
 	"github.com/douyin/pkg/errno"
@@ -16,17 +17,23 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.DouyinUserRe
 
 	if len(req.Username) == 0 || len(req.Password) == 0 {
 		// TODO: create response
-		resp.StatusCode = errno.ParamErr.ErrCode
-		resp.SetStatusMsg(&errno.ParamErr.ErrMsg)
+		resp = pack.BuildRegisterResp(errno.ParamErr)
+		// resp.StatusCode = errno.ParamErr.ErrCode
+		// resp.SetStatusMsg(&errno.ParamErr.ErrMsg)
 		return resp, nil
 	}
 	// 创建新的创建用户服务, 调用床架用户任务函数
-	err = service.NewUserRegisterService(ctx).CreateUser(req)
+	userID, token, err := service.NewUserRegisterService(ctx).CreateUser(req)
 	if err != nil {
 		// TODO: create response
+		resp = pack.BuildRegisterResp(err)
 		return resp, nil
 	}
 	// TODO: create a success response
+	resp = pack.BuildRegisterResp(errno.Success)
+	// set data
+	resp.SetUserId(userID)
+	resp.SetToken(token)
 	return resp, nil
 }
 
@@ -41,12 +48,17 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 		return resp, nil
 	}
 	// 创建新的创建用户服务, 调用床架用户任务函数
-	err = service.NewUserLoginService(ctx).CheckUser(req)
+	userID, token, err := service.NewUserLoginService(ctx).CheckUser(req)
 	if err != nil {
 		// TODO: create response
+		resp = pack.BuildLoginResp(err)
 		return resp, nil
 	}
 	// TODO: create a success response
+	resp = pack.BuildLoginResp(errno.Success)
+	// set data
+	resp.SetUserId(userID)
+	resp.SetToken(token)
 	return resp, nil
 }
 
@@ -55,13 +67,21 @@ func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserReque
 	resp = new(user.DouyinUserResponse)
 
 	// 判断你输入
+	// TODO: token
+	/*if req.token... {
+		resp = pack.BuildGetUserResp(errno.TokenExhaustErr)
+		return resp, nil
+	}*/
 
 	// 创建新的创建用户服务, 调用床架用户任务函数
-	err = service.NewGetUserInfoService(ctx).QueryUser(req)
+	userInfo, err := service.NewGetUserInfoService(ctx).QueryUser(req)
 	if err != nil {
 		// TODO: create response
+		resp = pack.BuildGetUserResp(err)
 		return resp, nil
 	}
 	// TODO: create a success response
+	resp = pack.BuildGetUserResp(errno.Success)
+	resp.SetUser(&userInfo)
 	return resp, nil
 }
