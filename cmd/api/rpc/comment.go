@@ -5,7 +5,7 @@ import (
 	"douyin/cmd/api/common"
 	"douyin/kitex_gen/comment"
 	"douyin/kitex_gen/comment/commentservice"
-	"errors"
+	"douyin/pkg/errno"
 	"time"
 
 	"github.com/cloudwego/kitex/client"
@@ -35,24 +35,52 @@ func initCommentRpc() {
 	commentClient = c
 }
 
-func CreateComment(ctx context.Context, req *comment.CreateCommentRequest) (*common.Comment, error) {
+func CreateComment(ctx context.Context, req *comment.CreateCommentRequest) (*common.Response, *common.Comment) {
 	resp, err := commentClient.CreateComment(ctx, req)
 	if err != nil {
-		return nil, err
+		return &common.Response{
+			StatusCode: errno.ServiceErrCode,
+			StatusMsg:  err.Error(),
+		}, nil
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return nil, errors.New("something wrong")
+		return &common.Response{
+			StatusCode: resp.BaseResp.StatusCode,
+			StatusMsg:  resp.BaseResp.StatusMessage,
+		}, nil
 	}
-	return &common.Comment{
-		Id: resp.Comment.CommentId,
-		User: common.User{
-			Id:            resp.Comment.UserId,
-			Name:          "testName",
-			FollowCount:   10,
-			FollowerCount: 10,
-			IsFollow:      false,
+	return &common.Response{StatusCode: resp.BaseResp.StatusCode,
+			StatusMsg: resp.BaseResp.StatusMessage,
 		},
-		Content:    resp.Comment.Content,
-		CreateDate: resp.Comment.CreateDate,
-	}, nil
+		&common.Comment{
+			Id: resp.Comment.CommentId,
+			User: common.User{
+				Id:            resp.Comment.UserId,
+				Name:          "testName",
+				FollowCount:   10,
+				FollowerCount: 10,
+				IsFollow:      false,
+			},
+			Content:    resp.Comment.Content,
+			CreateDate: resp.Comment.CreateDate,
+		}
+}
+
+func DeleteComment(ctx context.Context, req *comment.DeleteCommentRequest) *common.Response {
+	resp, err := commentClient.DeleteComment(ctx, req)
+	if err != nil {
+		return &common.Response{
+			StatusCode: errno.ServiceErrCode,
+			StatusMsg:  err.Error(),
+		}
+	}
+	if resp.BaseResp.StatusCode != 0 {
+		return &common.Response{
+			StatusCode: resp.BaseResp.StatusCode,
+			StatusMsg:  resp.BaseResp.StatusMessage,
+		}
+	}
+	return &common.Response{StatusCode: resp.BaseResp.StatusCode,
+		StatusMsg: resp.BaseResp.StatusMessage,
+	}
 }

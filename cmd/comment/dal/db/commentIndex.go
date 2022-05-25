@@ -13,14 +13,22 @@ type CommentIndex struct {
 }
 
 func CreateCommentIndex(ctx context.Context, vedioId int64) error {
-	commentIndex := CommentIndex{VedioID: vedioId, CommentsNumber: 0}
-	return DB.WithContext(ctx).Create(commentIndex).Error
+	var count int64
+	if err := DB.WithContext(ctx).Model(&CommentIndex{}).Where("vedio_id = ?", vedioId).Count(&count).Error; err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return nil
+	}
+
+	return DB.WithContext(ctx).Create(&CommentIndex{VedioID: vedioId, CommentsNumber: 0}).Error
 }
 
 func QueryCommentsNumber(ctx context.Context, vedioId int64) (int64, error) {
 	var res CommentIndex
 	if err := DB.WithContext(ctx).Model(&CommentIndex{}).Where("vedio_id = ?", vedioId).Find(&res).Error; err != nil {
-		return res.CommentsNumber, err
+		return 0, err
 	}
 	return res.CommentsNumber, nil
 }

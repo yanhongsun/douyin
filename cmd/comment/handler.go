@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"douyin/cmd/comment/pack"
 	"douyin/cmd/comment/service"
 	"douyin/kitex_gen/comment"
+	"douyin/pkg/errno"
 )
 
 // CommentServiceImpl implements the last service interface defined in the IDL.
@@ -13,28 +15,56 @@ type CommentServiceImpl struct{}
 func (s *CommentServiceImpl) CreateComment(ctx context.Context, req *comment.CreateCommentRequest) (resp *comment.CreateCommentResponse, err error) {
 	resp = new(comment.CreateCommentResponse)
 
-	if req.UserId <= 0 || req.VedioId <= 0 || len(req.Content) == 0 {
-		resp.BaseResp.StatusCode = 10002
-		resp.BaseResp.StatusMessage = "Wrong Parameter has been given"
+	if req.UserId <= 0 {
+		resp.BaseResp = pack.BuildBaseResp(errno.UserIdErr)
 		return resp, nil
 	}
 
-	comment, err := service.NewCreateCommentService(ctx).CreateComment(req)
-	if err != nil {
-		resp.BaseResp.StatusCode = 10001
-		resp.BaseResp.StatusMessage = err.Error()
+	if req.VedioId <= 0 {
+		resp.BaseResp = pack.BuildBaseResp(errno.VedioIdErr)
+		return resp, nil
 	}
 
-	resp.BaseResp.StatusCode = 0
-	resp.BaseResp.StatusMessage = "Success"
-	resp.Comment = comment
+	if len(req.Content) == 0 {
+		resp.BaseResp = pack.BuildBaseResp(errno.CommentParamErr)
+		return resp, nil
+	}
+
+	createcomment, err := service.NewCreateCommentService(ctx).CreateComment(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.BaseResp = pack.BuildBaseResp(errno.Success)
+	resp.Comment = createcomment
+
 	return resp, nil
 }
 
 // DeleteComment implements the CommentServiceImpl interface.
 func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *comment.DeleteCommentRequest) (resp *comment.DeleteCommentResponse, err error) {
-	// TODO: Your code here...
-	return
+	resp = new(comment.DeleteCommentResponse)
+
+	if req.UserId <= 0 {
+		resp.BaseResp = pack.BuildBaseResp(errno.UserIdErr)
+		return resp, nil
+	}
+
+	if req.VedioId <= 0 {
+		resp.BaseResp = pack.BuildBaseResp(errno.VedioIdErr)
+		return resp, nil
+	}
+
+	err = service.NewDeleteCommentService(ctx).DeleteComment(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.BaseResp = pack.BuildBaseResp(errno.Success)
+
+	return resp, nil
 }
 
 // QueryComments implements the CommentServiceImpl interface.
@@ -45,12 +75,6 @@ func (s *CommentServiceImpl) QueryComments(ctx context.Context, req *comment.Que
 
 // QueryCommentNumber implements the CommentServiceImpl interface.
 func (s *CommentServiceImpl) QueryCommentNumber(ctx context.Context, req *comment.QueryCommentNumberRequest) (resp *comment.QueryCommentNumberResponse, err error) {
-	// TODO: Your code here...
-	return
-}
-
-// CreateCommentIndex implements the CommentServiceImpl interface.
-func (s *CommentServiceImpl) CreateCommentIndex(ctx context.Context, req *comment.CreateCommentIndexRequset) (resp *comment.CreateCommentIndexResponse, err error) {
 	// TODO: Your code here...
 	return
 }

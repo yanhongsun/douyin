@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"douyin/pkg/errno"
 	"errors"
 
 	"gorm.io/gorm"
@@ -16,13 +17,15 @@ type Comment struct {
 	Content   string `json:"content"`
 }
 
-func CreateComment(ctx context.Context, comment Comment) error {
+func CreateComment(ctx context.Context, comment *Comment) error {
+	CreateCommentIndex(ctx, comment.VedioID)
+
 	return DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Model(&CommentIndex{}).Where("vedio_id = ?", comment.VedioID).Update("comments_number", gorm.Expr("comments_number + ?", 1)).Error; err != nil {
 			return err
 		}
 
-		if err := tx.WithContext(ctx).Create(comment).Error; err != nil {
+		if err := tx.WithContext(ctx).Create(&comment).Error; err != nil {
 			return err
 		}
 
@@ -30,7 +33,15 @@ func CreateComment(ctx context.Context, comment Comment) error {
 	})
 }
 
-func DeleteComment(ctx context.Context, commentId, vedioId int64) error {
+func DeleteComment(ctx context.Context, commentId, vedioId, userId int64) error {
+	var count int64
+	if err := DB.WithContext(ctx).Model(&Comment{}).Where("comment_id = ?", commentId).Where("vedio_id = ?", vedioId).Where("user_id = ?", userId).Count(&count).Error; err != nil {
+		return err
+	}
+	if count <= 0 {
+		return errno.CommentIdErr
+	}
+
 	return DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var tmp CommentIndex
 		if err := tx.Model(&CommentIndex{}).Where("vedio_id = ?", vedioId).Find(&tmp).Error; err != nil {
@@ -45,7 +56,7 @@ func DeleteComment(ctx context.Context, commentId, vedioId int64) error {
 			return err
 		}
 
-		if err := tx.Where("comment_id = ?", commentId).Delete(&Comment{}).Error; err != nil {
+		if err := tx.Where("comment_id = ?", commentId).Where("vedio_id = ?", vedioId).Where("user_id = ?", userId).Delete(&Comment{}).Error; err != nil {
 			return err
 		}
 		return nil
@@ -53,6 +64,8 @@ func DeleteComment(ctx context.Context, commentId, vedioId int64) error {
 }
 
 func QueryComment(ctx context.Context, vedioId int64, limit, offset int) ([]*Comment, error) {
+	CreateCommentIndex(ctx, vedioId)
+
 	var res []*Comment
 	if err := DB.WithContext(ctx).Model(&Comment{}).Where("vedio_id = ?", vedioId).Limit(limit).Offset(offset).Find(&res).Error; err != nil {
 		return res, err

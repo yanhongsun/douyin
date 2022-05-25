@@ -5,7 +5,9 @@ import (
 	"douyin/cmd/api/common"
 	"douyin/cmd/api/rpc"
 	"douyin/kitex_gen/comment"
+	"douyin/pkg/errno"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,18 +30,47 @@ func CommentAction(c *gin.Context) {
 	if user, exist := usersLoginInfo[token]; exist {
 		if actionType == "1" {
 			text := c.Query("comment_text")
-			comment, err := rpc.CreateComment(context.Background(), &comment.CreateCommentRequest{
+			vedioIdS := c.Query("video_id")
+			vedioId, err := strconv.ParseInt(vedioIdS, 10, 64)
+
+			if err != nil {
+				c.JSON(http.StatusOK, &common.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
+			}
+
+			response, comment := rpc.CreateComment(context.Background(), &comment.CreateCommentRequest{
 				UserId:  user.Id,
-				VedioId: 1,
+				VedioId: vedioId,
 				Content: text,
 			})
-			if err != nil {
-				c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "Create error"})
+			if response.StatusCode != 0 {
+				c.JSON(http.StatusOK, response)
 			}
-			c.JSON(http.StatusOK, CommentActionResponse{Response: common.Response{StatusCode: 0}, Comment: *comment})
+			c.JSON(http.StatusOK, CommentActionResponse{Response: *response, Comment: *comment})
+			return
+		} else if actionType == "2" {
+			vedioIdS := c.Query("video_id")
+			vedioId, err := strconv.ParseInt(vedioIdS, 10, 64)
+
+			if err != nil {
+				c.JSON(http.StatusOK, &common.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
+			}
+
+			commentIdS := c.Query("comment_id")
+			commentId, err := strconv.ParseInt(commentIdS, 10, 64)
+
+			if err != nil {
+				c.JSON(http.StatusOK, &common.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
+			}
+
+			response := rpc.DeleteComment(context.Background(), &comment.DeleteCommentRequest{
+				UserId:    user.Id,
+				VedioId:   vedioId,
+				CommentId: commentId,
+			})
+			c.JSON(http.StatusOK, response)
 			return
 		}
-		c.JSON(http.StatusOK, common.Response{StatusCode: 0})
+		c.JSON(http.StatusOK, common.Response{StatusCode: errno.ActionTypeErr.ErrCode, StatusMsg: errno.ActionTypeErr.ErrMsg})
 	} else {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 	}

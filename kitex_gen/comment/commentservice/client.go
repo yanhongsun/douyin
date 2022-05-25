@@ -15,7 +15,6 @@ type Client interface {
 	DeleteComment(ctx context.Context, req *comment.DeleteCommentRequest, callOptions ...callopt.Option) (r *comment.DeleteCommentResponse, err error)
 	QueryComments(ctx context.Context, req *comment.QueryCommentsRequest, callOptions ...callopt.Option) (r *comment.QueryCommentsResponse, err error)
 	QueryCommentNumber(ctx context.Context, req *comment.QueryCommentNumberRequest, callOptions ...callopt.Option) (r *comment.QueryCommentNumberResponse, err error)
-	CreateCommentIndex(ctx context.Context, req *comment.CreateCommentIndexRequset, callOptions ...callopt.Option) (r *comment.CreateCommentIndexResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -65,9 +64,4 @@ func (p *kCommentServiceClient) QueryComments(ctx context.Context, req *comment.
 func (p *kCommentServiceClient) QueryCommentNumber(ctx context.Context, req *comment.QueryCommentNumberRequest, callOptions ...callopt.Option) (r *comment.QueryCommentNumberResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.QueryCommentNumber(ctx, req)
-}
-
-func (p *kCommentServiceClient) CreateCommentIndex(ctx context.Context, req *comment.CreateCommentIndexRequset, callOptions ...callopt.Option) (r *comment.CreateCommentIndexResponse, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.CreateCommentIndex(ctx, req)
 }

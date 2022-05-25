@@ -3,10 +3,20 @@ package service
 import (
 	"context"
 	"douyin/cmd/comment/dal/db"
-	"douyin/cmd/comment/pack"
 	"douyin/kitex_gen/comment"
-	"time"
+
+	"github.com/bwmarrin/snowflake"
 )
+
+var snowflakeNode *snowflake.Node
+
+func InitSnowflakeNode() {
+	tmpNode, err := snowflake.NewNode(1)
+	if err != nil {
+		panic("snowflake error")
+	}
+	snowflakeNode = tmpNode
+}
 
 type CreateCommentService struct {
 	ctx context.Context
@@ -17,18 +27,8 @@ func NewCreateCommentService(ctx context.Context) *CreateCommentService {
 }
 
 func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) (*comment.Comment, error) {
-	snowflake := pack.Snowflake{
-		Timestamp:    time.Now().UnixNano() / 1000000,
-		Sequence:     0,
-		Datacenterid: 12,
-		Workerid:     2,
-	}
 
-	commentId, err := snowflake.NextVal()
-
-	if err != nil {
-		return nil, err
-	}
+	commentId := snowflakeNode.Generate().Int64()
 
 	commentModel := db.Comment{
 		CommentID: commentId,
@@ -38,10 +38,12 @@ func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) 
 		Content:   req.Content,
 	}
 
+	err := db.CreateComment(s.ctx, &commentModel)
+
 	return &comment.Comment{
 		CommentId:  commentId,
 		UserId:     req.UserId,
 		Content:    req.Content,
-		CreateDate: commentModel.Model.CreatedAt.String(),
-	}, db.CreateComment(s.ctx, commentModel)
+		CreateDate: commentModel.Model.CreatedAt.Format("01-02"),
+	}, err
 }

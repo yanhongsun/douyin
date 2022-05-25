@@ -1,7 +1,7 @@
 namespace go comment
 
 struct BaseResp {
-    1:i64 status_code
+    1:i32 status_code
     2:string status_message
 }
 
@@ -24,7 +24,9 @@ struct CreateCommentResponse {
 }
 
 struct DeleteCommentRequest {
-    1:i64 comment_id
+    1:i64 user_id
+    2:i64 vedio_id
+    3:i64 comment_id
 }
 
 struct DeleteCommentResponse {
@@ -49,18 +51,9 @@ struct QueryCommentNumberResponse {
     2:i64 commentNumber
 }
 
-struct CreateCommentIndexRequset {
-    1:i64 vedio_id
-}
-
-struct CreateCommentIndexResponse {
-    1:BaseResp base_resp
-}
-
 service CommentService {
     CreateCommentResponse CreateComment(1:CreateCommentRequest req)
     DeleteCommentResponse DeleteComment(1:DeleteCommentRequest req)
     QueryCommentsResponse QueryComments(1:QueryCommentsRequest req)
     QueryCommentNumberResponse QueryCommentNumber(1:QueryCommentNumberRequest req)
-    CreateCommentIndexResponse CreateCommentIndex(1:CreateCommentIndexRequset req)
 }

@@ -23,7 +23,6 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"DeleteComment":      kitex.NewMethodInfo(deleteCommentHandler, newCommentServiceDeleteCommentArgs, newCommentServiceDeleteCommentResult, false),
 		"QueryComments":      kitex.NewMethodInfo(queryCommentsHandler, newCommentServiceQueryCommentsArgs, newCommentServiceQueryCommentsResult, false),
 		"QueryCommentNumber": kitex.NewMethodInfo(queryCommentNumberHandler, newCommentServiceQueryCommentNumberArgs, newCommentServiceQueryCommentNumberResult, false),
-		"CreateCommentIndex": kitex.NewMethodInfo(createCommentIndexHandler, newCommentServiceCreateCommentIndexArgs, newCommentServiceCreateCommentIndexResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "comment",
@@ -111,24 +110,6 @@ func newCommentServiceQueryCommentNumberResult() interface{} {
 	return comment.NewCommentServiceQueryCommentNumberResult()
 }
 
-func createCommentIndexHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*comment.CommentServiceCreateCommentIndexArgs)
-	realResult := result.(*comment.CommentServiceCreateCommentIndexResult)
-	success, err := handler.(comment.CommentService).CreateCommentIndex(ctx, realArg.Req)
-	if err != nil {
-		return err
-	}
-	realResult.Success = success
-	return nil
-}
-func newCommentServiceCreateCommentIndexArgs() interface{} {
-	return comment.NewCommentServiceCreateCommentIndexArgs()
-}
-
-func newCommentServiceCreateCommentIndexResult() interface{} {
-	return comment.NewCommentServiceCreateCommentIndexResult()
-}
-
 type kClient struct {
 	c client.Client
 }
@@ -174,16 +155,6 @@ func (p *kClient) QueryCommentNumber(ctx context.Context, req *comment.QueryComm
 	_args.Req = req
 	var _result comment.CommentServiceQueryCommentNumberResult
 	if err = p.c.Call(ctx, "QueryCommentNumber", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
-func (p *kClient) CreateCommentIndex(ctx context.Context, req *comment.CreateCommentIndexRequset) (r *comment.CreateCommentIndexResponse, err error) {
-	var _args comment.CommentServiceCreateCommentIndexArgs
-	_args.Req = req
-	var _result comment.CommentServiceCreateCommentIndexResult
-	if err = p.c.Call(ctx, "CreateCommentIndex", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
