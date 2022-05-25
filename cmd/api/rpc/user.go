@@ -50,13 +50,11 @@ func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*handlers.Us
 		return nil, errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
 	}
 	// 正常, 返回用户信息
-	// TODO: rpc 调用handler中的结构体?
 	var userInfo handlers.UserInfo
-	userInfo.UserID = resp.User.Id
-	userInfo.Username = resp.User.Name
+	userInfo.ID = resp.User.Id
+	userInfo.Name = resp.User.Name
 	userInfo.FollowCount = resp.User.GetFollowCount()
 	userInfo.FollowerCount = resp.User.GetFollowerCount()
 	userInfo.IsFollow = resp.User.IsFollow
-	// TODO: type ok?
 	return &userInfo, nil
 }

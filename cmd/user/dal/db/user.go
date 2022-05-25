@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// TODO: modify
 // User user model
 type User struct {
 	gorm.Model
@@ -15,6 +16,7 @@ type User struct {
 	Token       string `json:"token"`
 }
 
+// TODO: modify
 // UserInfo user model
 type UserInfo struct {
 	ID          int64  `json:"u_id"`
@@ -44,27 +46,39 @@ func GetUserInfo(ctx context.Context, userID int64) (*UserInfo, error) {
 	return user, nil
 }
 
-// CreateUser do db operation
-func CreateUser(ctx context.Context, username, password string) (*UserToken, error) {
-	// TODO: db operation
-	var res *UserToken
-	err := DB.WithContext(ctx).Create(User{
-		Username: username,
-		Password: password,
-	}).Error
-	if err != nil {
+// QueryUser OK
+func QueryUser(ctx context.Context, username string) ([]*User, error) {
+	res := make([]*User, 0)
+	if err := DB.WithContext(ctx).Where("u_name = ?", username).Find(&res).Error; err != nil {
 		return nil, err
 	}
-
-	// TODO: get id and token
 	return res, nil
 }
 
-// CheckUser do db operation
-func CheckUser(ctx context.Context, username, password string) (*UserToken, error) {
-	var res *UserToken
-	if err := DB.WithContext(ctx).Where("user_name = ? and password = ?", username, password).Find(res).Error; err != nil {
+// CreateUser do db operation
+func CreateUser(ctx context.Context, username, password string) ([]*User, error) {
+	users := []*User{{
+		Username: username,
+		Password: password,
+	}}
+	res := make([]*User, 0)
+
+	err := DB.WithContext(ctx).Create(users).Error
+	if err != nil {
+		return nil, err
+	}
+	// get token and id
+	err = DB.WithContext(ctx).Where("user_name = ?", username).Find(&res).Error
+	if err != nil {
 		return nil, err
 	}
 	return res, nil
+}
+
+func CreateSalt(ctx context.Context, username string, salt []byte) error {
+	return nil
+}
+
+func QuerySalt(ctx context.Context, username string) ([]byte, error) {
+	return nil, nil
 }

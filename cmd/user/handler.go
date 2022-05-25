@@ -16,7 +16,6 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.DouyinUserRe
 	resp = new(user.DouyinUserRegisterResponse)
 
 	if len(req.Username) == 0 || len(req.Password) == 0 {
-		// TODO: create response
 		resp = pack.BuildRegisterResp(errno.ParamErr)
 		// resp.StatusCode = errno.ParamErr.ErrCode
 		// resp.SetStatusMsg(&errno.ParamErr.ErrMsg)
@@ -25,11 +24,9 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.DouyinUserRe
 	// 创建新的创建用户服务, 调用床架用户任务函数
 	userID, token, err := service.NewUserRegisterService(ctx).CreateUser(req)
 	if err != nil {
-		// TODO: create response
 		resp = pack.BuildRegisterResp(err)
 		return resp, nil
 	}
-	// TODO: create a success response
 	resp = pack.BuildRegisterResp(errno.Success)
 	// set data
 	resp.SetUserId(userID)
@@ -42,7 +39,6 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 	resp = new(user.DouyinUserLoginResponse)
 
 	if len(req.Username) == 0 || len(req.Password) == 0 {
-		// TODO: create response
 		resp.StatusCode = errno.ParamErr.ErrCode
 		resp.SetStatusMsg(&errno.ParamErr.ErrMsg)
 		return resp, nil
@@ -50,11 +46,9 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 	// 创建新的创建用户服务, 调用床架用户任务函数
 	userID, token, err := service.NewUserLoginService(ctx).CheckUser(req)
 	if err != nil {
-		// TODO: create response
 		resp = pack.BuildLoginResp(err)
 		return resp, nil
 	}
-	// TODO: create a success response
 	resp = pack.BuildLoginResp(errno.Success)
 	// set data
 	resp.SetUserId(userID)
@@ -74,14 +68,13 @@ func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserReque
 	}*/
 
 	// 创建新的创建用户服务, 调用床架用户任务函数
-	userInfo, err := service.NewGetUserInfoService(ctx).QueryUser(req)
+	userInfo, err := service.NewGetUserInfoService(ctx).GetUserInfo(req)
 	if err != nil {
-		// TODO: create response
 		resp = pack.BuildGetUserResp(err)
 		return resp, nil
 	}
-	// TODO: create a success response
 	resp = pack.BuildGetUserResp(errno.Success)
-	resp.SetUser(&userInfo)
+	data := pack.UserInfo(userInfo)
+	resp.SetUser(data)
 	return resp, nil
 }

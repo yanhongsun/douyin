@@ -9,16 +9,16 @@ import (
 )
 
 func QueryUser(c *gin.Context) {
-	var queryVar QueryUserParam
+	var queryVar UserInfoParam
 	// 参数绑定, 失败报错
 	if err := c.BindQuery(&queryVar); err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendUserInfoResponse(c, errno.ConvertErr(err), nil)
 	}
 
 	/*
 		TODO: 如果token过期, 提示重新登录
 		if token {
-		    SendResponse(c, errno.ConvertErr(err), nil)
+		    SendUserInfoResponse(c, errno.ConvertErr(err), nil)
 		}
 	*/
 
@@ -29,10 +29,8 @@ func QueryUser(c *gin.Context) {
 	})
 
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
-		return
+		SendUserInfoResponse(c, errno.ConvertErr(err), nil)
 	}
-	// TODO: type ok?
-	SendResponse(c, errno.Success, map[string]interface{}{"User": *userInfo})
+	SendUserInfoResponse(c, errno.Success, userInfo)
 
 }

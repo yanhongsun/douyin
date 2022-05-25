@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+	// TODO: add server configuration
 	svr := user.NewServer(new(UserServiceImpl))
 
 	err := svr.Run()

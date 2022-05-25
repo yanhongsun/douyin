@@ -9,15 +9,15 @@ import (
 )
 
 func Login(c *gin.Context) {
-	var loginVar UserParam
+	var loginVar RequestParam
 	// 参数绑定
 	if err := c.ShouldBind(&loginVar); err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponse(c, errno.ConvertErr(err), -1, "")
 		return
 	}
 	// 用户名或密码不能为空
 	if len(loginVar.Username) == 0 || len(loginVar.Password) == 0 {
-		SendResponse(c, errno.ParamErr, nil)
+		SendResponse(c, errno.ParamErr, -1, "")
 	}
 	// 远程过程调用 - 登录
 	userID, token, err := rpc.CheckUser(context.Background(), &user.DouyinUserLoginRequest{
@@ -26,9 +26,9 @@ func Login(c *gin.Context) {
 	})
 
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponse(c, errno.ConvertErr(err), -1, "")
 		return
 	}
 
-	SendResponse(c, errno.Success, map[string]interface{}{"user_id": userID, "token": token})
+	SendResponse(c, errno.Success, userID, token)
 }
