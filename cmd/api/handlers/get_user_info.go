@@ -23,5 +23,11 @@ func QueryUser(c *gin.Context) {
 		SendUserInfoResponse(c, errno.ConvertErr(err), nil)
 	}
 
-	SendUserInfoResponse(c, errno.Success, userInfo)
+	SendUserInfoResponse(c, errno.Success, &UserInfo{
+		ID:            userInfo.ID,
+		Name:          userInfo.Name,
+		FollowCount:   userInfo.FollowCount,
+		FollowerCount: userInfo.FollowerCount,
+		IsFollow:      false,
+	})
 }

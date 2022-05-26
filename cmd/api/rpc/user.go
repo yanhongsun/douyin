@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
-	"github.com/douyin/cmd/api/handlers"
 	"github.com/douyin/kitex_gen/user"
 	"github.com/douyin/kitex_gen/user/userservice"
 	"github.com/douyin/middleware"
@@ -66,7 +65,16 @@ func CheckUser(ctx context.Context, req *user.DouyinUserLoginRequest) (int64, st
 	return resp.UserId, resp.Token, nil
 }
 
-func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*handlers.UserInfo, error) {
+// UserInfo user info format
+type UserInfo struct {
+	ID            int64  `json:"id"`
+	Name          string `json:"name"`
+	FollowCount   int64  `json:"follow_count"`
+	FollowerCount int64  `json:"follower_count"`
+	IsFollow      bool   `json:"is_follow"`
+}
+
+func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*UserInfo, error) {
 	resp, err := userClient.GetUser(ctx, req)
 	if err != nil {
 		return nil, err
@@ -75,7 +83,7 @@ func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*handlers.Us
 		return nil, errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
 	}
 
-	var userInfo handlers.UserInfo
+	var userInfo UserInfo
 	userInfo.ID = resp.User.Id
 	userInfo.Name = resp.User.Name
 	userInfo.FollowCount = resp.User.GetFollowCount()
