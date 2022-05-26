@@ -17,7 +17,7 @@ func NewGetUserInfoService(ctx context.Context) *UserLoginService {
 }
 
 // GetUserInfo query db to find information of a user
-func (s *UserLoginService) GetUserInfo(req *user.DouyinUserRequest) (*db.UserInfo, error) {
+func (s *UserLoginService) GetUserInfo(req *user.DouyinUserRequest) (*user.User, error) {
 	userInfo, err := db.GetUserInfo(s.ctx, req.UserId)
 	if err != nil {
 		return nil, err

@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"errors"
+	"github.com/douyin/cmd/user/global"
+	"github.com/douyin/cmd/user/middleware"
 	"github.com/douyin/cmd/user/pack"
 	"github.com/douyin/cmd/user/service"
 	"github.com/douyin/kitex_gen/user"
@@ -13,68 +16,66 @@ type UserServiceImpl struct{}
 
 // CreateUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *user.DouyinUserRegisterResponse, err error) {
-	resp = new(user.DouyinUserRegisterResponse)
-
 	if len(req.Username) == 0 || len(req.Password) == 0 {
-		resp = pack.BuildRegisterResp(errno.ParamErr)
-		// resp.StatusCode = errno.ParamErr.ErrCode
-		// resp.SetStatusMsg(&errno.ParamErr.ErrMsg)
+		resp = pack.BuildRegisterResp(errno.ParamErr, -1, "")
 		return resp, nil
 	}
 	// 创建新的创建用户服务, 调用床架用户任务函数
-	userID, token, err := service.NewUserRegisterService(ctx).CreateUser(req)
+	userID, err := service.NewUserRegisterService(ctx).CreateUser(req)
 	if err != nil {
-		resp = pack.BuildRegisterResp(err)
+		resp = pack.BuildRegisterResp(err, -1, "")
 		return resp, nil
 	}
-	resp = pack.BuildRegisterResp(errno.Success)
-	// set data
-	resp.SetUserId(userID)
-	resp.SetToken(token)
+
+	// TODO: create token here
+	token, _ := global.Jwt.CreateToken(middleware.CustomClaims{
+		Id: userID,
+	})
+	// construct resp
+	resp = pack.BuildRegisterResp(errno.ParamErr, userID, token)
 	return resp, nil
 }
 
 // CheckUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLoginRequest) (resp *user.DouyinUserLoginResponse, err error) {
-	resp = new(user.DouyinUserLoginResponse)
-
 	if len(req.Username) == 0 || len(req.Password) == 0 {
 		resp.StatusCode = errno.ParamErr.ErrCode
 		resp.SetStatusMsg(&errno.ParamErr.ErrMsg)
 		return resp, nil
 	}
 	// 创建新的创建用户服务, 调用床架用户任务函数
-	userID, token, err := service.NewUserLoginService(ctx).CheckUser(req)
+	userID, err := service.NewUserLoginService(ctx).CheckUser(req)
 	if err != nil {
-		resp = pack.BuildLoginResp(err)
+		resp = pack.BuildLoginResp(err, -1, "")
 		return resp, nil
 	}
-	resp = pack.BuildLoginResp(errno.Success)
-	// set data
-	resp.SetUserId(userID)
-	resp.SetToken(token)
+
+	// TODO: create token here
+	token, _ := global.Jwt.CreateToken(middleware.CustomClaims{
+		Id: userID,
+	})
+
+	resp = pack.BuildLoginResp(errno.Success, userID, token)
 	return resp, nil
 }
 
 // GetUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
-	resp = new(user.DouyinUserResponse)
-
-	// 判断你输入
-	// TODO: token
-	/*if req.token... {
-		resp = pack.BuildGetUserResp(errno.TokenExhaustErr)
-		return resp, nil
-	}*/
-
-	// 创建新的创建用户服务, 调用床架用户任务函数
-	userInfo, err := service.NewGetUserInfoService(ctx).GetUserInfo(req)
+	// TODO: check token
+	claim, err := global.Jwt.ParseToken(req.Token)
 	if err != nil {
-		resp = pack.BuildGetUserResp(err)
+		resp = pack.BuildGetUserResp(errors.New("failed to parse token"), nil)
+		return resp, nil
+	} else if claim.Id != int64(req.UserId) {
+		resp = pack.BuildGetUserResp(errors.New("invalid token"), nil)
 		return resp, nil
 	}
-	resp = pack.BuildGetUserResp(errno.Success)
-	data := pack.UserInfo(userInfo)
-	resp.SetUser(data)
+
+	userInfo, err := service.NewGetUserInfoService(ctx).GetUserInfo(req)
+	if err != nil {
+		resp = pack.BuildGetUserResp(err, nil)
+		return resp, nil
+	}
+	resp = pack.BuildGetUserResp(errno.Success, userInfo)
 	return resp, nil
 }

@@ -21,18 +21,18 @@ func NewUserRegisterService(ctx context.Context) *UserRegisterService {
 }
 
 // CreateUser call db to create a user
-func (s *UserRegisterService) CreateUser(req *user.DouyinUserRegisterRequest) (int64, string, error) {
+func (s *UserRegisterService) CreateUser(req *user.DouyinUserRegisterRequest) (int64, error) {
 	users, err := db.QueryUser(s.ctx, req.Username)
 	if err != nil {
-		return -1, "", err
+		return -1, err
 	}
 	if len(users) != 0 {
-		return -1, "", errno.UserAlreadyExistErr
+		return -1, errno.UserAlreadyExistErr
 	}
 	// crypt
 	h := md5.New()
 	if _, err = io.WriteString(h, req.Password); err != nil {
-		return -1, "", err
+		return -1, err
 	}
 	// TODO: set nil as salt?
 	// var salt []byte
@@ -41,8 +41,9 @@ func (s *UserRegisterService) CreateUser(req *user.DouyinUserRegisterRequest) (i
 	passWord := fmt.Sprintf("%x", h.Sum(nil))
 	res, err := db.CreateUser(s.ctx, req.Username, passWord)
 	if err != nil {
-		return -1, "", err
+		return -1, err
 	}
 	u := res[0]
-	return int64(u.ID), u.Token, nil
+
+	return int64(u.ID), nil
 }

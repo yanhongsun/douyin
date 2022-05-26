@@ -2,33 +2,17 @@ package db
 
 import (
 	"context"
-	"gorm.io/gorm"
+	"github.com/douyin/kitex_gen/user"
 )
 
-// TODO: modify
 // User user model
 type User struct {
-	gorm.Model
-	Username    string `json:"u_name"`
-	Password    string `json:"passwd"`
-	FollowCount int64  `json:"follow_count"`
-	FansCount   int64  `json:"fans_count"`
-	Token       string `json:"token"`
-}
-
-// TODO: modify
-// UserInfo user model
-type UserInfo struct {
-	ID          int64  `json:"u_id"`
-	Username    string `json:"u_name"`
-	Password    string `json:"passwd"`
-	FollowCount int64  `json:"follow_count"`
-	FansCount   int64  `json:"fans_count"`
-}
-
-type UserToken struct {
-	UserID int64  `json:"user_id"`
-	Token  string `json:"token"`
+	ID       int64  `json:"id"`
+	Username string `json:"u_name"`
+	Password string `json:"passwd"`
+	// Nickname    string `json:"nickname"`
+	FollowCount   int64 `json:"follow_count"`
+	FollowerCount int64 `json:"fans_count"`
 }
 
 func (u *User) TableName() string {
@@ -37,13 +21,20 @@ func (u *User) TableName() string {
 }
 
 // GetUserInfo  do db operation
-func GetUserInfo(ctx context.Context, userID int64) (*UserInfo, error) {
-	var user *UserInfo
+func GetUserInfo(ctx context.Context, userID int64) (*user.User, error) {
 	// TODO: db operation
-	if err := DB.WithContext(ctx).Where("id == ?", userID).Find(user).Error; err != nil {
+	res := make([]*User, 0)
+	if err := DB.WithContext(ctx).Where("id == ?", userID).Find(res).Error; err != nil {
 		return nil, err
 	}
-	return user, nil
+	u := res[0]
+	return &user.User{
+		Id:            u.ID,
+		Name:          u.Username,
+		FollowCount:   &u.FollowCount,
+		FollowerCount: &u.FollowerCount,
+		IsFollow:      false,
+	}, nil
 }
 
 // QueryUser OK

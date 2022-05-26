@@ -27,7 +27,10 @@ const (
 	LoginErrCode            = 10003
 	UserNotExistErrCode     = 10004
 	UserAlreadyExistErrCode = 10005
-	TokenExhaustErrCode     = 10006
+	TokenExpiredErrCode     = 10031
+	TokenNotValidYetErrCode = 10032
+	TokenMalformedErrCode   = 10033
+	TokenInvalidErrCode     = 10034
 )
 
 type ErrNo struct {
@@ -55,7 +58,10 @@ var (
 	LoginErr            = NewErrNo(LoginErrCode, "Wrong username or password")
 	UserNotExistErr     = NewErrNo(UserNotExistErrCode, "User does not exists")
 	UserAlreadyExistErr = NewErrNo(UserAlreadyExistErrCode, "User already exists")
-	TokenExhaustErr     = NewErrNo(TokenExhaustErrCode, "Your token already exhausts")
+	TokenExpiredErr     = NewErrNo(TokenExpiredErrCode, "Token is expired")
+	TokenNotValidYetErr = NewErrNo(TokenNotValidYetErrCode, "Token is not active yet")
+	TokenMalformedErr   = NewErrNo(TokenMalformedErrCode, "That's not even a token")
+	TokenInvalidErr     = NewErrNo(TokenInvalidErrCode, "Couldn't handle this token")
 )
 
 // ConvertErr convert error to Errno
