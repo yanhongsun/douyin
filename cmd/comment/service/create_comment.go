@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 	"douyin/cmd/comment/dal/db"
+	"douyin/cmd/comment/pack"
 	"douyin/kitex_gen/comment"
 
-	"douyin/cmd/comment/pack/snowflake"
+	"douyin/pkg/snowflake"
 )
 
 var snowflakeNode *snowflake.Node
@@ -40,10 +41,5 @@ func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) 
 
 	err := db.CreateComment(s.ctx, &commentModel)
 
-	return &comment.Comment{
-		CommentId:  commentId,
-		UserId:     req.UserId,
-		Content:    req.Content,
-		CreateDate: commentModel.Model.CreatedAt.Format("01-02"),
-	}, err
+	return pack.ChangeComment(&commentModel), err
 }

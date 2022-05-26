@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"context"
 	"douyin/cmd/api/common"
+	"douyin/cmd/api/rpc"
+	"douyin/kitex_gen/comment"
 	"net/http"
 	"time"
 
@@ -16,6 +19,17 @@ type FeedResponse struct {
 
 // Feed same demo video list for every request
 func Feed(c *gin.Context) {
+	res, err := rpc.QueryCommentNumber(context.Background(), &comment.QueryCommentNumberRequest{VideoId: DemoVideos[0].Id})
+
+	if err != nil {
+		c.JSON(http.StatusOK, FeedResponse{
+			Response: common.Response{StatusCode: 40007},
+		})
+		return
+	}
+
+	DemoVideos[0].CommentCount = res
+
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  common.Response{StatusCode: 0},
 		VideoList: DemoVideos,

@@ -63,7 +63,7 @@ func DeleteComment(ctx context.Context, commentId, videoId, userId int64) error 
 	})
 }
 
-func QueryComment(ctx context.Context, videoId int64, limit, offset int) ([]*Comment, error) {
+func QueryComments(ctx context.Context, videoId int64, limit, offset int) ([]*Comment, error) {
 	CreateCommentIndex(ctx, videoId)
 
 	var res []*Comment

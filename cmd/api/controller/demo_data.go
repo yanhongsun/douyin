@@ -14,7 +14,7 @@ var DemoVideos = []common.Video{
 	},
 }
 
-var DemoComments = []common.Comment{
+var DemoComments = []*common.Comment{
 	{
 		Id:         1,
 		User:       DemoUser,

@@ -14,7 +14,7 @@ import (
 
 type CommentListResponse struct {
 	common.Response
-	CommentList []common.Comment `json:"comment_list,omitempty"`
+	CommentList []*common.Comment `json:"comment_list,omitempty"`
 }
 
 type CommentActionResponse struct {
@@ -78,8 +78,21 @@ func CommentAction(c *gin.Context) {
 
 // CommentList all videos have same demo comment list
 func CommentList(c *gin.Context) {
+	videoIdS := c.Query("video_id")
+	videoId, err := strconv.ParseInt(videoIdS, 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusOK, &common.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
+	}
+
+	response, comments := rpc.QueryComments(context.Background(), &comment.QueryCommentsRequest{VideoId: videoId})
+
+	if response.StatusCode != 0 {
+		c.JSON(http.StatusOK, response)
+	}
+
 	c.JSON(http.StatusOK, CommentListResponse{
-		Response:    common.Response{StatusCode: 0},
-		CommentList: DemoComments,
+		Response:    *response,
+		CommentList: comments,
 	})
 }

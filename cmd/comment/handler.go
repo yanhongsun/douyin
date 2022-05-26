@@ -69,12 +69,37 @@ func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *comment.Del
 
 // QueryComments implements the CommentServiceImpl interface.
 func (s *CommentServiceImpl) QueryComments(ctx context.Context, req *comment.QueryCommentsRequest) (resp *comment.QueryCommentsResponse, err error) {
-	// TODO: Your code here...
-	return
+	resp = new(comment.QueryCommentsResponse)
+
+	if req.VideoId <= 0 {
+		resp.BaseResp = pack.BuildBaseResp(errno.VideoIdErr)
+		return resp, nil
+	}
+
+	res, err := service.NewQueryCommentsService(ctx).QueryComments(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.BaseResp = pack.BuildBaseResp(errno.Success)
+	resp.Comments = res
+
+	return resp, nil
 }
 
 // QueryCommentNumber implements the CommentServiceImpl interface.
 func (s *CommentServiceImpl) QueryCommentNumber(ctx context.Context, req *comment.QueryCommentNumberRequest) (resp *comment.QueryCommentNumberResponse, err error) {
-	// TODO: Your code here...
-	return
+	resp = new(comment.QueryCommentNumberResponse)
+
+	res, err := service.NewQueryCommentNumberService(ctx).QueryCommentNumber(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.BaseResp = pack.BuildBaseResp(errno.Success)
+	resp.CommentNumber = res
+
+	return resp, nil
 }
