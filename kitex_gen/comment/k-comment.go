@@ -596,7 +596,7 @@ func (p *CreateCommentRequest) FastReadField2(buf []byte) (int, error) {
 	} else {
 		offset += l
 
-		p.VedioId = v
+		p.VideoId = v
 
 	}
 	return offset, nil
@@ -658,8 +658,8 @@ func (p *CreateCommentRequest) fastWriteField1(buf []byte, binaryWriter bthrift.
 
 func (p *CreateCommentRequest) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "vedio_id", thrift.I64, 2)
-	offset += bthrift.Binary.WriteI64(buf[offset:], p.VedioId)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "video_id", thrift.I64, 2)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.VideoId)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
@@ -685,8 +685,8 @@ func (p *CreateCommentRequest) field1Length() int {
 
 func (p *CreateCommentRequest) field2Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("vedio_id", thrift.I64, 2)
-	l += bthrift.Binary.I64Length(p.VedioId)
+	l += bthrift.Binary.FieldBeginLength("video_id", thrift.I64, 2)
+	l += bthrift.Binary.I64Length(p.VideoId)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
@@ -990,7 +990,7 @@ func (p *DeleteCommentRequest) FastReadField2(buf []byte) (int, error) {
 	} else {
 		offset += l
 
-		p.VedioId = v
+		p.VideoId = v
 
 	}
 	return offset, nil
@@ -1052,8 +1052,8 @@ func (p *DeleteCommentRequest) fastWriteField1(buf []byte, binaryWriter bthrift.
 
 func (p *DeleteCommentRequest) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "vedio_id", thrift.I64, 2)
-	offset += bthrift.Binary.WriteI64(buf[offset:], p.VedioId)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "video_id", thrift.I64, 2)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.VideoId)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
@@ -1079,8 +1079,8 @@ func (p *DeleteCommentRequest) field1Length() int {
 
 func (p *DeleteCommentRequest) field2Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("vedio_id", thrift.I64, 2)
-	l += bthrift.Binary.I64Length(p.VedioId)
+	l += bthrift.Binary.FieldBeginLength("video_id", thrift.I64, 2)
+	l += bthrift.Binary.I64Length(p.VideoId)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
@@ -1299,7 +1299,7 @@ func (p *QueryCommentsRequest) FastReadField1(buf []byte) (int, error) {
 	} else {
 		offset += l
 
-		p.VedioId = v
+		p.VideoId = v
 
 	}
 	return offset, nil
@@ -1334,8 +1334,8 @@ func (p *QueryCommentsRequest) BLength() int {
 
 func (p *QueryCommentsRequest) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "vedio_id", thrift.I64, 1)
-	offset += bthrift.Binary.WriteI64(buf[offset:], p.VedioId)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "video_id", thrift.I64, 1)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.VideoId)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
@@ -1343,8 +1343,8 @@ func (p *QueryCommentsRequest) fastWriteField1(buf []byte, binaryWriter bthrift.
 
 func (p *QueryCommentsRequest) field1Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("vedio_id", thrift.I64, 1)
-	l += bthrift.Binary.I64Length(p.VedioId)
+	l += bthrift.Binary.FieldBeginLength("video_id", thrift.I64, 1)
+	l += bthrift.Binary.I64Length(p.VideoId)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
@@ -1625,7 +1625,7 @@ func (p *QueryCommentNumberRequest) FastReadField1(buf []byte) (int, error) {
 	} else {
 		offset += l
 
-		p.VedioId = v
+		p.VideoId = v
 
 	}
 	return offset, nil
@@ -1660,8 +1660,8 @@ func (p *QueryCommentNumberRequest) BLength() int {
 
 func (p *QueryCommentNumberRequest) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "vedio_id", thrift.I64, 1)
-	offset += bthrift.Binary.WriteI64(buf[offset:], p.VedioId)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "video_id", thrift.I64, 1)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.VideoId)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
@@ -1669,8 +1669,8 @@ func (p *QueryCommentNumberRequest) fastWriteField1(buf []byte, binaryWriter bth
 
 func (p *QueryCommentNumberRequest) field1Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("vedio_id", thrift.I64, 1)
-	l += bthrift.Binary.I64Length(p.VedioId)
+	l += bthrift.Binary.FieldBeginLength("video_id", thrift.I64, 1)
+	l += bthrift.Binary.I64Length(p.VideoId)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l

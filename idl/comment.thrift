@@ -14,7 +14,7 @@ struct Comment {
 
 struct CreateCommentRequest {
     1:i64 user_id
-    2:i64 vedio_id
+    2:i64 video_id
     3:string content
 }
 
@@ -25,7 +25,7 @@ struct CreateCommentResponse {
 
 struct DeleteCommentRequest {
     1:i64 user_id
-    2:i64 vedio_id
+    2:i64 video_id
     3:i64 comment_id
 }
 
@@ -34,7 +34,7 @@ struct DeleteCommentResponse {
 }
 
 struct QueryCommentsRequest {
-    1:i64 vedio_id
+    1:i64 video_id
 }
 
 struct QueryCommentsResponse {
@@ -43,7 +43,7 @@ struct QueryCommentsResponse {
 }
 
 struct QueryCommentNumberRequest {
-    1:i64 vedio_id
+    1:i64 video_id
 }
 
 struct QueryCommentNumberResponse {

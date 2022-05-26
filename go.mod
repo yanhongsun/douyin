@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/apache/thrift v0.13.0
-	github.com/bwmarrin/snowflake v0.3.0
 	github.com/cloudwego/kitex v0.3.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/kitex-contrib/registry-etcd v0.0.0-20220110034026-b1c94979cea3

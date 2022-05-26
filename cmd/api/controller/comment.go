@@ -30,8 +30,8 @@ func CommentAction(c *gin.Context) {
 	if user, exist := usersLoginInfo[token]; exist {
 		if actionType == "1" {
 			text := c.Query("comment_text")
-			vedioIdS := c.Query("video_id")
-			vedioId, err := strconv.ParseInt(vedioIdS, 10, 64)
+			videoIdS := c.Query("video_id")
+			videoId, err := strconv.ParseInt(videoIdS, 10, 64)
 
 			if err != nil {
 				c.JSON(http.StatusOK, &common.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
@@ -39,7 +39,7 @@ func CommentAction(c *gin.Context) {
 
 			response, comment := rpc.CreateComment(context.Background(), &comment.CreateCommentRequest{
 				UserId:  user.Id,
-				VedioId: vedioId,
+				VideoId: videoId,
 				Content: text,
 			})
 			if response.StatusCode != 0 {
@@ -48,8 +48,8 @@ func CommentAction(c *gin.Context) {
 			c.JSON(http.StatusOK, CommentActionResponse{Response: *response, Comment: *comment})
 			return
 		} else if actionType == "2" {
-			vedioIdS := c.Query("video_id")
-			vedioId, err := strconv.ParseInt(vedioIdS, 10, 64)
+			videoIdS := c.Query("video_id")
+			videoId, err := strconv.ParseInt(videoIdS, 10, 64)
 
 			if err != nil {
 				c.JSON(http.StatusOK, &common.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
@@ -64,7 +64,7 @@ func CommentAction(c *gin.Context) {
 
 			response := rpc.DeleteComment(context.Background(), &comment.DeleteCommentRequest{
 				UserId:    user.Id,
-				VedioId:   vedioId,
+				VideoId:   videoId,
 				CommentId: commentId,
 			})
 			c.JSON(http.StatusOK, response)

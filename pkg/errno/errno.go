@@ -10,7 +10,7 @@ const (
 	ServiceErrCode      = 40001
 	CommentParamErrCode = 40002
 	UserIdErrCode       = 40003
-	VedioIdErrCode      = 40004
+	VideoIdErrCode      = 40004
 	CommentIdErrCode    = 40005
 	ActionTypeErrCode   = 40006
 )
@@ -38,7 +38,7 @@ var (
 	ServiceErr      = NewErrNo(ServiceErrCode, "Service is unable to start successfully")
 	CommentParamErr = NewErrNo(CommentParamErrCode, "Wrong Comment Parameter has been given")
 	UserIdErr       = NewErrNo(UserIdErrCode, "Wrong UserId Parameter or Wrong UserId has been given")
-	VedioIdErr      = NewErrNo(VedioIdErrCode, "Wrong VedioId Parameter or Wrong VedioId has been given")
+	VideoIdErr      = NewErrNo(VideoIdErrCode, "Wrong VedioId Parameter or Wrong VedioId has been given")
 	CommentIdErr    = NewErrNo(CommentIdErrCode, "Wrong CommentId Parameter or Wrong CommentId has been given")
 	ActionTypeErr   = NewErrNo(ActionTypeErrCode, "Wrong ActionTypeErr has been given")
 )
