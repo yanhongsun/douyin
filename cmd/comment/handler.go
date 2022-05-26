@@ -20,8 +20,8 @@ func (s *CommentServiceImpl) CreateComment(ctx context.Context, req *comment.Cre
 		return resp, nil
 	}
 
-	if req.VedioId <= 0 {
-		resp.BaseResp = pack.BuildBaseResp(errno.VedioIdErr)
+	if req.VideoId <= 0 {
+		resp.BaseResp = pack.BuildBaseResp(errno.VideoIdErr)
 		return resp, nil
 	}
 
@@ -51,8 +51,8 @@ func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *comment.Del
 		return resp, nil
 	}
 
-	if req.VedioId <= 0 {
-		resp.BaseResp = pack.BuildBaseResp(errno.VedioIdErr)
+	if req.VideoId <= 0 {
+		resp.BaseResp = pack.BuildBaseResp(errno.VideoIdErr)
 		return resp, nil
 	}
 

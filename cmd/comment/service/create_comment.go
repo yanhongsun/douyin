@@ -5,7 +5,7 @@ import (
 	"douyin/cmd/comment/dal/db"
 	"douyin/kitex_gen/comment"
 
-	"github.com/bwmarrin/snowflake"
+	"douyin/cmd/comment/pack/snowflake"
 )
 
 var snowflakeNode *snowflake.Node
@@ -32,7 +32,7 @@ func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) 
 
 	commentModel := db.Comment{
 		CommentID: commentId,
-		VedioID:   req.VedioId,
+		VideoID:   req.VideoId,
 		UserID:    req.UserId,
 		State:     true,
 		Content:   req.Content,

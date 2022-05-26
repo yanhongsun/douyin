@@ -9,7 +9,7 @@ var DB *gorm.DB
 
 func Init() {
 	var err error
-	DB, err = gorm.Open(mysql.Open("root:leijunbin20@tcp(localhost:3306)/douyin?charset=utf8&parseTime=True&loc=Local"), &gorm.Config{
+	DB, err = gorm.Open(mysql.Open("gorm:gorm@tcp(localhost:9910)/douyin?charset=utf8&parseTime=True&loc=Local"), &gorm.Config{
 		PrepareStmt:            true,
 		SkipDefaultTransaction: true,
 	})

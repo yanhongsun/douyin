@@ -15,5 +15,5 @@ func NewDeleteCommentService(ctx context.Context) *DeleteCommentService {
 }
 
 func (s *DeleteCommentService) DeleteComment(req *comment.DeleteCommentRequest) error {
-	return db.DeleteComment(s.ctx, req.CommentId, req.VedioId, req.UserId)
+	return db.DeleteComment(s.ctx, req.CommentId, req.VideoId, req.UserId)
 }
