@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"douyin/cmd/comment/dal/mysqldb"
+	"douyin/cmd/comment/dal/redisdb"
 	"encoding/json"
 	"log"
 
@@ -76,5 +77,7 @@ func ConsumeDeleteComment() {
 			continue
 		}
 		mysqldb.DeleteComment(context.Background(), deleteComment.CommentId, deleteComment.VideoId, deleteComment.UserId)
+		redisdb.DeleteCommentsCache(deleteComment.VideoId)
+		redisdb.DeleteCommentIndexCache(deleteComment.VideoId)
 	}
 }

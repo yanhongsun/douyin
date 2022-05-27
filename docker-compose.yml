@@ -11,6 +11,13 @@ services:
       - MYSQL_PASSWORD=gorm
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
 
+  redis:
+    image: 'redis:latest'
+    restart: always
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass gorm
+
   Etcd:
     image: 'bitnami/etcd:latest'
     environment:
@@ -19,17 +26,17 @@ services:
       - 2379:2379
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: 'confluentinc/cp-zookeeper:latest'
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-kafka:latest
+    image: 'confluentinc/cp-kafka:latest'
     container_name: broker
     ports:
-      - "9092:9092"
+      - 9092:9092
     depends_on:
       - zookeeper
     environment:
