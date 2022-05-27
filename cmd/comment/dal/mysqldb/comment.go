@@ -1,4 +1,4 @@
-package db
+package mysqldb
 
 import (
 	"context"
@@ -56,7 +56,7 @@ func DeleteComment(ctx context.Context, commentId, videoId, userId int64) error 
 			return err
 		}
 
-		if err := tx.Where("comment_id = ?", commentId).Where("video_id = ?", videoId).Where("user_id = ?", userId).Delete(&Comment{}).Error; err != nil {
+		if err := tx.Unscoped().Where("comment_id = ?", commentId).Where("video_id = ?", videoId).Where("user_id = ?", userId).Delete(&Comment{}).Error; err != nil {
 			return err
 		}
 		return nil

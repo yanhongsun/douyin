@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"douyin/cmd/comment/dal/db"
+	"douyin/cmd/comment/repository"
 	"douyin/kitex_gen/comment"
 )
 
@@ -15,5 +15,5 @@ func NewDeleteCommentService(ctx context.Context) *DeleteCommentService {
 }
 
 func (s *DeleteCommentService) DeleteComment(req *comment.DeleteCommentRequest) error {
-	return db.DeleteComment(s.ctx, req.CommentId, req.VideoId, req.UserId)
+	return repository.ProducerDeleteComment(req.CommentId, req.VideoId, req.UserId)
 }

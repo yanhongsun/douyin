@@ -2,6 +2,7 @@ package main
 
 import (
 	"douyin/cmd/comment/dal"
+	"douyin/cmd/comment/repository"
 	"douyin/cmd/comment/service"
 	comment "douyin/kitex_gen/comment/commentservice"
 	"log"
@@ -15,6 +16,7 @@ import (
 
 func Init() {
 	dal.Init()
+	repository.Init()
 	service.InitSnowflakeNode()
 }
 

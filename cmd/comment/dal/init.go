@@ -1,7 +1,7 @@
 package dal
 
-import "douyin/cmd/comment/dal/db"
+import "douyin/cmd/comment/dal/mysqldb"
 
 func Init() {
-	db.Init()
+	mysqldb.Init()
 }

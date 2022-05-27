@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"douyin/cmd/comment/dal/db"
+	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/pack"
 	"douyin/kitex_gen/comment"
 )
@@ -16,11 +16,13 @@ func NewQueryCommentsService(ctx context.Context) *QueryCommentsService {
 }
 
 func (s *QueryCommentsService) QueryComments(req *comment.QueryCommentsRequest) ([]*comment.Comment, error) {
-	res, err := db.QueryComments(s.ctx, req.VideoId, 10000, 0)
+	res, err := mysqldb.QueryComments(s.ctx, req.VideoId, 10000, 0)
 
 	if err != nil {
 		return nil, err
 	}
+
+	res = pack.ReverseComments(res)
 
 	return pack.ChangeComments(res), nil
 }

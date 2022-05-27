@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"douyin/cmd/comment/dal/db"
+	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/kitex_gen/comment"
 )
 
@@ -15,7 +15,7 @@ func NewQueryCommentNumberService(ctx context.Context) *QueryCommentNumberServic
 }
 
 func (s *QueryCommentNumberService) QueryCommentNumber(req *comment.QueryCommentNumberRequest) (int64, error) {
-	res, err := db.QueryCommentsNumber(s.ctx, req.VideoId)
+	res, err := mysqldb.QueryCommentsNumber(s.ctx, req.VideoId)
 
 	if err != nil {
 		return 0, err

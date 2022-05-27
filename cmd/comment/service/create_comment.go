@@ -2,11 +2,13 @@ package service
 
 import (
 	"context"
-	"douyin/cmd/comment/dal/db"
+	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/pack"
 	"douyin/kitex_gen/comment"
 
 	"douyin/pkg/snowflake"
+
+	"douyin/cmd/comment/repository"
 )
 
 var snowflakeNode *snowflake.Node
@@ -31,7 +33,7 @@ func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) 
 
 	commentId := snowflakeNode.Generate().Int64()
 
-	commentModel := db.Comment{
+	commentModel := mysqldb.Comment{
 		CommentID: commentId,
 		VideoID:   req.VideoId,
 		UserID:    req.UserId,
@@ -39,7 +41,9 @@ func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) 
 		Content:   req.Content,
 	}
 
-	err := db.CreateComment(s.ctx, &commentModel)
+	if err := repository.ProducerCreateComment(&commentModel); err != nil {
+		return nil, err
+	}
 
-	return pack.ChangeComment(&commentModel), err
+	return pack.ChangeComment(&commentModel), nil
 }
