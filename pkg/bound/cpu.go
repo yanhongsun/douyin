@@ -18,10 +18,10 @@ package bound
 import (
 	"context"
 	"fmt"
-	"github.com/cloudwego/kitex-examples/bizdemo/easy_note/pkg/constants"
-	"github.com/cloudwego/kitex-examples/bizdemo/easy_note/pkg/errno"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/remote"
+	// "github.com/douyin/pkg/constants"
+	"github.com/douyin/pkg/errno"
 	"github.com/shirou/gopsutil/cpu"
 	"net"
 )
@@ -43,7 +43,7 @@ func (c *cpuLimitHandler) OnActive(ctx context.Context, conn net.Conn) (context.
 func (c *cpuLimitHandler) OnRead(ctx context.Context, conn net.Conn) (context.Context, error) {
 	p := cpuPercent()
 	klog.CtxInfof(ctx, "current cpu is %.2g", p)
-	if p > constants.CPURateLimit {
+	if p > 80.0 { // TODO: constants.CPURateLimit {
 		return ctx, errno.ServiceErr.WithMessage(fmt.Sprintf("cpu = %.2g", c))
 	}
 	return ctx, nil

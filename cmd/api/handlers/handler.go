@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/douyin/pkg/errno"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -56,6 +57,10 @@ func SendResponse(c *gin.Context, err error, userID int64, token string) {
 // SendUserInfoResponse send response of get_user_info
 func SendUserInfoResponse(c *gin.Context, err error, userInfo *UserInfo) {
 	Err := errno.ConvertErr(err)
+	klog.Info("================================")
+	klog.Info(userInfo)
+	klog.Info(Err)
+	klog.Info("================================")
 	c.JSON(http.StatusOK, UserInfoResponse{
 		StatusCode: Err.ErrCode,
 		StatusMsg:  Err.ErrMsg,

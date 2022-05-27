@@ -9,7 +9,6 @@ import (
 	"github.com/douyin/cmd/user/config"
 	"github.com/douyin/cmd/user/dal"
 	"github.com/douyin/cmd/user/global"
-	middleware2 "github.com/douyin/cmd/user/middleware"
 	user "github.com/douyin/kitex_gen/user/userservice"
 	"github.com/douyin/middleware"
 	"github.com/douyin/pkg/bound"
@@ -21,34 +20,30 @@ import (
 )
 
 func Init() {
-	tracer.InitJaeger(global.ServerSetting.UserServName)
-
-	dal.Init()
-
 	err := setupSetting()
 	if err != nil {
 		log.Println(err)
 	}
 
 	setupJWT()
+
+	tracer.InitJaeger(global.ServerSetting.UserServName)
+
+	dal.Init()
 }
 
 func main() {
-	r, err := etcd.NewEtcdRegistry([]string{fmt.Sprintf("%s:%s",
-		global.ServerSetting.EtcdAddress,
-		global.ServerSetting.EtcdPort)})
+	Init()
+	fmt.Println("=====>>>>>", global.ServerSetting.EtcdHost)
+	r, err := etcd.NewEtcdRegistry([]string{global.ServerSetting.EtcdHost})
 	if err != nil {
 		panic(err)
 	}
-	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%s",
-		global.ServerSetting.UserServAddr,
-		global.ServerSetting.UserServPort))
+	addr, err := net.ResolveTCPAddr("tcp", global.ServerSetting.UserServHost)
 	if err != nil {
 		panic(err)
 	}
 
-	Init()
-	// TODO: add server configuration
 	svr := user.NewServer(new(UserServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: global.ServerSetting.UserServName}), // server name
 		server.WithMiddleware(middleware.CommonMiddleware),                                                     // middleware
@@ -89,10 +84,16 @@ func setupSetting() error {
 		return err
 	}
 
+	// load
+	err = setting.ReadSection("Server", &global.ServerSetting)
+	if err != nil {
+		return nil
+	}
+
 	return nil
 }
 
 // setupJWT
 func setupJWT() {
-	global.Jwt = middleware2.NewJWT()
+	global.Jwt = global.NewJWT()
 }

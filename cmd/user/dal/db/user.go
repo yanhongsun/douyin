@@ -2,27 +2,26 @@ package db
 
 import (
 	"context"
+	"github.com/douyin/cmd/user/global"
 	"github.com/douyin/kitex_gen/user"
 )
 
 // User user model
 type User struct {
-	ID       int64  `json:"id"`
-	Username string `json:"u_name"`
-	Password string `json:"passwd"`
+	ID       int64  `gorm:"column:id;primaryKey;not null"`
+	Username string `gorm:"column:u_name;unique;type:varchar(30);not null"`
+	Password string `gorm:"column:passwd;type:varchar(32);not null"`
 	// Nickname    string `json:"nickname"`
-	FollowCount   int64 `json:"follow_count"`
-	FollowerCount int64 `json:"fans_count"`
+	FollowCount   int64 `gorm:"column:follow_count;default:0"`
+	FollowerCount int64 `gorm:"column:fans_count;default:0"`
 }
 
 func (u *User) TableName() string {
-	// TODO: add user table name here
-	return "users"
+	return global.DatabaseSetting.UserTableName
 }
 
 // GetUserInfo  do db operation
 func GetUserInfo(ctx context.Context, userID int64) (*user.User, error) {
-	// TODO: db operation
 	res := make([]*User, 0)
 	if err := DB.WithContext(ctx).Where("id == ?", userID).Find(res).Error; err != nil {
 		return nil, err
@@ -59,7 +58,7 @@ func CreateUser(ctx context.Context, username, password string) ([]*User, error)
 		return nil, err
 	}
 	// get token and id
-	err = DB.WithContext(ctx).Where("user_name = ?", username).Find(&res).Error
+	err = DB.WithContext(ctx).Where("u_name = ?", username).Find(&res).Error
 	if err != nil {
 		return nil, err
 	}

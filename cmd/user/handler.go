@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/douyin/cmd/user/global"
-	"github.com/douyin/cmd/user/middleware"
 	"github.com/douyin/cmd/user/pack"
 	"github.com/douyin/cmd/user/service"
 	"github.com/douyin/kitex_gen/user"
@@ -20,38 +19,35 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.DouyinUserRe
 		resp = pack.BuildRegisterResp(errno.ParamErr, -1, "")
 		return resp, nil
 	}
-	// 创建新的创建用户服务, 调用床架用户任务函数
+
 	userID, err := service.NewUserRegisterService(ctx).CreateUser(req)
 	if err != nil {
 		resp = pack.BuildRegisterResp(err, -1, "")
 		return resp, nil
 	}
 
-	// TODO: create token here
-	token, _ := global.Jwt.CreateToken(middleware.CustomClaims{
+	token, _ := global.Jwt.CreateToken(global.CustomClaims{
 		Id: userID,
 	})
-	// construct resp
-	resp = pack.BuildRegisterResp(errno.ParamErr, userID, token)
+
+	resp = pack.BuildRegisterResp(errno.Success, userID, token)
 	return resp, nil
 }
 
 // CheckUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLoginRequest) (resp *user.DouyinUserLoginResponse, err error) {
 	if len(req.Username) == 0 || len(req.Password) == 0 {
-		resp.StatusCode = errno.ParamErr.ErrCode
-		resp.SetStatusMsg(&errno.ParamErr.ErrMsg)
+		resp = pack.BuildLoginResp(errno.ParamErr, -1, "")
 		return resp, nil
 	}
-	// 创建新的创建用户服务, 调用床架用户任务函数
+
 	userID, err := service.NewUserLoginService(ctx).CheckUser(req)
 	if err != nil {
 		resp = pack.BuildLoginResp(err, -1, "")
 		return resp, nil
 	}
 
-	// TODO: create token here
-	token, _ := global.Jwt.CreateToken(middleware.CustomClaims{
+	token, _ := global.Jwt.CreateToken(global.CustomClaims{
 		Id: userID,
 	})
 
@@ -61,7 +57,6 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 
 // GetUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
-	// TODO: check token
 	claim, err := global.Jwt.ParseToken(req.Token)
 	if err != nil {
 		resp = pack.BuildGetUserResp(errors.New("failed to parse token"), nil)

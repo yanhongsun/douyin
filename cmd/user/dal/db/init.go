@@ -12,7 +12,6 @@ var DB *gorm.DB
 
 func Init() {
 	var err error
-	// TODO: add mysql url
 	s := "%s:%s@tcp(%s)/%s?charset=%s&parseTime=%t&loc=Local"
 	DB, err = gorm.Open(mysql.Open(fmt.Sprintf(s,
 		global.DatabaseSetting.UserName,
@@ -34,10 +33,14 @@ func Init() {
 	}
 
 	m := DB.Migrator()
-	if m.HasTable(&User{}) {
+	if m.HasTable(global.DatabaseSetting.UserTableName) {
 		return
 	}
 	if err = m.CreateTable(&User{}); err != nil {
 		panic(err)
+	} else {
+		if err = m.RenameTable(&User{}, global.DatabaseSetting.UserTableName); err != nil {
+			panic(err)
+		}
 	}
 }

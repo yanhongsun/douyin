@@ -11,7 +11,7 @@ import (
 func QueryUser(c *gin.Context) {
 	var queryVar UserInfoParam
 
-	if err := c.BindQuery(&queryVar); err != nil {
+	if err := c.ShouldBind(&queryVar); err != nil {
 		SendUserInfoResponse(c, errno.ConvertErr(err), nil)
 	}
 
