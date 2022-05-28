@@ -1,8 +1,10 @@
 package db
 
 import (
+	"github.com/yanhongsun/douyin/pkg/constants"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	gormopentracing "gorm.io/plugin/opentracing"
 )
 
 var DB *gorm.DB
@@ -25,10 +27,10 @@ func Init() {
 	}
 
 	m := DB.Migrator()
-	if m.HasTable(&Note{}) {
+	if m.HasTable(&Video{}) {
 		return
 	}
-	if err = m.CreateTable(&Note{}); err != nil {
+	if err = m.CreateTable(&Video{}); err != nil {
 		panic(err)
 	}
 }
