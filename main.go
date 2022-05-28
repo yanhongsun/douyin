@@ -1,7 +1,7 @@
 package main
 
 import (
-	like "github.com/yanhongsun/douyin/douyin/kitex_gen/like/thumbservice"
+	like "github.com/yanhongsun/douyin/kitex_gen/like/thumbservice"
 	"log"
 )
 
