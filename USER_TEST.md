@@ -81,3 +81,14 @@ curl --location --request POST '127.0.0.1:8080/douyin/user/login' --header 'Cont
 ```shell
 curl --location --request GET '127.0.0.1:8080/douyin/user/' --header 'Content-Type: application/json' --data-raw '{"user_id":6,"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6NiwiQXV0aG9yaXR5SWQiOjB9.9yviB30k0NWgxyyp4wt7wGoqRc36Ea9tnAc3ajn0V2w"}'
 ```
+
+**response**
+
+```text
+# 正确结果
+{"status_code":0,"status_msg":"Success","user":{"id":6,"name":"Stone","follow_count":0,"follower_count":0,"is_follow":false}}
+# 错误token
+{"status_code":10034,"status_msg":"Couldn't handle this token","user":{"id":-1,"name":"","follow_count":0,"follower_count":0,"is_follow":false}}
+# 过期token
+
+```

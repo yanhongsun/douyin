@@ -66,6 +66,8 @@ func BuildLoginResp(err error, userID int64, token string) *user.DouyinUserLogin
 
 func BuildGetUserResp(err error, userInfo *user.User) *user.DouyinUserResponse {
 	var resp user.DouyinUserResponse
+	fmt.Println("||||||||||||||||", err)
+	fmt.Println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&>>>>>", userInfo)
 	if err == nil {
 		resp.SetStatusCode(errno.Success.ErrCode)
 		resp.SetStatusMsg(&errno.Success.ErrMsg)
@@ -77,13 +79,17 @@ func BuildGetUserResp(err error, userInfo *user.User) *user.DouyinUserResponse {
 	if errors.As(err, &e) {
 		resp.SetStatusCode(e.ErrCode)
 		resp.SetStatusMsg(&e.ErrMsg)
-		resp.SetUser(nil)
+		resp.SetUser(&user.User{
+			Id: -1, Name: "", FollowCount: nil, FollowerCount: nil, IsFollow: false,
+		})
 		return &resp
 	}
-	fmt.Println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&>>>>>", userInfo)
+
 	s := errno.ServiceErr.WithMessage(err.Error())
 	resp.SetStatusCode(s.ErrCode)
 	resp.SetStatusMsg(&s.ErrMsg)
-	resp.SetUser(nil)
+	resp.SetUser(&user.User{
+		Id: -1, Name: "", FollowCount: nil, FollowerCount: nil, IsFollow: false,
+	})
 	return &resp
 }

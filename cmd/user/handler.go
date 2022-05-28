@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/douyin/cmd/user/global"
 	"github.com/douyin/cmd/user/pack"
@@ -31,7 +30,7 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.DouyinUserRe
 		Id: userID,
 	})
 
-	resp = pack.BuildRegisterResp(errno.Success, userID, token)
+	resp = pack.BuildRegisterResp(nil, userID, token)
 	return resp, nil
 }
 
@@ -52,7 +51,7 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 		Id: userID,
 	})
 
-	resp = pack.BuildLoginResp(errno.Success, userID, token)
+	resp = pack.BuildLoginResp(nil, userID, token)
 	return resp, nil
 }
 
@@ -60,10 +59,10 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
 	claim, err := global.Jwt.ParseToken(req.Token)
 	if err != nil {
-		resp = pack.BuildGetUserResp(errors.New("failed to parse token"), nil)
+		resp = pack.BuildGetUserResp(err, nil)
 		return resp, nil
 	} else if claim.Id != int64(req.UserId) {
-		resp = pack.BuildGetUserResp(errors.New("invalid token"), nil)
+		resp = pack.BuildGetUserResp(errno.TokenInvalidErr, nil)
 		return resp, nil
 	}
 
@@ -73,6 +72,7 @@ func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserReque
 		resp = pack.BuildGetUserResp(err, nil)
 		return resp, nil
 	}
-	resp = pack.BuildGetUserResp(errno.Success, userInfo)
+	resp = pack.BuildGetUserResp(nil, userInfo)
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>resp", resp)
 	return resp, nil
 }
