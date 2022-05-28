@@ -69,7 +69,7 @@ func BuildGetUserResp(err error, userInfo *user.User) *user.DouyinUserResponse {
 	if err == nil {
 		resp.SetStatusCode(errno.Success.ErrCode)
 		resp.SetStatusMsg(&errno.Success.ErrMsg)
-		resp.SetUser(nil)
+		resp.SetUser(userInfo)
 		return &resp
 	}
 
@@ -80,10 +80,10 @@ func BuildGetUserResp(err error, userInfo *user.User) *user.DouyinUserResponse {
 		resp.SetUser(nil)
 		return &resp
 	}
-
+	fmt.Println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&>>>>>", userInfo)
 	s := errno.ServiceErr.WithMessage(err.Error())
 	resp.SetStatusCode(s.ErrCode)
 	resp.SetStatusMsg(&s.ErrMsg)
-	resp.SetUser(userInfo)
+	resp.SetUser(nil)
 	return &resp
 }

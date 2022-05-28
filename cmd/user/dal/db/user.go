@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"github.com/douyin/cmd/user/global"
 	"github.com/douyin/kitex_gen/user"
 )
@@ -23,17 +24,18 @@ func (u *User) TableName() string {
 // GetUserInfo  do db operation
 func GetUserInfo(ctx context.Context, userID int64) (*user.User, error) {
 	res := make([]*User, 0)
-	if err := DB.WithContext(ctx).Where("id == ?", userID).Find(res).Error; err != nil {
+	if err := DB.WithContext(ctx).Where("id = ?", userID).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	u := res[0]
-	return &user.User{
-		Id:            u.ID,
-		Name:          u.Username,
-		FollowCount:   &u.FollowCount,
-		FollowerCount: &u.FollowerCount,
-		IsFollow:      false,
-	}, nil
+	var userInfo user.User
+	userInfo.SetId(u.ID)
+	userInfo.SetName(u.Username)
+	userInfo.SetFollowCount(&u.FollowCount)
+	userInfo.SetFollowerCount(&u.FollowerCount)
+	userInfo.SetIsFollow(false)
+	fmt.Println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&|||||", userInfo)
+	return &userInfo, nil
 }
 
 // QueryUser OK

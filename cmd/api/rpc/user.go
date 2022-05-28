@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	"github.com/douyin/kitex_gen/user"
@@ -89,5 +90,6 @@ func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*UserInfo, e
 	userInfo.FollowCount = resp.User.GetFollowCount()
 	userInfo.FollowerCount = resp.User.GetFollowerCount()
 	userInfo.IsFollow = resp.User.IsFollow
+	fmt.Println("----------------------------------------------", userInfo)
 	return &userInfo, nil
 }

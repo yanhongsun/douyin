@@ -18,6 +18,7 @@ func Login(c *gin.Context) {
 
 	if len(loginVar.Username) == 0 || len(loginVar.Password) == 0 {
 		SendResponse(c, errno.ParamErr, -1, "")
+		return
 	}
 
 	userID, token, err := rpc.CheckUser(context.Background(), &user.DouyinUserLoginRequest{

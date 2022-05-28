@@ -8,4 +8,4 @@ export JAEGER_AGENT_HOST="127.0.0.1"
 export JAEGER_AGENT_PORT=6831
 go build ./main.go
 echo "Project builds successfully!"
-./main
+./main &> log &

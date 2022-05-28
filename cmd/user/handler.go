@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/douyin/cmd/user/global"
 	"github.com/douyin/cmd/user/pack"
 	"github.com/douyin/cmd/user/service"
@@ -67,6 +68,7 @@ func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserReque
 	}
 
 	userInfo, err := service.NewGetUserInfoService(ctx).GetUserInfo(req)
+	fmt.Println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&=====", userInfo)
 	if err != nil {
 		resp = pack.BuildGetUserResp(err, nil)
 		return resp, nil

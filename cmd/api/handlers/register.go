@@ -18,6 +18,7 @@ func Register(c *gin.Context) {
 
 	if len(registerVar.Username) == 0 || len(registerVar.Password) == 0 {
 		SendResponse(c, errno.ParamErr, -1, "")
+		return
 	}
 
 	userID, token, err := rpc.CreateUser(context.Background(), &user.DouyinUserRegisterRequest{

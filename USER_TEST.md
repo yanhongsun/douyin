@@ -79,5 +79,5 @@ curl --location --request POST '127.0.0.1:8080/douyin/user/login' --header 'Cont
 ### GetUserInfo
 
 ```shell
-curl --location --request GET '127.0.0.1:8080/douyin/user/' --header 'Content-Type: application/json' --data-raw '{"user_id":"6","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6NiwiQXV0aG9yaXR5SWQiOjB9.9yviB30k0NWgxyyp4wt7wGoqRc36Ea9tnAc3ajn0V2w"}'
+curl --location --request GET '127.0.0.1:8080/douyin/user/' --header 'Content-Type: application/json' --data-raw '{"user_id":6,"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6NiwiQXV0aG9yaXR5SWQiOjB9.9yviB30k0NWgxyyp4wt7wGoqRc36Ea9tnAc3ajn0V2w"}'
 ```
