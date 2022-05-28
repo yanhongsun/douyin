@@ -1,6 +1,9 @@
 package mysqldb
 
 import (
+	"douyin/cmd/comment/configdata"
+	"fmt"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -9,10 +12,19 @@ var DB *gorm.DB
 
 func Init() {
 	var err error
-	DB, err = gorm.Open(mysql.Open("gorm:gorm@tcp(localhost:3306)/douyin?charset=utf8&parseTime=True&loc=Local"), &gorm.Config{
-		PrepareStmt:            true,
-		SkipDefaultTransaction: true,
-	})
+	s := "%s:%s@tcp(%s)/%s?charset=%s&parseTime=%s&loc=Local"
+
+	DB, err = gorm.Open(mysql.Open(fmt.Sprintf(s,
+		configdata.MysqlDatabaseConfig.User,
+		configdata.MysqlDatabaseConfig.Password,
+		configdata.MysqlDatabaseConfig.Host,
+		configdata.MysqlDatabaseConfig.Name,
+		configdata.MysqlDatabaseConfig.Charset,
+		configdata.MysqlDatabaseConfig.ParseTime)),
+		&gorm.Config{
+			PrepareStmt:            true,
+			SkipDefaultTransaction: true,
+		})
 
 	if err != nil {
 		panic(err)

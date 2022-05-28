@@ -1,6 +1,7 @@
 package main
 
 import (
+	"douyin/cmd/comment/configdata"
 	"douyin/cmd/comment/dal"
 	"douyin/cmd/comment/repository"
 	"douyin/cmd/comment/service"
@@ -15,28 +16,33 @@ import (
 )
 
 func Init() {
+	err := configdata.SetupSetting()
+	if err != nil {
+		panic("config is wrong")
+	}
+
 	dal.Init()
 	repository.Init()
 	service.InitSnowflakeNode()
 }
 
 func main() {
-	r, err := etcd.NewEtcdRegistry([]string{"127.0.0.1:2379"})
-
-	if err != nil {
-		panic(err)
-	}
-
-	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8888")
-
-	if err != nil {
-		panic(err)
-	}
-
 	Init()
 
+	r, err := etcd.NewEtcdRegistry([]string{configdata.CommentServerConfig.EtcdHost})
+
+	if err != nil {
+		panic(err)
+	}
+
+	addr, err := net.ResolveTCPAddr("tcp", configdata.CommentServerConfig.CommentServHost)
+
+	if err != nil {
+		panic(err)
+	}
+
 	svr := comment.NewServer(new(CommentServiceImpl),
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: "comment"}),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: configdata.CommentServerConfig.CommentServName}),
 		server.WithServiceAddr(addr),
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 1000}),
 		server.WithMuxTransport(),

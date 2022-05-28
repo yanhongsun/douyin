@@ -1,13 +1,17 @@
 package redisdb
 
-import "github.com/go-redis/redis"
+import (
+	"douyin/cmd/comment/configdata"
+
+	"github.com/go-redis/redis"
+)
 
 var RedisClient *redis.Client
 
 func Init() {
 	client := redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "gorm",
+		Addr:     configdata.RedisDatabaseConfig.Host,
+		Password: configdata.RedisDatabaseConfig.Password,
 	})
 
 	_, err := client.Ping().Result()
