@@ -4,7 +4,12 @@ import (
 	"context"
 	"douyin/cmd/comment/repository"
 	"douyin/kitex_gen/comment"
+	"strconv"
+
+	"golang.org/x/sync/singleflight"
 )
+
+var gDeleteComment singleflight.Group
 
 type DeleteCommentService struct {
 	ctx context.Context
@@ -15,5 +20,11 @@ func NewDeleteCommentService(ctx context.Context) *DeleteCommentService {
 }
 
 func (s *DeleteCommentService) DeleteComment(req *comment.DeleteCommentRequest) error {
-	return repository.ProducerDeleteComment(req.CommentId, req.VideoId, req.UserId)
+	key := strconv.FormatInt(req.CommentId, 10)
+
+	_, err, _ := gDeleteComment.Do(key, func() (interface{}, error) {
+		return nil, repository.ProducerComment(2, nil, req.CommentId, req.VideoId, req.UserId)
+	})
+
+	return err
 }

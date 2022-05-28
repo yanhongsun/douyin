@@ -18,9 +18,30 @@ func DeleteCommentIndexCache(videoId int64) error {
 		return err
 	}
 	if !exist {
-		return errors.New("videoId is not exist")
+		return errors.New("videoId is not exist in cache")
 	}
 	return RedisClient.Del(videoIdS + "Index").Err()
+}
+
+func UpdateCommentIndexCache(videoId, offset int64) error {
+	exist, err := CheckCommentIndexCache(videoId)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return errors.New("videoId is not exist in cache")
+	}
+
+	tmp, err := GetCommentIndexCache(videoId)
+	if err != nil {
+		return err
+	}
+	tmp += offset
+	err = AddCommentIndexCache(videoId, tmp)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func CheckCommentIndexCache(videoId int64) (bool, error) {

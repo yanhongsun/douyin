@@ -48,7 +48,7 @@ func (s *QueryCommentsService) QueryComments(req *comment.QueryCommentsRequest) 
 		}
 		resD = pack.ReverseComments(resD)
 		res := pack.ChangeComments(resD)
-		repository.ProducerCreateCommentsCache(req.VideoId, res)
+		repository.ProducerCommentsCache(1, req.VideoId, res, nil, -10001)
 		return res, nil
 	})
 

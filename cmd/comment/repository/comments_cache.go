@@ -7,27 +7,36 @@ import (
 	"log"
 
 	"github.com/Shopify/sarama"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 type repositoryCache struct {
-	VideoId int64              `json:"video_id"`
-	Comment []*comment.Comment `json:"comment"`
+	// Type: 1-create,2-update_add,3-update_delete
+	Type      int64              `json:"type"`
+	VideoId   int64              `json:"video_id"`
+	Comments  []*comment.Comment `json:"comments"`
+	Comment   *comment.Comment   `json:"comment"`
+	CommentId int64              `json:"comment_id"`
 }
 
-func ProducerCreateCommentsCache(videoId int64, comment []*comment.Comment) error {
+func ProducerCommentsCache(types, videoId int64, comments []*comment.Comment, comment *comment.Comment, commentId int64) error {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
 	config.Producer.Return.Successes = true
 
 	msg := &sarama.ProducerMessage{}
-	msg.Topic = "create_comment_cache"
+	msg.Topic = "comments_cache"
 	dataRepository := repositoryCache{
-		VideoId: videoId,
-		Comment: comment,
+		Type:      types,
+		VideoId:   videoId,
+		Comments:  comments,
+		Comment:   comment,
+		CommentId: commentId,
 	}
 	data, err := json.Marshal(dataRepository)
 	if err != nil {
+		klog.Fatal(err)
 		return err
 	}
 	msg.Value = sarama.StringEncoder(string(data))
@@ -45,7 +54,7 @@ func ProducerCreateCommentsCache(videoId int64, comment []*comment.Comment) erro
 	return nil
 }
 
-func ConsumeCreateCommentsCache() {
+func ConsumeCommentsCache() {
 	config := sarama.NewConfig()
 	consumer, err := sarama.NewConsumer([]string{"127.0.0.1:9092"}, config)
 	if err != nil {
@@ -55,7 +64,7 @@ func ConsumeCreateCommentsCache() {
 	}
 	defer consumer.Close()
 
-	partitionConsumer, err := consumer.ConsumePartition("create_comment_cache", 0, sarama.OffsetNewest)
+	partitionConsumer, err := consumer.ConsumePartition("comments_cache", 0, sarama.OffsetNewest)
 	if err != nil {
 		// TODO: log
 		log.Fatal("ConsumePartition err: ", err)
@@ -72,6 +81,16 @@ func ConsumeCreateCommentsCache() {
 			log.Fatal("Json Unmarshal err: ", err)
 			continue
 		}
-		redisdb.AddCommentsCache(data.VideoId, data.Comment)
+		if data.Type == 1 {
+			redisdb.AddCommentsCache(data.VideoId, data.Comments)
+			continue
+		} else if data.Type == 2 {
+			redisdb.UpdateCommentsCache(data.VideoId, data.Comment)
+			continue
+		} else if data.Type == 3 {
+			redisdb.DeleteCommentsCache(data.VideoId, data.CommentId)
+			continue
+		}
+		log.Fatal("type is wrong")
 	}
 }
