@@ -22,7 +22,7 @@ func NewThumbService(ctx context.Context) *ThumbService {
 
 // 点赞操作
 
-func (t ThumbService) ThumbList(req *like.ThumbListRequest) []*like.Video {
+func (t ThumbService) ThumbList(req *like.ThumbListRequest) ([]*like.Video, error) {
 	//TODO implement me
 	panic("implement me")
 }

@@ -45,5 +45,5 @@ struct User {
 service ThumbService {
     LikeyouResponse Likeyou(1: LikeyouRequest request)
 
-    ThumbListResponse ThumbList(1:ThumbListResponse request)
+    ThumbListResponse ThumbList(1:ThumbListRequest request)
 }
