@@ -97,3 +97,9 @@ func (s *VideoServiceImpl) GetFeed(ctx context.Context, req *video.GetFeedReques
 	resp = &r
 	return
 }
+
+// VerifyVideoId implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) VerifyVideoId(ctx context.Context, req *video.VerifyVideoIdResponse) (resp *video.VerifyVideoIdRequest, err error) {
+	// TODO: Your code here...
+	return
+}

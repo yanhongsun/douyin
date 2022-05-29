@@ -22,6 +22,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"PublishVideo":   kitex.NewMethodInfo(publishVideoHandler, newVideoServicePublishVideoArgs, newVideoServicePublishVideoResult, false),
 		"GetPublishList": kitex.NewMethodInfo(getPublishListHandler, newVideoServiceGetPublishListArgs, newVideoServiceGetPublishListResult, false),
 		"GetFeed":        kitex.NewMethodInfo(getFeedHandler, newVideoServiceGetFeedArgs, newVideoServiceGetFeedResult, false),
+		"VerifyVideoId":  kitex.NewMethodInfo(verifyVideoIdHandler, newVideoServiceVerifyVideoIdArgs, newVideoServiceVerifyVideoIdResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -91,6 +92,24 @@ func newVideoServiceGetFeedResult() interface{} {
 	return video.NewVideoServiceGetFeedResult()
 }
 
+func verifyVideoIdHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceVerifyVideoIdArgs)
+	realResult := result.(*video.VideoServiceVerifyVideoIdResult)
+	success, err := handler.(video.VideoService).VerifyVideoId(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceVerifyVideoIdArgs() interface{} {
+	return video.NewVideoServiceVerifyVideoIdArgs()
+}
+
+func newVideoServiceVerifyVideoIdResult() interface{} {
+	return video.NewVideoServiceVerifyVideoIdResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -126,6 +145,16 @@ func (p *kClient) GetFeed(ctx context.Context, req *video.GetFeedRequest) (r *vi
 	_args.Req = req
 	var _result video.VideoServiceGetFeedResult
 	if err = p.c.Call(ctx, "GetFeed", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) VerifyVideoId(ctx context.Context, req *video.VerifyVideoIdResponse) (r *video.VerifyVideoIdRequest, err error) {
+	var _args video.VideoServiceVerifyVideoIdArgs
+	_args.Req = req
+	var _result video.VideoServiceVerifyVideoIdResult
+	if err = p.c.Call(ctx, "VerifyVideoId", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
