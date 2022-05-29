@@ -43,7 +43,7 @@ CREATE TABLE relation
 (
   follower1       BIGINT  NOT NULL   COMMENT '用户A',
   follower2       BIGINT  NOT NULL   COMMENT '用户B',
-  tag   ENUM('1', '2', '3') NOT NULL COMMENT '1:A关注B 2:B关注A 3:相互关注',  
+  tag   INT NOT NULL COMMENT '0:标记删除,互相不关注 1:A关注B 2:B关注A 3:相互关注',
   PRIMARY KEY (follower1,follower2)
 )ENGINE=InnoDB;
 

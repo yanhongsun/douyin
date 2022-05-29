@@ -45,7 +45,7 @@ struct GetFollowerListResponse{
 
 service RelationService{
     RelationActionResponse   RelationAction(1:RelationActionRequest    req)
-   GetFollowListResponse  GetFollowList(1:GetFollowListRequest  req)
+    GetFollowListResponse  GetFollowList(1:GetFollowListRequest  req)
     GetFollowerListResponse  GetFollowerList(1:GetFollowerListRequest  req)
 }
 
