@@ -8,9 +8,35 @@ import (
 	"time"
 )
 
-func AddCommentsCache(videoId int64, comment []*comment.Comment) error {
+type Comments_cache struct {
+	CommentNumber int64              `json:"comment_number"`
+	Comments      []*comment.Comment `json:"comments,omitempty"`
+}
+
+func AddCommentsCache(videoId int64, comments []*comment.Comment) error {
 	videoIdS := strconv.FormatInt(videoId, 10)
-	store, err := json.Marshal(comment)
+
+	comments_cache := Comments_cache{
+		CommentNumber: int64(len(comments)),
+		Comments:      comments,
+	}
+
+	store, err := json.Marshal(comments_cache)
+	if err != nil {
+		return err
+	}
+	return RedisClient.Set(videoIdS, store, time.Hour*12).Err()
+}
+
+func AddCommentNumberCache(videoId, CommentNumber int64) error {
+	videoIdS := strconv.FormatInt(videoId, 10)
+
+	comments_cache := Comments_cache{
+		CommentNumber: CommentNumber,
+		Comments:      nil,
+	}
+
+	store, err := json.Marshal(comments_cache)
 	if err != nil {
 		return err
 	}
@@ -21,7 +47,7 @@ func DeleteCommentsCache(videoId, commentId int64) error {
 	pipe := RedisClient.TxPipeline()
 
 	// comment_cache change
-	exist, err := CheckCommentsCache(videoId)
+	exist, tmp, err := CheckGetCommentsCache(videoId)
 	if err != nil {
 		return err
 	}
@@ -29,20 +55,20 @@ func DeleteCommentsCache(videoId, commentId int64) error {
 		return errors.New("videoId is not exist in cache")
 	}
 
-	tmp, err := GetCommentsCache(videoId)
 	if err != nil {
 		return err
 	}
 
 	index := 0
-	for k, value := range tmp {
+	for k, value := range tmp.Comments {
 		if value.CommentId == commentId {
 			index = k
 			break
 		}
 	}
 
-	tmp = append(tmp[:index], tmp[index+1:]...)
+	tmp.Comments = append(tmp.Comments[:index], tmp.Comments[index+1:]...)
+	tmp.CommentNumber -= 1
 
 	videoIdS := strconv.FormatInt(videoId, 10)
 	store, err := json.Marshal(tmp)
@@ -54,47 +80,18 @@ func DeleteCommentsCache(videoId, commentId int64) error {
 		return nil
 	}
 
-	// comment_index_cache change
-	exist, err = CheckCommentIndexCache(videoId)
-	if err != nil {
-		return err
-	}
-	if !exist {
-		return errors.New("videoId is not exist in cache")
-	}
-
-	tmpN, err := GetCommentIndexCache(videoId)
-	if err != nil {
-		return err
-	}
-	tmpN -= 1
-
-	if err := pipe.Set(videoIdS+"Index", tmpN, time.Hour*12).Err(); err != nil {
-		return err
-	}
-
 	if _, err = pipe.Exec(); err != nil {
 		return err
 	}
 
 	return nil
-
-	// videoIdS := strconv.FormatInt(videoId, 10)
-	// exist, err := CheckCommentsCache(videoId)
-	// if err != nil {
-	// 	return err
-	// }
-	// if !exist {
-	// 	return errors.New("videoId is not exist in cache")
-	// }
-	// return RedisClient.Del(videoIdS).Err()
 }
 
 func UpdateCommentsCache(videoId int64, comment *comment.Comment) error {
 	pipe := RedisClient.TxPipeline()
 
 	// comment_cache change
-	exist, err := CheckCommentsCache(videoId)
+	exist, tmp, err := CheckGetCommentsCache(videoId)
 	if err != nil {
 		return err
 	}
@@ -102,14 +99,14 @@ func UpdateCommentsCache(videoId int64, comment *comment.Comment) error {
 		return errors.New("videoId is not exist in cache")
 	}
 
-	tmp, err := GetCommentsCache(videoId)
 	if err != nil {
 		return err
 	}
 
-	tmp = append(tmp, nil)
-	copy(tmp[1:], tmp[0:])
-	tmp[0] = comment
+	tmp.Comments = append(tmp.Comments, nil)
+	copy(tmp.Comments[1:], tmp.Comments[0:])
+	tmp.Comments[0] = comment
+	tmp.CommentNumber += 1
 
 	videoIdS := strconv.FormatInt(videoId, 10)
 	store, err := json.Marshal(tmp)
@@ -121,25 +118,6 @@ func UpdateCommentsCache(videoId int64, comment *comment.Comment) error {
 		return nil
 	}
 
-	// comment_index_cache change
-	exist, err = CheckCommentIndexCache(videoId)
-	if err != nil {
-		return err
-	}
-	if !exist {
-		return errors.New("videoId is not exist in cache")
-	}
-
-	tmpN, err := GetCommentIndexCache(videoId)
-	if err != nil {
-		return err
-	}
-	tmpN += 1
-
-	if err := pipe.Set(videoIdS+"Index", tmpN, time.Hour*12).Err(); err != nil {
-		return err
-	}
-
 	if _, err = pipe.Exec(); err != nil {
 		return err
 	}
@@ -147,7 +125,35 @@ func UpdateCommentsCache(videoId int64, comment *comment.Comment) error {
 	return nil
 }
 
-func CheckCommentsCache(videoId int64) (bool, error) {
+func CheckGetCommentsCache(videoId int64) (bool, *Comments_cache, error) {
+	videoIdS := strconv.FormatInt(videoId, 10)
+	exist, err := RedisClient.Exists(videoIdS).Result()
+
+	if err != nil {
+		return false, nil, err
+	}
+
+	if exist <= 0 {
+		return false, nil, nil
+	}
+
+	resS, err := RedisClient.Get(videoIdS).Result()
+	if err != nil {
+		return false, nil, err
+	}
+	var res *Comments_cache
+	if err = json.Unmarshal([]byte(resS), &res); err != nil {
+		return false, nil, err
+	}
+
+	if res.CommentNumber != int64(len(res.Comments)) {
+		return false, nil, nil
+	}
+
+	return true, res, err
+}
+
+func CheckCommentNumberCache(videoId int64) (bool, error) {
 	videoIdS := strconv.FormatInt(videoId, 10)
 	exist, err := RedisClient.Exists(videoIdS).Result()
 
@@ -155,23 +161,22 @@ func CheckCommentsCache(videoId int64) (bool, error) {
 		return false, err
 	}
 
-	if exist > 0 {
-		return true, nil
+	if exist <= 0 {
+		return false, nil
 	}
 
-	return false, err
+	return true, err
 }
 
-func GetCommentsCache(videoId int64) ([]*comment.Comment, error) {
-	videoIds := strconv.FormatInt(videoId, 10)
-	resS, err := RedisClient.Get(videoIds).Result()
+func GetCommentIndexCache(videoId int64) (int64, error) {
+	videoIdS := strconv.FormatInt(videoId, 10)
+	resS, err := RedisClient.Get(videoIdS).Result()
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
-	var res []*comment.Comment
-	err = json.Unmarshal([]byte(resS), &res)
-	if err != nil {
-		return nil, err
+	var res *Comments_cache
+	if err = json.Unmarshal([]byte(resS), &res); err != nil {
+		return -1, err
 	}
-	return res, nil
+	return res.CommentNumber, nil
 }

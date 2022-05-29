@@ -24,19 +24,15 @@ func NewQueryCommentsService(ctx context.Context) *QueryCommentsService {
 }
 
 func (s *QueryCommentsService) QueryComments(req *comment.QueryCommentsRequest) ([]*comment.Comment, error) {
-	status, err := redisdb.CheckCommentsCache(req.VideoId)
+	status, res, err := redisdb.CheckGetCommentsCache(req.VideoId)
 
 	if err != nil {
 		//TODO:log
-		log.Fatal("NewConsumer err: ", err)
+		log.Fatal("redisdb err: ", err)
 	}
 
 	if status {
-		res, err := redisdb.GetCommentsCache(req.VideoId)
-		if err == nil {
-			return res, nil
-		}
-		log.Fatal("redis err: ", err)
+		return res.Comments, nil
 	}
 
 	key := strconv.FormatInt(req.VideoId, 10)

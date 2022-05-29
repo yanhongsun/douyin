@@ -22,7 +22,7 @@ func NewQueryCommentNumberService(ctx context.Context) *QueryCommentNumberServic
 }
 
 func (s *QueryCommentNumberService) QueryCommentNumber(req *comment.QueryCommentNumberRequest) (int64, error) {
-	status, err := redisdb.CheckCommentIndexCache(req.VideoId)
+	status, err := redisdb.CheckCommentNumberCache(req.VideoId)
 
 	if err != nil {
 		log.Fatal("redis err: ", err)
@@ -43,7 +43,7 @@ func (s *QueryCommentNumberService) QueryCommentNumber(req *comment.QueryComment
 		if err != nil {
 			return 0, err
 		}
-		redisdb.AddCommentIndexCache(req.VideoId, res)
+		redisdb.AddCommentNumberCache(req.VideoId, res)
 		return res, nil
 	})
 

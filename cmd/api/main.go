@@ -2,13 +2,18 @@ package main
 
 import (
 	"douyin/cmd/api/controller"
+	"douyin/cmd/api/middleware"
 	"douyin/cmd/api/rpc"
+	"douyin/pkg/tracer"
 
 	"github.com/gin-gonic/gin"
 )
 
 func initRouter(r *gin.Engine) {
 	rpc.InitRPC()
+	tracer.InitJaeger("douyin_api")
+
+	r.Use(middleware.OpenTracing())
 
 	// public directory is used to serve static resources
 	r.Static("/static", "./public")

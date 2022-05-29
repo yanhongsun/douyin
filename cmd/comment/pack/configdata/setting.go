@@ -30,11 +30,18 @@ type Kafka struct {
 	TopicCommentNumber string
 }
 
+type TencentCloud struct {
+	TextModeration string
+	SecretId       string
+	SecretKey      string
+}
+
 var (
 	MysqlDatabaseConfig *MysqlDatabase
 	CommentServerConfig *CommentServer
 	RedisDatabaseConfig *RedisDatabase
 	KafkaConfig         *Kafka
+	TencentCloudConfig  *TencentCloud
 )
 
 func SetupSetting() error {
@@ -59,6 +66,11 @@ func SetupSetting() error {
 	}
 
 	err = setting.ReadSection("Kafka", &KafkaConfig)
+	if err != nil {
+		return err
+	}
+
+	err = setting.ReadSection("TencentCloud", &TencentCloudConfig)
 	if err != nil {
 		return err
 	}

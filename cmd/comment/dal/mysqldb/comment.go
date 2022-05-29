@@ -67,7 +67,7 @@ func QueryComments(ctx context.Context, videoId int64, limit, offset int) ([]*Co
 	CreateCommentIndex(ctx, videoId)
 
 	var res []*Comment
-	if err := DB.WithContext(ctx).Model(&Comment{}).Where("video_id = ?", videoId).Limit(limit).Offset(offset).Find(&res).Error; err != nil {
+	if err := DB.WithContext(ctx).Model(&Comment{}).Where("video_id = ?", videoId).Where("state = ?", true).Limit(limit).Offset(offset).Find(&res).Error; err != nil {
 		return res, err
 	}
 	return res, nil

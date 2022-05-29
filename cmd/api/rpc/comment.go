@@ -12,6 +12,7 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	trace "github.com/kitex-contrib/tracer-opentracing"
 )
 
 var commentClient commentservice.Client
@@ -29,6 +30,7 @@ func initCommentRpc() {
 		client.WithConnectTimeout(50*time.Millisecond),
 		client.WithFailureRetry(retry.NewFailurePolicy()),
 		client.WithResolver(r),
+		client.WithSuite(trace.NewDefaultClientSuite()),
 	)
 	if err != nil {
 		panic(err)

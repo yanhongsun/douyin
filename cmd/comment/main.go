@@ -1,11 +1,13 @@
 package main
 
 import (
-	"douyin/cmd/comment/configdata"
 	"douyin/cmd/comment/dal"
+	"douyin/cmd/comment/pack/configdata"
 	"douyin/cmd/comment/repository"
 	"douyin/cmd/comment/service"
 	comment "douyin/kitex_gen/comment/commentservice"
+
+	tracer2 "douyin/pkg/tracer"
 	"log"
 	"net"
 
@@ -13,6 +15,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	trace "github.com/kitex-contrib/tracer-opentracing"
 )
 
 func Init() {
@@ -24,6 +27,7 @@ func Init() {
 	dal.Init()
 	repository.Init()
 	service.InitSnowflakeNode()
+	tracer2.InitJaeger(configdata.CommentServerConfig.CommentServName)
 }
 
 func main() {
@@ -46,6 +50,7 @@ func main() {
 		server.WithServiceAddr(addr),
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 1000}),
 		server.WithMuxTransport(),
+		server.WithSuite(trace.NewDefaultServerSuite()),
 		server.WithRegistry(r),
 	)
 

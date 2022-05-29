@@ -1,7 +1,7 @@
 package redisdb
 
 import (
-	"douyin/cmd/comment/configdata"
+	"douyin/cmd/comment/pack/configdata"
 
 	"github.com/go-redis/redis"
 )
