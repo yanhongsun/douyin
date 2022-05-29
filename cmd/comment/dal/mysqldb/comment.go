@@ -10,11 +10,11 @@ import (
 
 type Comment struct {
 	gorm.Model
-	CommentID int64  `json:"comment_id" gorm:"index:,sort:desc"`
-	VideoID   int64  `json:"video_id" gorm:"index"`
-	UserID    int64  `json:"user_id"`
-	State     bool   `json:"state"`
-	Content   string `json:"content"`
+	CommentID int64  `json:"comment_id" gorm:"uniqueIndex:,sort:desc;not null"`
+	VideoID   int64  `json:"video_id" gorm:"index;not null"`
+	UserID    int64  `json:"user_id" gorm:"not null"`
+	State     bool   `json:"state" gorm:"not null"`
+	Content   string `json:"content" gorm:"not null"`
 }
 
 func CreateComment(ctx context.Context, comment *Comment) error {

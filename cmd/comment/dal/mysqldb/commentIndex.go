@@ -8,8 +8,8 @@ import (
 
 type CommentIndex struct {
 	gorm.Model
-	VideoID        int64 `json:"video_id" gorm:"index"`
-	CommentsNumber int64 `json:"comments_number"`
+	VideoID        int64 `json:"video_id" gorm:"uniqueIndex; not null"`
+	CommentsNumber int64 `json:"comments_number" gorm:"not null"`
 }
 
 func CreateCommentIndex(ctx context.Context, videoId int64) error {

@@ -30,21 +30,11 @@ func Init() {
 		panic(err)
 	}
 
-	m := DB.Migrator()
-
-	if m.HasTable(&Comment{}) {
-		return
-	}
-
-	if err = m.CreateTable(&Comment{}); err != nil {
+	if err = DB.AutoMigrate(&Comment{}); err != nil {
 		panic(err)
 	}
 
-	if m.HasTable(&CommentIndex{}) {
-		return
-	}
-
-	if err = m.CreateTable(&CommentIndex{}); err != nil {
+	if err = DB.AutoMigrate(&CommentIndex{}); err != nil {
 		panic(err)
 	}
 }
