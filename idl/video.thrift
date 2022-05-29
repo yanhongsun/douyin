@@ -49,8 +49,18 @@ struct GetFeedResponse{
     3:optional      i64 next_time   
 }
 
+struct VerifyVideoIdRequest{
+    1:required   i64    videoId
+    2:required   string  token
+}
+struct VerifyVideoIdResponse{
+    1:BaseResp      base_resp
+    2:bool     tOrf
+}
+
 service VideoService{
     PublishVideoResponse   PublishVideo(1:PublishVideoRequest    req)
     GetPublishListResponse  GetPublishList(1:GetPublishListRequest  req)
     GetFeedResponse  GetFeed(1:GetFeedRequest  req)
+    VerifyVideoIdRequest VerifyVideoId(1:VerifyVideoIdResponse req)  
 }
