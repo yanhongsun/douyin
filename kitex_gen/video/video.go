@@ -3,6 +3,7 @@
 package video
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"github.com/apache/thrift/lib/go/thrift"
@@ -1342,7 +1343,7 @@ func (p *Video) Field8DeepEqual(src string) bool {
 
 type PublishVideoRequest struct {
 	Token string `thrift:"token,1,required" json:"token"`
-	Data  int8   `thrift:"data,2,required" json:"data"`
+	Data  []byte `thrift:"data,2,required" json:"data"`
 	Title string `thrift:"title,3,required" json:"title"`
 }
 
@@ -1354,7 +1355,7 @@ func (p *PublishVideoRequest) GetToken() (v string) {
 	return p.Token
 }
 
-func (p *PublishVideoRequest) GetData() (v int8) {
+func (p *PublishVideoRequest) GetData() (v []byte) {
 	return p.Data
 }
 
@@ -1364,7 +1365,7 @@ func (p *PublishVideoRequest) GetTitle() (v string) {
 func (p *PublishVideoRequest) SetToken(val string) {
 	p.Token = val
 }
-func (p *PublishVideoRequest) SetData(val int8) {
+func (p *PublishVideoRequest) SetData(val []byte) {
 	p.Data = val
 }
 func (p *PublishVideoRequest) SetTitle(val string) {
@@ -1411,7 +1412,7 @@ func (p *PublishVideoRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.BYTE {
+			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1488,10 +1489,10 @@ func (p *PublishVideoRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *PublishVideoRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadByte(); err != nil {
+	if v, err := iprot.ReadBinary(); err != nil {
 		return err
 	} else {
-		p.Data = v
+		p.Data = []byte(v)
 	}
 	return nil
 }
@@ -1560,10 +1561,10 @@ WriteFieldEndError:
 }
 
 func (p *PublishVideoRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("data", thrift.BYTE, 2); err != nil {
+	if err = oprot.WriteFieldBegin("data", thrift.STRING, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteByte(p.Data); err != nil {
+	if err := oprot.WriteBinary([]byte(p.Data)); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1625,9 +1626,9 @@ func (p *PublishVideoRequest) Field1DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *PublishVideoRequest) Field2DeepEqual(src int8) bool {
+func (p *PublishVideoRequest) Field2DeepEqual(src []byte) bool {
 
-	if p.Data != src {
+	if bytes.Compare(p.Data, src) != 0 {
 		return false
 	}
 	return true

@@ -25,7 +25,7 @@ struct Video{
 
 struct PublishVideoRequest{
     1:required  string  token
-    2:required  byte    data
+    2:required  binary    data
     3:required  string  title
 }
 struct PublishVideoResponse{
