@@ -12,13 +12,19 @@ type Video struct {
 	PlayUrl       string `json:"play_url"`
 	CoverUrl      string `json:"cover_url"`
 	Title         string `json:"title"`
-	FavoriteCount string `json:"favorite_count"`
-	CommentCount  string `json:"comment_count"`
+	FavoriteCount int64  `json:"favorite_count"`
+	CommentCount  int64  `json:"comment_count"`
 	CreateTime    string `json:"create_time"`
 }
 type Favorite struct {
 	uId int64 `json:"u_id"`
 	vId int64 `json:"v_id"`
+}
+type User struct {
+	ID            int64  `json:"id"`
+	Username      string `json:"username"`
+	FollowCount   int64  `json:"follow_count"`
+	FollowerCount int64  `json:"follower_count"`
 }
 
 func UpdatdeVideo(ctx context.Context, uid, vid, actionType int64) error {
@@ -74,4 +80,18 @@ func ListVideo(ctx context.Context, uid int64) ([]*Video, error) {
 	}
 
 	return videos, nil
+}
+
+func GetUserInfo(ctx context.Context, userID int64) (*User, error) {
+	res := make([]*User, 0)
+	if err := DB.WithContext(ctx).Where("id = ?", userID).Find(res).Error; err != nil {
+		return nil, err
+	}
+	u := res[0]
+	return &User{
+		ID:            u.ID,
+		Username:      u.Username,
+		FollowCount:   u.FollowCount,
+		FollowerCount: u.FollowerCount,
+	}, nil
 }

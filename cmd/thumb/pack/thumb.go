@@ -15,49 +15,46 @@
 
 package pack
 
-//import (
-//	"github.com/yanhongsun/douyin/cmd/thumb/dal/db"
-//)
-//
-//// Note pack note info
-//func Note(m *db.Video) *notedemo.Note {
-//	if m == nil {
-//		return nil
-//	}
-//
-//	return &notedemo.Note{
-//		NoteId:     int64(m.ID),
-//		UserId:     m.UserID,
-//		Title:      m.Title,
-//		Content:    m.Content,
-//		CreateTime: m.CreatedAt.Unix(),
-//	}
-//}
-//
-//// Notes pack list of note info
-//func Notes(ms []*db.Note) []*notedemo.Note {
-//	notes := make([]*notedemo.Note, 0)
-//	for _, m := range ms {
-//		if n := Note(m); n != nil {
-//			notes = append(notes, n)
-//		}
-//	}
-//	return notes
-//}
-//
-//func UserIds(ms []*db.Note) []int64 {
-//	uIds := make([]int64, 0)
-//	if len(ms) == 0 {
-//		return uIds
-//	}
-//	uIdMap := make(map[int64]struct{})
-//	for _, m := range ms {
-//		if m != nil {
-//			uIdMap[m.UserID] = struct{}{}
-//		}
-//	}
-//	for uId := range uIdMap {
-//		uIds = append(uIds, uId)
-//	}
-//	return uIds
-//}
+import (
+	"github.com/yanhongsun/douyin/cmd/thumb/dal/db"
+	"github.com/yanhongsun/douyin/kitex_gen/like"
+)
+
+func User(u *db.User) *like.User {
+	if u != nil {
+		return nil
+	}
+	return &like.User{
+		Id:            u.ID,
+		Name:          u.Username,
+		FollowCount:   &u.FollowCount,
+		FollowerCount: &u.FollowerCount,
+		IsFollow:      true, //没用的字段？
+	}
+}
+
+//把db层的video转换成service层的
+//为什么都是指针？
+func Video(v *db.Video, u *db.User) *like.Video {
+	if v != nil {
+		return nil
+	}
+	return &like.Video{
+		UserId:        u.ID,
+		Author:        User(u),
+		PlayUrl:       v.PlayUrl,
+		CoverUrl:      v.CoverUrl,
+		FavoriteCount: v.FavoriteCount,
+		CommentCount:  v.CommentCount,
+		IsFavorite:    true,
+		Title:         v.Title,
+	}
+}
+
+func Videos(v []*db.Video, u *db.User) []*like.Video {
+	res := []*like.Video{}
+	for _, video := range v {
+		res = append(res, Video(video, u))
+	}
+	return res
+}

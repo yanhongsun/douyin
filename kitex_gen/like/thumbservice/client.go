@@ -13,7 +13,7 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	Likeyou(ctx context.Context, request *like.LikeyouRequest, callOptions ...callopt.Option) (r *like.LikeyouResponse, err error)
-	ThumbList(ctx context.Context, request *like.ThumbListResponse, callOptions ...callopt.Option) (r *like.ThumbListResponse, err error)
+	ThumbList(ctx context.Context, request *like.ThumbListRequest, callOptions ...callopt.Option) (r *like.ThumbListResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -55,7 +55,7 @@ func (p *kThumbServiceClient) Likeyou(ctx context.Context, request *like.Likeyou
 	return p.kClient.Likeyou(ctx, request)
 }
 
-func (p *kThumbServiceClient) ThumbList(ctx context.Context, request *like.ThumbListResponse, callOptions ...callopt.Option) (r *like.ThumbListResponse, err error) {
+func (p *kThumbServiceClient) ThumbList(ctx context.Context, request *like.ThumbListRequest, callOptions ...callopt.Option) (r *like.ThumbListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.ThumbList(ctx, request)
 }

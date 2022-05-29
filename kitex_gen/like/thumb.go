@@ -2131,7 +2131,7 @@ func (p *User) Field5DeepEqual(src bool) bool {
 type ThumbService interface {
 	Likeyou(ctx context.Context, request *LikeyouRequest) (r *LikeyouResponse, err error)
 
-	ThumbList(ctx context.Context, request *ThumbListResponse) (r *ThumbListResponse, err error)
+	ThumbList(ctx context.Context, request *ThumbListRequest) (r *ThumbListResponse, err error)
 }
 
 type ThumbServiceClient struct {
@@ -2170,7 +2170,7 @@ func (p *ThumbServiceClient) Likeyou(ctx context.Context, request *LikeyouReques
 	return _result.GetSuccess(), nil
 }
 
-func (p *ThumbServiceClient) ThumbList(ctx context.Context, request *ThumbListResponse) (r *ThumbListResponse, err error) {
+func (p *ThumbServiceClient) ThumbList(ctx context.Context, request *ThumbListRequest) (r *ThumbListResponse, err error) {
 	var _args ThumbServiceThumbListArgs
 	_args.Request = request
 	var _result ThumbServiceThumbListResult
@@ -2657,22 +2657,22 @@ func (p *ThumbServiceLikeyouResult) Field0DeepEqual(src *LikeyouResponse) bool {
 }
 
 type ThumbServiceThumbListArgs struct {
-	Request *ThumbListResponse `thrift:"request,1" json:"request"`
+	Request *ThumbListRequest `thrift:"request,1" json:"request"`
 }
 
 func NewThumbServiceThumbListArgs() *ThumbServiceThumbListArgs {
 	return &ThumbServiceThumbListArgs{}
 }
 
-var ThumbServiceThumbListArgs_Request_DEFAULT *ThumbListResponse
+var ThumbServiceThumbListArgs_Request_DEFAULT *ThumbListRequest
 
-func (p *ThumbServiceThumbListArgs) GetRequest() (v *ThumbListResponse) {
+func (p *ThumbServiceThumbListArgs) GetRequest() (v *ThumbListRequest) {
 	if !p.IsSetRequest() {
 		return ThumbServiceThumbListArgs_Request_DEFAULT
 	}
 	return p.Request
 }
-func (p *ThumbServiceThumbListArgs) SetRequest(val *ThumbListResponse) {
+func (p *ThumbServiceThumbListArgs) SetRequest(val *ThumbListRequest) {
 	p.Request = val
 }
 
@@ -2744,7 +2744,7 @@ ReadStructEndError:
 }
 
 func (p *ThumbServiceThumbListArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Request = NewThumbListResponse()
+	p.Request = NewThumbListRequest()
 	if err := p.Request.Read(iprot); err != nil {
 		return err
 	}
@@ -2816,7 +2816,7 @@ func (p *ThumbServiceThumbListArgs) DeepEqual(ano *ThumbServiceThumbListArgs) bo
 	return true
 }
 
-func (p *ThumbServiceThumbListArgs) Field1DeepEqual(src *ThumbListResponse) bool {
+func (p *ThumbServiceThumbListArgs) Field1DeepEqual(src *ThumbListRequest) bool {
 
 	if !p.Request.DeepEqual(src) {
 		return false

@@ -92,7 +92,7 @@ func (p *kClient) Likeyou(ctx context.Context, request *like.LikeyouRequest) (r 
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) ThumbList(ctx context.Context, request *like.ThumbListResponse) (r *like.ThumbListResponse, err error) {
+func (p *kClient) ThumbList(ctx context.Context, request *like.ThumbListRequest) (r *like.ThumbListResponse, err error) {
 	var _args like.ThumbServiceThumbListArgs
 	_args.Request = request
 	var _result like.ThumbServiceThumbListResult

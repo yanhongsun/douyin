@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"github.com/yanhongsun/douyin/cmd/thumb/dal/db"
+	"github.com/yanhongsun/douyin/cmd/thumb/pack"
 	"github.com/yanhongsun/douyin/kitex_gen/like"
 )
 
@@ -23,11 +25,20 @@ func NewThumbService(ctx context.Context) *ThumbService {
 // 点赞操作
 
 func (t ThumbService) ThumbList(req *like.ThumbListRequest) ([]*like.Video, error) {
-	//TODO implement me
-	panic("implement me")
+	videos, err := db.ListVideo(t.ctx, req.UserId)
+	userInfo, err := db.GetUserInfo(t.ctx, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	pack.Videos(videos, userInfo)
+	return pack.Videos(videos, userInfo), nil
 }
 
+//看笔记服务CreateNode怎么写的。。
 func (t ThumbService) Likeyou(req *like.LikeyouRequest) error {
-	//TODO implement me
-	panic("implement me")
+	err := db.UpdatdeVideo(t.ctx, req.UserId, req.VideoId, req.ActionType)
+	if err != nil {
+		return err
+	}
+	return nil
 }
