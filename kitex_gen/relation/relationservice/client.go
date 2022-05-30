@@ -14,6 +14,7 @@ type Client interface {
 	RelationAction(ctx context.Context, req *relation.RelationActionRequest, callOptions ...callopt.Option) (r *relation.RelationActionResponse, err error)
 	GetFollowList(ctx context.Context, req *relation.GetFollowListRequest, callOptions ...callopt.Option) (r *relation.GetFollowListResponse, err error)
 	GetFollowerList(ctx context.Context, req *relation.GetFollowerListRequest, callOptions ...callopt.Option) (r *relation.GetFollowerListResponse, err error)
+	IsFollow(ctx context.Context, req *relation.IsFollowRequest, callOptions ...callopt.Option) (r *relation.IsFollowResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -58,4 +59,9 @@ func (p *kRelationServiceClient) GetFollowList(ctx context.Context, req *relatio
 func (p *kRelationServiceClient) GetFollowerList(ctx context.Context, req *relation.GetFollowerListRequest, callOptions ...callopt.Option) (r *relation.GetFollowerListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetFollowerList(ctx, req)
+}
+
+func (p *kRelationServiceClient) IsFollow(ctx context.Context, req *relation.IsFollowRequest, callOptions ...callopt.Option) (r *relation.IsFollowResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.IsFollow(ctx, req)
 }

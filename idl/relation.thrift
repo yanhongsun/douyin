@@ -43,10 +43,22 @@ struct GetFollowerListResponse{
     2:list<User> user_list
 }
 
+struct IsFollowRequest{
+    1:required  i64 user_id
+    2:required  string token
+    3:required  i64  to_user_id
+}
+
+struct IsFollowResponse{
+    1:BaseResponse base_resp
+    2:required  bool is_follow
+}
+
 service RelationService{
     RelationActionResponse   RelationAction(1:RelationActionRequest    req)
     GetFollowListResponse  GetFollowList(1:GetFollowListRequest  req)
     GetFollowerListResponse  GetFollowerList(1:GetFollowerListRequest  req)
+    IsFollowResponse    IsFollow(1:IsFollowRequest req)
 }
 
 

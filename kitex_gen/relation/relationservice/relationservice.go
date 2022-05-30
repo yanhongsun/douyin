@@ -22,6 +22,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"RelationAction":  kitex.NewMethodInfo(relationActionHandler, newRelationServiceRelationActionArgs, newRelationServiceRelationActionResult, false),
 		"GetFollowList":   kitex.NewMethodInfo(getFollowListHandler, newRelationServiceGetFollowListArgs, newRelationServiceGetFollowListResult, false),
 		"GetFollowerList": kitex.NewMethodInfo(getFollowerListHandler, newRelationServiceGetFollowerListArgs, newRelationServiceGetFollowerListResult, false),
+		"IsFollow":        kitex.NewMethodInfo(isFollowHandler, newRelationServiceIsFollowArgs, newRelationServiceIsFollowResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "relation",
@@ -91,6 +92,24 @@ func newRelationServiceGetFollowerListResult() interface{} {
 	return relation.NewRelationServiceGetFollowerListResult()
 }
 
+func isFollowHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*relation.RelationServiceIsFollowArgs)
+	realResult := result.(*relation.RelationServiceIsFollowResult)
+	success, err := handler.(relation.RelationService).IsFollow(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newRelationServiceIsFollowArgs() interface{} {
+	return relation.NewRelationServiceIsFollowArgs()
+}
+
+func newRelationServiceIsFollowResult() interface{} {
+	return relation.NewRelationServiceIsFollowResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -126,6 +145,16 @@ func (p *kClient) GetFollowerList(ctx context.Context, req *relation.GetFollower
 	_args.Req = req
 	var _result relation.RelationServiceGetFollowerListResult
 	if err = p.c.Call(ctx, "GetFollowerList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) IsFollow(ctx context.Context, req *relation.IsFollowRequest) (r *relation.IsFollowResponse, err error) {
+	var _args relation.RelationServiceIsFollowArgs
+	_args.Req = req
+	var _result relation.RelationServiceIsFollowResult
+	if err = p.c.Call(ctx, "IsFollow", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
