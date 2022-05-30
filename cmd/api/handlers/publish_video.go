@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"context"
@@ -25,7 +25,7 @@ func PublishVideo(c *gin.Context) {
 	//token处理
 	userId, err := strconv.ParseInt(queryVar.Token, 10, 64)
 	if err != nil {
-		fmt.Println("handler.PublishVideo()->strconv.ParseInt error")
+		fmt.Println("handlers.PublishVideo()->strconv.ParseInt error")
 		return
 	}
 	//data文件处理

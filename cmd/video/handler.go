@@ -72,7 +72,7 @@ func (s *VideoServiceImpl) GetPublishList(ctx context.Context, req *video.GetPub
 	if req.Token != "" {
 		meId, err = strconv.ParseInt(req.Token, 10, 64)
 		if err != nil {
-			fmt.Println("handler.go->strconv.ParseInt error")
+			fmt.Println("handlers.go->strconv.ParseInt error")
 			fmt.Println(err)
 			return
 		}
@@ -95,7 +95,7 @@ func (s *VideoServiceImpl) GetFeed(ctx context.Context, req *video.GetFeedReques
 	if *req.Token != "" {
 		userId, err = strconv.ParseInt(*req.Token, 10, 64)
 		if err != nil {
-			fmt.Println("handler.go->strconv.ParseInt error")
+			fmt.Println("handlers.go->strconv.ParseInt error")
 			fmt.Println(err)
 			return
 		}

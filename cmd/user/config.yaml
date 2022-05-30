@@ -1,0 +1,25 @@
+Server:
+  EtcdHost: 127.0.0.1:2379
+  ApiServName: api
+  ApiServHost: :8080
+  UserServName: user
+  UserServHost: 127.0.0.1:8889
+Database:
+  DBType: mysql
+  Username: douyin_admin
+  Password: rootroot
+  Host: 127.0.0.1:9910
+  DBName: douyin
+  Charset: utf8
+  ParseTime: True
+  MaxIdleConns: 10
+  MaxOpenConns: 30
+  UserTableName: users
+  VideoTableName: videos
+  CommTableName: comment
+  RelaTableName: relation
+  FavorTableName: favorite
+JWT:
+  Secret: wgodncsjz
+  Issuer: douyin
+  Expire: 7200

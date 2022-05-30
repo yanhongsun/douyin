@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"context"
@@ -28,7 +28,7 @@ func GetPublishList(c *gin.Context) {
 	if queryVar.Token != "" {
 		userId, err := strconv.ParseInt(queryVar.Token, 10, 64)
 		if err != nil {
-			fmt.Println("handler.GetPublishList()->strconv.ParseInt error")
+			fmt.Println("handlers.GetPublishList()->strconv.ParseInt error")
 			return
 		}
 		//TODO错误处理
