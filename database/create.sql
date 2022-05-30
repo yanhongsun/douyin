@@ -5,13 +5,14 @@ CREATE TABLE users
   id            BIGINT        NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   u_name        VARCHAR(30)   NOT NULL COMMENT '用户名字',
   passwd        VARCHAR(18)   NOT NULL COMMENT '用户密码',
+  # nickname      VARCHAR(30)   DEFAULT '用户'+id      COMMENT '昵称',
   follow_count  BIGINT         unsigned DEFAULT '0' COMMENT '关注数', 
   fans_count    BIGINT         unsigned DEFAULT '0' COMMENT '粉丝数',
   PRIMARY KEY (id),
   index index_name(u_name(11))
 ) ENGINE=InnoDB;
 
-CREATE TABLE vedios
+CREATE TABLE videos
 (
   id              BIGINT        NOT NULL  AUTO_INCREMENT  ,
   u_id            BIGINT        NOT NULL  COMMENT '用户ID',

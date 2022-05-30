@@ -1,0 +1,22 @@
+Server:
+  EtcdAddress: 127.0.0.1
+  EtcdPort: 2379
+  UserServName: user
+  UserServAddr: 127.0.0.1
+  UserServPort: 8889
+
+Database:
+  DBType: mysql
+  Username: root
+  Password: 123456
+  Host: 127.0.0.1:3306
+  DBName: douyin
+  Charset: utf8
+  ParseTime: True
+  MaxIdleConns: 10
+  MaxOpenConns: 30
+  UserTableName: users
+JWT:
+  Secret: wgodncsjz
+  Issuer: douyin
+  Expire: 7200
