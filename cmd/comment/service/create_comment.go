@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/pack"
+	"douyin/cmd/comment/rpc"
 	"douyin/kitex_gen/comment"
 
 	"douyin/pkg/snowflake"
@@ -30,8 +31,13 @@ func NewCreateCommentService(ctx context.Context) *CreateCommentService {
 }
 
 func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) (*comment.Comment, error) {
-
 	commentId := snowflakeNode.Generate().Int64()
+
+	user, err := rpc.GetUserInfo(s.ctx, req.UserId, req.Token)
+
+	if err != nil {
+		return nil, err
+	}
 
 	commentModel := mysqldb.Comment{
 		CommentID: commentId,
@@ -41,9 +47,9 @@ func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) 
 		Content:   req.Content,
 	}
 
-	if err := repository.ProducerComment(s.ctx, 1, &commentModel, -10001, -10001, -10001); err != nil {
+	if err := repository.ProducerComment(s.ctx, 1, &commentModel, -10001, -10001, user); err != nil {
 		return nil, err
 	}
 
-	return pack.ChangeComment(&commentModel), nil
+	return pack.ChangeComment(&commentModel, user), nil
 }

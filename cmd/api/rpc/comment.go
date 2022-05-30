@@ -2,11 +2,9 @@ package rpc
 
 import (
 	"context"
-	"douyin/cmd/api/common"
 	"douyin/kitex_gen/comment"
 	"douyin/kitex_gen/comment/commentservice"
 	"douyin/pkg/errno"
-	"errors"
 	"time"
 
 	"github.com/cloudwego/kitex/client"
@@ -38,90 +36,110 @@ func initCommentRpc() {
 	commentClient = c
 }
 
-func CreateComment(ctx context.Context, req *comment.CreateCommentRequest) (*common.Response, *common.Comment) {
+type Response struct {
+	StatusCode int32
+	StatusMsg  string
+}
+
+type Comment struct {
+	Id         int64  `json:"id,omitempty"`
+	User       User   `json:"user"`
+	Content    string `json:"content,omitempty"`
+	CreateDate string `json:"create_date,omitempty"`
+}
+
+type User struct {
+	Id            int64  `json:"id,omitempty"`
+	Name          string `json:"name,omitempty"`
+	FollowCount   int64  `json:"follow_count,omitempty"`
+	FollowerCount int64  `json:"follower_count,omitempty"`
+	IsFollow      bool   `json:"is_follow,omitempty"`
+}
+
+func CreateComment(ctx context.Context, req *comment.CreateCommentRequest) (*Response, *Comment) {
 	resp, err := commentClient.CreateComment(ctx, req)
 	if err != nil {
-		return &common.Response{
+		return &Response{
 			StatusCode: errno.ServiceErrCode,
 			StatusMsg:  err.Error(),
 		}, nil
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return &common.Response{
+		return &Response{
 			StatusCode: resp.BaseResp.StatusCode,
 			StatusMsg:  resp.BaseResp.StatusMessage,
 		}, nil
 	}
-	return &common.Response{
+	return &Response{
 			StatusCode: resp.BaseResp.StatusCode,
 			StatusMsg:  resp.BaseResp.StatusMessage,
 		},
-		&common.Comment{
+		&Comment{
 			Id: resp.Comment.CommentId,
-			User: common.User{
-				Id:            resp.Comment.UserId,
-				Name:          "testName",
-				FollowCount:   10,
-				FollowerCount: 10,
-				IsFollow:      false,
+			User: User{
+				Id:            resp.Comment.User.Id,
+				Name:          resp.Comment.User.Name,
+				FollowCount:   *resp.Comment.User.FollowCount,
+				FollowerCount: *resp.Comment.User.FollowerCount,
+				IsFollow:      resp.Comment.User.IsFollow,
 			},
 			Content:    resp.Comment.Content,
 			CreateDate: resp.Comment.CreateDate,
 		}
 }
 
-func DeleteComment(ctx context.Context, req *comment.DeleteCommentRequest) *common.Response {
+func DeleteComment(ctx context.Context, req *comment.DeleteCommentRequest) *Response {
 	resp, err := commentClient.DeleteComment(ctx, req)
 	if err != nil {
-		return &common.Response{
+		return &Response{
 			StatusCode: errno.ServiceErrCode,
 			StatusMsg:  err.Error(),
 		}
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return &common.Response{
+		return &Response{
 			StatusCode: resp.BaseResp.StatusCode,
 			StatusMsg:  resp.BaseResp.StatusMessage,
 		}
 	}
-	return &common.Response{StatusCode: resp.BaseResp.StatusCode,
+	return &Response{StatusCode: resp.BaseResp.StatusCode,
 		StatusMsg: resp.BaseResp.StatusMessage,
 	}
 }
 
-func QueryComments(ctx context.Context, req *comment.QueryCommentsRequest) (*common.Response, []*common.Comment) {
+func QueryComments(ctx context.Context, req *comment.QueryCommentsRequest) (*Response, []*Comment) {
 	resp, err := commentClient.QueryComments(ctx, req)
 	if err != nil {
-		return &common.Response{
+		return &Response{
 			StatusCode: errno.ServiceErrCode,
 			StatusMsg:  err.Error(),
 		}, nil
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return &common.Response{
+		return &Response{
 			StatusCode: resp.BaseResp.StatusCode,
 			StatusMsg:  resp.BaseResp.StatusMessage,
 		}, nil
 	}
-	return &common.Response{
+	return &Response{
 		StatusCode: resp.BaseResp.StatusCode,
 		StatusMsg:  resp.BaseResp.StatusMessage,
 	}, changeCommonComment(resp)
 }
 
-func changeCommonComment(resp *comment.QueryCommentsResponse) []*common.Comment {
+func changeCommonComment(resp *comment.QueryCommentsResponse) []*Comment {
 	size := len(resp.Comments)
-	res := make([]*common.Comment, size)
+	res := make([]*Comment, size)
 
 	for i := 0; i < size; i++ {
-		res[i] = &common.Comment{
+		res[i] = &Comment{
 			Id: resp.Comments[i].CommentId,
-			User: common.User{
-				Id:            resp.Comments[i].UserId,
-				Name:          "testName",
-				FollowCount:   10,
-				FollowerCount: 10,
-				IsFollow:      false,
+			User: User{
+				Id:            resp.Comments[i].User.Id,
+				Name:          resp.Comments[i].User.Name,
+				FollowCount:   *resp.Comments[i].User.FollowCount,
+				FollowerCount: *resp.Comments[i].User.FollowerCount,
+				IsFollow:      resp.Comments[i].User.IsFollow,
 			},
 			Content:    resp.Comments[i].Content,
 			CreateDate: resp.Comments[i].CreateDate,
@@ -131,13 +149,13 @@ func changeCommonComment(resp *comment.QueryCommentsResponse) []*common.Comment 
 	return res
 }
 
-func QueryCommentNumber(ctx context.Context, req *comment.QueryCommentNumberRequest) (int64, error) {
-	resp, err := commentClient.QueryCommentNumber(ctx, req)
-	if err != nil {
-		return 0, err
-	}
-	if resp.BaseResp.StatusCode != 0 {
-		return 0, errors.New(resp.BaseResp.StatusMessage)
-	}
-	return resp.CommentNumber, nil
-}
+// func QueryCommentNumber(ctx context.Context, req *comment.QueryCommentNumberRequest) (int64, error) {
+// 	resp, err := commentClient.QueryCommentNumber(ctx, req)
+// 	if err != nil {
+// 		return 0, err
+// 	}
+// 	if resp.BaseResp.StatusCode != 0 {
+// 		return 0, errors.New(resp.BaseResp.StatusMessage)
+// 	}
+// 	return resp.CommentNumber, nil
+// }

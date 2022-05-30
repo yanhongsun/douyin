@@ -5,6 +5,7 @@ import (
 	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/pack"
 	"douyin/cmd/comment/pack/configdata"
+	"douyin/cmd/comment/rpc"
 	"douyin/pkg/tracer"
 	"encoding/json"
 	"log"
@@ -20,11 +21,11 @@ type repositoryCom struct {
 	CommentId int64            `json:"comment_id"`
 
 	// can choose
-	VideoId int64 `json:"video_id"`
-	UserId  int64 `json:"user_id"`
+	VideoId int64         `json:"video_id"`
+	User    *rpc.UserInfo `json:"user"`
 }
 
-func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment, commentId, videoId, userId int64) error {
+func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment, commentId, videoId int64, user *rpc.UserInfo) error {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
@@ -38,7 +39,7 @@ func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment,
 		Comment:   comment,
 		CommentId: commentId,
 		VideoId:   videoId,
-		UserId:    userId,
+		User:      user,
 	}
 
 	data, err := json.Marshal(dataRepository)
@@ -114,10 +115,10 @@ func ConsumeComments(ctx context.Context) {
 				// log
 				continue
 			}
-			ProducerCommentsCache(ctx, 2, data.Comment.VideoID, nil, pack.ChangeComment(data.Comment), -10001, -10001)
+			ProducerCommentsCache(ctx, 2, data.Comment.VideoID, nil, pack.ChangeComment(data.Comment, data.User), -10001, -10001)
 			continue
 		} else if data.Type == 2 {
-			err = mysqldb.DeleteComment(ctx, data.CommentId, data.VideoId, data.UserId)
+			err = mysqldb.DeleteComment(ctx, data.CommentId, data.VideoId, data.User.ID)
 			if err != nil {
 				continue
 			}

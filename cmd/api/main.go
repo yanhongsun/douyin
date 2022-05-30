@@ -1,7 +1,6 @@
 package main
 
 import (
-	"douyin/cmd/api/controller"
 	"douyin/cmd/api/handlers"
 	"douyin/cmd/api/middleware"
 	"douyin/cmd/api/rpc"
@@ -11,7 +10,7 @@ import (
 )
 
 func initRouter(r *gin.Engine) {
-	tracer.InitJaegers("douyin_api")
+	tracer.InitJaeger("douyin_api")
 	rpc.InitRPC()
 
 	r.Use(middleware.OpenTracing())
@@ -30,15 +29,15 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/publish/list/", handlers.GetPublishList)
 
 	// extra apis - I
-	apiRouter.POST("/favorite/action/", controller.FavoriteAction)
-	apiRouter.GET("/favorite/list/", controller.FavoriteList)
-	apiRouter.POST("/comment/action/", controller.CommentAction)
-	apiRouter.GET("/comment/list/", controller.CommentList)
+	// apiRouter.POST("/favorite/action/", controller.FavoriteAction)
+	// apiRouter.GET("/favorite/list/", controller.FavoriteList)
+	apiRouter.POST("/comment/action/", handlers.CommentAction)
+	apiRouter.GET("/comment/list/", handlers.CommentList)
 
 	// extra apis - II
-	apiRouter.POST("/relation/action/", controller.RelationAction)
-	apiRouter.GET("/relation/follow/list/", controller.FollowList)
-	apiRouter.GET("/relation/follower/list/", controller.FollowerList)
+	// apiRouter.POST("/relation/action/", controller.RelationAction)
+	// apiRouter.GET("/relation/follow/list/", controller.FollowList)
+	// apiRouter.GET("/relation/follower/list/", controller.FollowerList)
 }
 
 func main() {

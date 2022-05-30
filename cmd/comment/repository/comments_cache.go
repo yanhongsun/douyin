@@ -15,8 +15,10 @@ import (
 
 type repositoryCache struct {
 	// Type: 1-create_comments_cache,2-update_add,3-update_delete,4-create_comment_number_cache
-	Type          int64              `json:"type"`
-	VideoId       int64              `json:"video_id"`
+	Type    int64 `json:"type"`
+	VideoId int64 `json:"video_id"`
+
+	// can choose
 	Comments      []*comment.Comment `json:"comments"`
 	Comment       *comment.Comment   `json:"comment"`
 	CommentId     int64              `json:"comment_id"`
