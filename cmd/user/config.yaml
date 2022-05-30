@@ -8,7 +8,7 @@ Database:
   DBType: mysql
   Username: douyin_admin
   Password: rootroot
-  Host: 127.0.0.1:9910
+  Host: 127.0.0.1:3306
   DBName: douyin
   Charset: utf8
   ParseTime: True

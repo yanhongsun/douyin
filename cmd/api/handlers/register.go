@@ -11,7 +11,7 @@ import (
 func Register(c *gin.Context) {
 	var registerVar RequestParam
 
-	if err := c.ShouldBind(&registerVar); err != nil {
+	if err := c.BindQuery(&registerVar); err != nil {
 		SendResponse(c, errno.ConvertErr(err), -1, "")
 		return
 	}

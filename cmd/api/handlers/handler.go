@@ -10,14 +10,14 @@ import (
 
 // RequestParam req format for register/login
 type RequestParam struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" form:"username"`
+	Password string `json:"password" form:"password"`
 }
 
 // UserInfoParam req format for get_user_info
 type UserInfoParam struct {
-	UserID int64  `json:"user_id"`
-	Token  string `json:"token"`
+	UserID int64  `json:"user_id" form:"user_id"`
+	Token  string `json:"token" form:"token"`
 }
 
 // UserInfo user info format
