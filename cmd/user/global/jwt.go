@@ -1,8 +1,8 @@
 package global
 
 import (
+	"douyin/pkg/errno"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/douyin/pkg/errno"
 )
 
 type JWT struct {

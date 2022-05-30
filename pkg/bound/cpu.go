@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/remote"
-	// "github.com/douyin/pkg/constants"
-	"github.com/douyin/pkg/errno"
+	// "douyin/pkg/constants"
+	"douyin/pkg/errno"
 	"github.com/shirou/gopsutil/cpu"
 	"net"
 )

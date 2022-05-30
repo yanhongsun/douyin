@@ -4,7 +4,7 @@ package userservice
 
 import (
 	"github.com/cloudwego/kitex/server"
-	"github.com/douyin/kitex_gen/user"
+	"douyin/kitex_gen/user"
 )
 
 // NewInvoker creates a server.Invoker with the given handler and options.

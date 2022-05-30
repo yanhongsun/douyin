@@ -2,9 +2,9 @@ package db
 
 import (
 	"context"
+	"douyin/cmd/user/global"
+	"douyin/kitex_gen/user"
 	"fmt"
-	"github.com/douyin/cmd/user/global"
-	"github.com/douyin/kitex_gen/user"
 )
 
 // User user model

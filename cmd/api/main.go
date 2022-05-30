@@ -1,10 +1,10 @@
 package main
 
 import (
+	"douyin/cmd/api/handlers"
+	"douyin/cmd/api/rpc"
+	"douyin/pkg/tracer"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/douyin/cmd/api/handlers"
-	"github.com/douyin/cmd/api/rpc"
-	"github.com/douyin/pkg/tracer"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

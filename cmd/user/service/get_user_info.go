@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
+	"douyin/cmd/user/dal/db"
+	"douyin/kitex_gen/user"
 	"fmt"
-	"github.com/douyin/cmd/user/dal/db"
-	"github.com/douyin/kitex_gen/user"
 )
 
 type GetUserInfoService struct {

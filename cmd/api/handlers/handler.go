@@ -1,8 +1,8 @@
 package handlers
 
 import (
+	"douyin/pkg/errno"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/douyin/pkg/errno"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

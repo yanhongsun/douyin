@@ -2,13 +2,13 @@ package rpc
 
 import (
 	"context"
+	"douyin/kitex_gen/user"
+	"douyin/kitex_gen/user/userservice"
+	"douyin/middleware"
+	"douyin/pkg/errno"
 	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
-	"github.com/douyin/kitex_gen/user"
-	"github.com/douyin/kitex_gen/user/userservice"
-	"github.com/douyin/middleware"
-	"github.com/douyin/pkg/errno"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
 	"time"

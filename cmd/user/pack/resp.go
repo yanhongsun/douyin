@@ -1,10 +1,10 @@
 package pack
 
 import (
+	"douyin/kitex_gen/user"
+	"douyin/pkg/errno"
 	"errors"
 	"fmt"
-	"github.com/douyin/kitex_gen/user"
-	"github.com/douyin/pkg/errno"
 )
 
 func BuildRegisterResp(err error, userID int64, token string) *user.DouyinUserRegisterResponse {

@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"context"
-	"github.com/douyin/cmd/api/rpc"
-	"github.com/douyin/kitex_gen/user"
-	"github.com/douyin/pkg/errno"
+	"douyin/cmd/api/rpc"
+	"douyin/kitex_gen/user"
+	"douyin/pkg/errno"
 	"github.com/gin-gonic/gin"
 )
 

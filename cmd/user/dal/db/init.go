@@ -1,8 +1,8 @@
 package db
 
 import (
+	"douyin/cmd/user/global"
 	"fmt"
-	"github.com/douyin/cmd/user/global"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/plugin/opentracing"

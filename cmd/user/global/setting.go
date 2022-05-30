@@ -1,6 +1,6 @@
 package global
 
-import "github.com/douyin/cmd/user/config"
+import "douyin/cmd/user/config"
 
 var (
 	DatabaseSetting *config.DatabaseSettingS

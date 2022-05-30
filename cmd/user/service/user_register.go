@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 	"crypto/md5"
+	"douyin/cmd/user/dal/db"
+	"douyin/kitex_gen/user"
+	"douyin/pkg/errno"
 	"fmt"
-	"github.com/douyin/cmd/user/dal/db"
-	"github.com/douyin/kitex_gen/user"
-	"github.com/douyin/pkg/errno"
 	"io"
 )
 

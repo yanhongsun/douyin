@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
+	"douyin/cmd/user/global"
+	"douyin/cmd/user/pack"
+	"douyin/cmd/user/service"
+	"douyin/kitex_gen/user"
+	"douyin/pkg/errno"
 	"fmt"
-	"github.com/douyin/cmd/user/global"
-	"github.com/douyin/cmd/user/pack"
-	"github.com/douyin/cmd/user/service"
-	"github.com/douyin/kitex_gen/user"
-	"github.com/douyin/pkg/errno"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
