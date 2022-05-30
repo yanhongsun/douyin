@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"douyin/cmd/comment/dal/redisdb"
 	"douyin/cmd/comment/pack/configdata"
 	"douyin/kitex_gen/comment"
@@ -9,18 +10,20 @@ import (
 
 	"github.com/Shopify/sarama"
 	"github.com/cloudwego/kitex/pkg/klog"
+	kafka "github.com/topfreegames/go-extensions-kafka"
 )
 
 type repositoryCache struct {
-	// Type: 1-create,2-update_add,3-update_delete
-	Type      int64              `json:"type"`
-	VideoId   int64              `json:"video_id"`
-	Comments  []*comment.Comment `json:"comments"`
-	Comment   *comment.Comment   `json:"comment"`
-	CommentId int64              `json:"comment_id"`
+	// Type: 1-create_comments_cache,2-update_add,3-update_delete,4-create_comment_number_cache
+	Type          int64              `json:"type"`
+	VideoId       int64              `json:"video_id"`
+	Comments      []*comment.Comment `json:"comments"`
+	Comment       *comment.Comment   `json:"comment"`
+	CommentId     int64              `json:"comment_id"`
+	CommentNumber int64              `json:"comment_number"`
 }
 
-func ProducerCommentsCache(types, videoId int64, comments []*comment.Comment, comment *comment.Comment, commentId int64) error {
+func ProducerCommentsCache(ctx context.Context, types, videoId int64, comments []*comment.Comment, comment *comment.Comment, commentId, commentNumber int64) error {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
@@ -29,11 +32,12 @@ func ProducerCommentsCache(types, videoId int64, comments []*comment.Comment, co
 	msg := &sarama.ProducerMessage{}
 	msg.Topic = configdata.KafkaConfig.TopicCommentNumber
 	dataRepository := repositoryCache{
-		Type:      types,
-		VideoId:   videoId,
-		Comments:  comments,
-		Comment:   comment,
-		CommentId: commentId,
+		Type:          types,
+		VideoId:       videoId,
+		Comments:      comments,
+		Comment:       comment,
+		CommentId:     commentId,
+		CommentNumber: commentNumber,
 	}
 	data, err := json.Marshal(dataRepository)
 	if err != nil {
@@ -42,7 +46,8 @@ func ProducerCommentsCache(types, videoId int64, comments []*comment.Comment, co
 	}
 	msg.Value = sarama.StringEncoder(string(data))
 
-	client, err := sarama.NewSyncProducer([]string{configdata.KafkaConfig.Host}, config)
+	clients, err := sarama.NewSyncProducer([]string{configdata.KafkaConfig.Host}, config)
+	client := kafka.NewSyncProducerFromClient(clients)
 	if err != nil {
 		return err
 	}
@@ -83,13 +88,16 @@ func ConsumeCommentsCache() {
 			continue
 		}
 		if data.Type == 1 {
-			redisdb.AddCommentsCache(data.VideoId, data.Comments)
+			redisdb.AddCommentsCache(context.Background(), data.VideoId, data.Comments)
 			continue
 		} else if data.Type == 2 {
-			redisdb.UpdateCommentsCache(data.VideoId, data.Comment)
+			redisdb.UpdateCommentsCache(context.Background(), data.VideoId, data.Comment)
 			continue
 		} else if data.Type == 3 {
-			redisdb.DeleteCommentsCache(data.VideoId, data.CommentId)
+			redisdb.DeleteCommentsCache(context.Background(), data.VideoId, data.CommentId)
+			continue
+		} else if data.Type == 4 {
+			redisdb.AddCommentNumberCache(context.Background(), data.VideoId, data.CommentNumber)
 			continue
 		}
 		log.Fatal("type is wrong")

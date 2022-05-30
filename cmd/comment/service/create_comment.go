@@ -41,7 +41,7 @@ func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) 
 		Content:   req.Content,
 	}
 
-	if err := repository.ProducerComment(1, &commentModel, -10001, -10001, -10001); err != nil {
+	if err := repository.ProducerComment(s.ctx, 1, &commentModel, -10001, -10001, -10001); err != nil {
 		return nil, err
 	}
 

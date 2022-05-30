@@ -1,9 +1,12 @@
 package redisdb
 
 import (
+	"context"
 	"douyin/cmd/comment/pack/configdata"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
+	hook "github.com/imcvampire/opentracing-goredisv8"
+	"github.com/opentracing/opentracing-go"
 )
 
 var RedisClient *redis.Client
@@ -14,7 +17,10 @@ func Init() {
 		Password: configdata.RedisDatabaseConfig.Password,
 	})
 
-	_, err := client.Ping().Result()
+	h := hook.NewHook(hook.WithTracer(opentracing.GlobalTracer()))
+	client.AddHook(h)
+
+	_, err := client.Ping(context.Background()).Result()
 	if err != nil {
 		panic(err)
 	}

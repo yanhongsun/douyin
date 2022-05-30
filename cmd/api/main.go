@@ -10,8 +10,8 @@ import (
 )
 
 func initRouter(r *gin.Engine) {
-	rpc.InitRPC()
 	tracer.InitJaeger("douyin_api")
+	rpc.InitRPC()
 
 	r.Use(middleware.OpenTracing())
 

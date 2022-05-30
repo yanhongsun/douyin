@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/dal/redisdb"
+	"douyin/cmd/comment/repository"
 	"douyin/kitex_gen/comment"
 	"log"
 	"strconv"
@@ -22,14 +23,14 @@ func NewQueryCommentNumberService(ctx context.Context) *QueryCommentNumberServic
 }
 
 func (s *QueryCommentNumberService) QueryCommentNumber(req *comment.QueryCommentNumberRequest) (int64, error) {
-	status, err := redisdb.CheckCommentNumberCache(req.VideoId)
+	status, err := redisdb.CheckCommentNumberCache(s.ctx, req.VideoId)
 
 	if err != nil {
 		log.Fatal("redis err: ", err)
 	}
 
 	if status {
-		res, err := redisdb.GetCommentIndexCache(req.VideoId)
+		res, err := redisdb.GetCommentIndexCache(s.ctx, req.VideoId)
 		if err == nil {
 			return res, err
 		}
@@ -43,7 +44,7 @@ func (s *QueryCommentNumberService) QueryCommentNumber(req *comment.QueryComment
 		if err != nil {
 			return 0, err
 		}
-		redisdb.AddCommentNumberCache(req.VideoId, res)
+		repository.ProducerCommentsCache(s.ctx, 4, req.VideoId, nil, nil, -10001, res)
 		return res, nil
 	})
 

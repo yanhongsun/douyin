@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/Shopify/sarama"
+	kafka "github.com/topfreegames/go-extensions-kafka"
 )
 
 type repositoryCom struct {
@@ -21,7 +22,7 @@ type repositoryCom struct {
 	UserId    int64            `json:"user_id"`
 }
 
-func ProducerComment(types int64, comment *mysqldb.Comment, commentId, videoId, userId int64) error {
+func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment, commentId, videoId, userId int64) error {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
@@ -44,7 +45,8 @@ func ProducerComment(types int64, comment *mysqldb.Comment, commentId, videoId, 
 	}
 	msg.Value = sarama.StringEncoder(string(data))
 
-	client, err := sarama.NewSyncProducer([]string{configdata.KafkaConfig.Host}, config)
+	clients, err := sarama.NewSyncProducer([]string{configdata.KafkaConfig.Host}, config)
+	client := kafka.NewSyncProducerFromClient(clients)
 	if err != nil {
 		return err
 	}
@@ -107,14 +109,14 @@ func ConsumeComment() {
 				// log
 				continue
 			}
-			ProducerCommentsCache(2, data.Comment.VideoID, nil, pack.ChangeComment(data.Comment), -10001)
+			ProducerCommentsCache(context.Background(), 2, data.Comment.VideoID, nil, pack.ChangeComment(data.Comment), -10001, -10001)
 			continue
 		} else if data.Type == 2 {
 			err = mysqldb.DeleteComment(context.Background(), data.CommentId, data.VideoId, data.UserId)
 			if err != nil {
 				continue
 			}
-			ProducerCommentsCache(3, data.VideoId, nil, nil, -10001)
+			ProducerCommentsCache(context.Background(), 3, data.VideoId, nil, nil, data.CommentId, -10001)
 			continue
 		}
 		log.Fatal("type is wrong")

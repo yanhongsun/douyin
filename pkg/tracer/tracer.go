@@ -13,7 +13,7 @@ func InitJaeger(service string) {
 	cfg := &jaegercfg.Configuration{
 		Disabled: false,
 		Sampler: &jaegercfg.SamplerConfig{
-			Type:  "const",
+			Type:  jaeger.SamplerTypeConst,
 			Param: 1,
 		},
 		Reporter: &jaegercfg.ReporterConfig{
@@ -23,9 +23,12 @@ func InitJaeger(service string) {
 	}
 
 	cfg.ServiceName = service
-	tracer, _, err := cfg.NewTracer(jaegercfg.Logger(jaeger.StdLogger))
+	tracer, _, err := cfg.NewTracer(
+		jaegercfg.Logger(jaeger.StdLogger),
+		jaegercfg.ZipkinSharedRPCSpan(true),
+	)
 	if err != nil {
 		panic(fmt.Sprintf("ERROR: cannot init Jaeger: %v\n", err))
 	}
-	opentracing.InitGlobalTracer(tracer)
+	opentracing.SetGlobalTracer(tracer)
 }

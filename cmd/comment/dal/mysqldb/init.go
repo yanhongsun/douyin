@@ -31,15 +31,15 @@ func Init() {
 		panic(err)
 	}
 
+	if err = DB.Use(gormopentracing.New()); err != nil {
+		panic(err)
+	}
+
 	if err = DB.AutoMigrate(&Comment{}); err != nil {
 		panic(err)
 	}
 
 	if err = DB.AutoMigrate(&CommentIndex{}); err != nil {
-		panic(err)
-	}
-
-	if err = DB.Use(gormopentracing.New()); err != nil {
 		panic(err)
 	}
 }

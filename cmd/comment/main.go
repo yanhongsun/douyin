@@ -24,10 +24,10 @@ func Init() {
 		panic("config is wrong")
 	}
 
+	tracer2.InitJaeger(configdata.CommentServerConfig.CommentServName)
 	dal.Init()
 	repository.Init()
 	service.InitSnowflakeNode()
-	tracer2.InitJaeger(configdata.CommentServerConfig.CommentServName)
 }
 
 func main() {

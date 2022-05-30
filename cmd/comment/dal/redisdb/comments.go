@@ -1,6 +1,7 @@
 package redisdb
 
 import (
+	"context"
 	"douyin/kitex_gen/comment"
 	"encoding/json"
 	"errors"
@@ -13,7 +14,7 @@ type Comments_cache struct {
 	Comments      []*comment.Comment `json:"comments,omitempty"`
 }
 
-func AddCommentsCache(videoId int64, comments []*comment.Comment) error {
+func AddCommentsCache(ctx context.Context, videoId int64, comments []*comment.Comment) error {
 	videoIdS := strconv.FormatInt(videoId, 10)
 
 	comments_cache := Comments_cache{
@@ -25,10 +26,10 @@ func AddCommentsCache(videoId int64, comments []*comment.Comment) error {
 	if err != nil {
 		return err
 	}
-	return RedisClient.Set(videoIdS, store, time.Hour*12).Err()
+	return RedisClient.Set(ctx, videoIdS, store, time.Hour*12).Err()
 }
 
-func AddCommentNumberCache(videoId, CommentNumber int64) error {
+func AddCommentNumberCache(ctx context.Context, videoId, CommentNumber int64) error {
 	videoIdS := strconv.FormatInt(videoId, 10)
 
 	comments_cache := Comments_cache{
@@ -40,14 +41,14 @@ func AddCommentNumberCache(videoId, CommentNumber int64) error {
 	if err != nil {
 		return err
 	}
-	return RedisClient.Set(videoIdS, store, time.Hour*12).Err()
+	return RedisClient.Set(ctx, videoIdS, store, time.Hour*12).Err()
 }
 
-func DeleteCommentsCache(videoId, commentId int64) error {
+func DeleteCommentsCache(ctx context.Context, videoId, commentId int64) error {
 	pipe := RedisClient.TxPipeline()
 
 	// comment_cache change
-	exist, tmp, err := CheckGetCommentsCache(videoId)
+	exist, tmp, err := CheckGetCommentsCache(ctx, videoId)
 	if err != nil {
 		return err
 	}
@@ -76,22 +77,22 @@ func DeleteCommentsCache(videoId, commentId int64) error {
 		return err
 	}
 
-	if err := pipe.Set(videoIdS, store, time.Hour*12).Err(); err != nil {
+	if err := pipe.Set(ctx, videoIdS, store, time.Hour*12).Err(); err != nil {
 		return nil
 	}
 
-	if _, err = pipe.Exec(); err != nil {
+	if _, err = pipe.Exec(ctx); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func UpdateCommentsCache(videoId int64, comment *comment.Comment) error {
+func UpdateCommentsCache(ctx context.Context, videoId int64, comment *comment.Comment) error {
 	pipe := RedisClient.TxPipeline()
 
 	// comment_cache change
-	exist, tmp, err := CheckGetCommentsCache(videoId)
+	exist, tmp, err := CheckGetCommentsCache(ctx, videoId)
 	if err != nil {
 		return err
 	}
@@ -114,20 +115,20 @@ func UpdateCommentsCache(videoId int64, comment *comment.Comment) error {
 		return err
 	}
 
-	if err := pipe.Set(videoIdS, store, time.Hour*12).Err(); err != nil {
+	if err := pipe.Set(ctx, videoIdS, store, time.Hour*12).Err(); err != nil {
 		return nil
 	}
 
-	if _, err = pipe.Exec(); err != nil {
+	if _, err = pipe.Exec(ctx); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func CheckGetCommentsCache(videoId int64) (bool, *Comments_cache, error) {
+func CheckGetCommentsCache(ctx context.Context, videoId int64) (bool, *Comments_cache, error) {
 	videoIdS := strconv.FormatInt(videoId, 10)
-	exist, err := RedisClient.Exists(videoIdS).Result()
+	exist, err := RedisClient.Exists(ctx, videoIdS).Result()
 
 	if err != nil {
 		return false, nil, err
@@ -137,7 +138,7 @@ func CheckGetCommentsCache(videoId int64) (bool, *Comments_cache, error) {
 		return false, nil, nil
 	}
 
-	resS, err := RedisClient.Get(videoIdS).Result()
+	resS, err := RedisClient.Get(ctx, videoIdS).Result()
 	if err != nil {
 		return false, nil, err
 	}
@@ -153,9 +154,9 @@ func CheckGetCommentsCache(videoId int64) (bool, *Comments_cache, error) {
 	return true, res, err
 }
 
-func CheckCommentNumberCache(videoId int64) (bool, error) {
+func CheckCommentNumberCache(ctx context.Context, videoId int64) (bool, error) {
 	videoIdS := strconv.FormatInt(videoId, 10)
-	exist, err := RedisClient.Exists(videoIdS).Result()
+	exist, err := RedisClient.Exists(ctx, videoIdS).Result()
 
 	if err != nil {
 		return false, err
@@ -168,9 +169,9 @@ func CheckCommentNumberCache(videoId int64) (bool, error) {
 	return true, err
 }
 
-func GetCommentIndexCache(videoId int64) (int64, error) {
+func GetCommentIndexCache(ctx context.Context, videoId int64) (int64, error) {
 	videoIdS := strconv.FormatInt(videoId, 10)
-	resS, err := RedisClient.Get(videoIdS).Result()
+	resS, err := RedisClient.Get(ctx, videoIdS).Result()
 	if err != nil {
 		return -1, err
 	}
