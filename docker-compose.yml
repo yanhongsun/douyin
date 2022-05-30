@@ -4,20 +4,53 @@ services:
   mysql:
     image: 'mysql:latest'
     ports:
-      - 9910:3306
+      - 3306:3306
     environment:
       - MYSQL_DATABASE=douyin
-      - MYSQL_USER=douyin_admin
-      - MYSQL_PASSWORD=rootroot
+      - MYSQL_USER=gorm
+      - MYSQL_PASSWORD=gorm
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+
+  redis:
+    image: 'redis:latest'
+    restart: always
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass gorm
+
   Etcd:
     image: 'bitnami/etcd:latest'
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
     ports:
       - 2379:2379
+
+  zookeeper:
+    image: 'confluentinc/cp-zookeeper:latest'
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: 'confluentinc/cp-kafka:latest'
+    container_name: broker
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
   jaeger:
     image: jaegertracing/all-in-one:latest
     ports:
-      - "6831:6831/udp"
-      - "16686:16686"
+      - 6831:6831/udp
+      - 16686:16686
+      - 14268:14268

@@ -24,7 +24,7 @@ func Init() {
 		panic("config is wrong")
 	}
 
-	tracer2.InitJaeger(configdata.CommentServerConfig.CommentServName)
+	tracer2.InitJaegers(configdata.CommentServerConfig.CommentServName)
 	dal.Init()
 	repository.Init()
 	service.InitSnowflakeNode()
