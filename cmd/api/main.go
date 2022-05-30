@@ -26,11 +26,11 @@ func main() {
 	douyin.POST("/publish/action/", handlers.PublishVideo)
 	//vid.GET("/verifyVideoId/", handlers.VerifyVideoId)
 	userGroup := douyin.Group("/user")
-	userGroup.POST("/login", handlers.Login)
-	userGroup.POST("/register", handlers.Register)
+	userGroup.POST("/login/", handlers.Login)
+	userGroup.POST("/register/", handlers.Register)
 	userGroup.GET("/", handlers.QueryUser)
 
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	if err := http.ListenAndServe(":8086", r); err != nil {
 		klog.Fatal(err)
 	}
 }

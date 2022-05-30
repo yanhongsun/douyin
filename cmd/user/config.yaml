@@ -6,9 +6,9 @@ Server:
   UserServHost: 127.0.0.1:8889
 Database:
   DBType: mysql
-  Username: douyin_admin
-  Password: rootroot
-  Host: 127.0.0.1:9910
+  Username: root
+  Password: 111111
+  Host: 127.0.0.1:3306
   DBName: douyin
   Charset: utf8
   ParseTime: True
