@@ -2,8 +2,11 @@ package db
 
 import (
 	"douyin/pkg/constants"
+	"errors"
 
 	"context"
+
+	"gorm.io/gorm"
 )
 
 type Video struct {
@@ -51,4 +54,15 @@ func GetFeed(ctx context.Context, lastTime int64, limit int) ([]*Video, error) {
 		return nil, err
 	}
 	return vid, nil
+}
+
+func VerifyVideoId(ctx context.Context, videoId int64) (bool, error) {
+	var vid Video
+	err := DB.WithContext(ctx).Where("id=?", videoId).Take(&vid).Error
+	if err == nil {
+		return true, nil
+	} else if errors.Is(err, gorm.ErrRecordNotFound) {
+		return false, nil
+	}
+	return false, err
 }

@@ -62,5 +62,5 @@ service VideoService{
     PublishVideoResponse   PublishVideo(1:PublishVideoRequest    req)
     GetPublishListResponse  GetPublishList(1:GetPublishListRequest  req)
     GetFeedResponse  GetFeed(1:GetFeedRequest  req)
-    VerifyVideoIdRequest VerifyVideoId(1:VerifyVideoIdResponse req)  
+    VerifyVideoIdResponse  VerifyVideoId(1:VerifyVideoIdRequest req)  
 }
