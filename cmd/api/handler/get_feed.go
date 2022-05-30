@@ -5,7 +5,6 @@ import (
 	"douyin/cmd/api/rpc"
 	"douyin/kitex_gen/video"
 	"douyin/pkg/errno"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +21,7 @@ func GetFeed(c *gin.Context) {
 
 		SendResponseFeed(c, errno.ConvertErr(err), nil, 0)
 	}
-	fmt.Println(queryVar)
+
 	//token处理
 	if queryVar.LatestTime <= 0 {
 		queryVar.LatestTime = 0

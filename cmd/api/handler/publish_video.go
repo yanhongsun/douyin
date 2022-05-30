@@ -20,7 +20,7 @@ func PublishVideo(c *gin.Context) {
 	}
 
 	if err := c.BindQuery(&queryVar); err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseV(c, errno.ConvertErr(err), nil)
 	}
 	//token处理
 	userId, err := strconv.ParseInt(queryVar.Token, 10, 64)
@@ -32,7 +32,7 @@ func PublishVideo(c *gin.Context) {
 	//TODO错误处理
 	//TODO错误处理
 	if userId < 0 {
-		SendResponse(c, errno.ParamErr, nil)
+		SendResponseV(c, errno.ParamErr, nil)
 		return
 	}
 
@@ -40,29 +40,8 @@ func PublishVideo(c *gin.Context) {
 
 	err = rpc.PublishVideo(context.Background(), req)
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseV(c, errno.ConvertErr(err), nil)
 		return
 	}
-	SendResponse(c, errno.Success, nil)
+	SendResponseV(c, errno.Success, nil)
 }
-
-// func VerifyVideoId(c *gin.Context) {
-
-// 	var queryVar struct {
-// 		Token   string `json:"token" form:"token"`
-// 		VideoId int64  `json:"videoId" form:"videoId"`
-// 	}
-
-// 	if err := c.BindQuery(&queryVar); err != nil {
-// 		SendResponse(c, errno.ConvertErr(err), nil)
-// 	}
-
-// 	req := &video.VerifyVideoIdRequest{Token: queryVar.Token, VideoId: queryVar.VideoId}
-// 	fmt.Println(req.VideoId)
-// 	rOrf, err := rpc.VerifyVideoId(context.Background(), req)
-// 	if err != nil {
-// 		SendResponse(c, errno.ConvertErr(err), rOrf)
-// 		return
-// 	}
-// 	SendResponse(c, errno.Success, rOrf)
-// }

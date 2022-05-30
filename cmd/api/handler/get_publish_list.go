@@ -20,7 +20,7 @@ func GetPublishList(c *gin.Context) {
 
 	//TODO错误处理
 	if err := c.BindQuery(&queryVar); err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseV(c, errno.ConvertErr(err), nil)
 	}
 
 	//token处理
@@ -33,7 +33,7 @@ func GetPublishList(c *gin.Context) {
 		}
 		//TODO错误处理
 		if userId < 0 {
-			SendResponse(c, errno.ParamErr, nil)
+			SendResponseV(c, errno.ParamErr, nil)
 			return
 		}
 	}
@@ -41,9 +41,11 @@ func GetPublishList(c *gin.Context) {
 	req := &video.GetPublishListRequest{Token: queryVar.Token, UserId: queryVar.UserId}
 
 	videoList, err := rpc.GetPublishList(context.Background(), req)
+	fmt.Println("publishList")
+	fmt.Println(videoList)
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseV(c, errno.ConvertErr(err), nil)
 		return
 	}
-	SendResponse(c, errno.Success, videoList)
+	SendResponseV(c, errno.Success, videoList)
 }

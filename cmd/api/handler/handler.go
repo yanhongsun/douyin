@@ -25,16 +25,16 @@ func SendResponseFeed(c *gin.Context, err error, videolist interface{}, nexttime
 	})
 }
 
-type Response struct {
+type ResponseV struct {
 	Code    int32       `json:"status_code"`
 	Message string      `json:"status_msg"`
 	Data    interface{} `json:"video_list"`
 }
 
 // SendResponse pack response
-func SendResponse(c *gin.Context, err error, videolist interface{}) {
+func SendResponseV(c *gin.Context, err error, videolist interface{}) {
 	Err := errno.ConvertErr(err)
-	c.JSON(http.StatusOK, Response{
+	c.JSON(http.StatusOK, ResponseV{
 		Code:    Err.ErrCode,
 		Message: Err.ErrMsg,
 		Data:    videolist,
