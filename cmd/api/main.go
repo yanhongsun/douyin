@@ -19,6 +19,7 @@ func main() {
 	douyin := r.Group("/douyin")
 	douyin.GET("/follower/list/", handlers.GetFollowerList)
 	douyin.GET("/follow/list/", handlers.GetFollowList)
+	douyin.GET("/isfollow/", handlers.IsFollow)
 	douyin.POST("/action/", handlers.RelationAction)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {

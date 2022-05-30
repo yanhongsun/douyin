@@ -5,6 +5,7 @@ import (
 	"douyin/cmd/api/rpc"
 	"douyin/kitex_gen/relation"
 	"douyin/pkg/errno"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,13 +27,7 @@ func RelationAction(c *gin.Context) {
 		SendResponse(c, errno.ParamErr, nil)
 		return
 	}
-	/*
-		type RelationActionRequest struct {
-		UserId     int64  `thrift:"user_id,1,required" json:"user_id"`
-		Token      string `thrift:"token,2,required" json:"token"`
-		ToUserId   int64  `thrift:"to_user_id,3,required" json:"to_user_id"`
-		ActionType int32  `thrift:"action_type,4,required" json:"action_type"`
-	}*/
+
 	req := relation.RelationActionRequest{
 		UserId:     queryVar.UserId,
 		Token:      queryVar.Token,
@@ -40,7 +35,29 @@ func RelationAction(c *gin.Context) {
 		ActionType: queryVar.ActionType,
 	}
 
-	err := rpc.RelationAction(context.Background(), &req)
+	reqIsFollow := relation.IsFollowRequest{
+		UserId:   queryVar.UserId,
+		Token:    queryVar.Token,
+		ToUserId: queryVar.ToUserId,
+	}
+	tag, err := rpc.IsFollow(context.Background(), &reqIsFollow)
+	fmt.Println("handler.go   tag:")
+	fmt.Println(tag)
+	if err != nil {
+		SendBaseResponse(c, errno.ConvertErr(err))
+		return
+	}
+	if queryVar.ActionType == 1 && tag {
+		fmt.Println("queryVar.ActionType==1  true")
+		SendBaseResponse(c, errno.Success)
+		return
+	}
+	if queryVar.ActionType == 2 && !tag {
+		fmt.Println("queryVar.ActionType==2  false")
+		SendBaseResponse(c, errno.Success)
+		return
+	}
+	err = rpc.RelationAction(context.Background(), &req)
 	if err != nil {
 		SendBaseResponse(c, errno.ConvertErr(err))
 		return

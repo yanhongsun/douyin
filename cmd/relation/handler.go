@@ -133,5 +133,14 @@ func (s *RelationServiceImpl) GetFollowerList(ctx context.Context, req *relation
 // IsFollow implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) IsFollow(ctx context.Context, req *relation.IsFollowRequest) (resp *relation.IsFollowResponse, err error) {
 	// TODO: Your code here...
-	return
+	resp = new(relation.IsFollowResponse)
+	tag, err := service.NewIsFollowService(ctx).IsFollow(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(err)
+		resp.IsFollow = false
+		return resp, err
+	}
+	resp.BaseResp = pack.BuildBaseResp(errno.Success)
+	resp.IsFollow = tag
+	return resp, nil
 }

@@ -257,6 +257,7 @@ func IsFollowed(ctx context.Context, userId, otherId int64) (bool, error) {
 		if err := DB.WithContext(ctx).Where("follower1 = ? and follower2 = ?", userId, otherId).Take(&tmp).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				//fmt.Println("没有此类数据")
+				return false, nil
 			} else if err != nil {
 				return false, err
 			}
@@ -272,6 +273,7 @@ func IsFollowed(ctx context.Context, userId, otherId int64) (bool, error) {
 		if err := DB.WithContext(ctx).Where("follower1 = ? and follower2 = ?", otherId, userId).Take(&tmp).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				//fmt.Println("没有此类数据")
+				return false, nil
 			} else if err != nil {
 				return false, err
 			}
@@ -285,7 +287,6 @@ func IsFollowed(ctx context.Context, userId, otherId int64) (bool, error) {
 		}
 	}
 	return false, nil
-
 }
 
 func AddFans(ctx context.Context, userId int64) error {
