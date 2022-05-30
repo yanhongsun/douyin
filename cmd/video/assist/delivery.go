@@ -5,6 +5,7 @@ import (
 	"douyin/cmd/video/dal/db"
 	"douyin/kitex_gen/video"
 	"douyin/pkg/constants"
+	"douyin/pkg/errno"
 	"fmt"
 	"time"
 )
@@ -50,9 +51,9 @@ func GetPublishListResp(ctx context.Context, videos []*db.Video, userId int64) v
 	var vid []*video.Video
 	var bresp video.BaseResp
 	if vid = GetVideoList(ctx, videos, userId); vid == nil {
-		bresp = GetBaseResp(0, "发布列表获取成功！")
+		bresp = GetBaseResp(errno.Success.ErrCode, errno.Success.ErrMsg)
 	} else {
-		bresp = GetBaseResp(0, "无发布列表！")
+		bresp = GetBaseResp(errno.Success.ErrCode, "无发布列表！")
 	}
 
 	return video.GetPublishListResponse{
@@ -66,9 +67,9 @@ func GetFeedResp(ctx context.Context, videos []*db.Video, userId int64) video.Ge
 	var vid []*video.Video
 	var bresp video.BaseResp
 	if vid = GetVideoList(ctx, videos, userId); vid == nil {
-		bresp = GetBaseResp(0, "视频流获取成功！")
+		bresp = GetBaseResp(errno.Success.ErrCode, errno.Success.ErrMsg)
 	} else {
-		bresp = GetBaseResp(0, "无视频！")
+		bresp = GetBaseResp(errno.Success.ErrCode, "无视频！")
 	}
 	return video.GetFeedResponse{
 		VideoList: vid,
@@ -76,6 +77,15 @@ func GetFeedResp(ctx context.Context, videos []*db.Video, userId int64) video.Ge
 		NextTime:  &(*videos[len(videos)-1]).CreateTime,
 	}
 
+}
+func VerifyVideoIdResp(tOrf bool) video.VerifyVideoIdResponse {
+	var resp video.VerifyVideoIdResponse
+	var baseResp video.BaseResp
+	resp.TOrf = tOrf
+	baseResp = GetBaseResp(errno.Success.ErrCode, errno.Success.ErrMsg)
+
+	resp.BaseResp = &baseResp
+	return resp
 }
 
 /*

@@ -41,7 +41,7 @@ func main() {
 	vid.GET("/feed/", handler.GetFeed)
 	vid.GET("/publish/list/", handler.GetPublishList)
 	vid.POST("/publish/action/", handler.PublishVideo)
-
+	//vid.GET("/verifyVideoId/", handler.VerifyVideoId)
 	if err := http.ListenAndServe(":8086", r); err != nil {
 		klog.Fatal(err)
 	}

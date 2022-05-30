@@ -45,3 +45,24 @@ func PublishVideo(c *gin.Context) {
 	}
 	SendResponse(c, errno.Success, nil)
 }
+
+// func VerifyVideoId(c *gin.Context) {
+
+// 	var queryVar struct {
+// 		Token   string `json:"token" form:"token"`
+// 		VideoId int64  `json:"videoId" form:"videoId"`
+// 	}
+
+// 	if err := c.BindQuery(&queryVar); err != nil {
+// 		SendResponse(c, errno.ConvertErr(err), nil)
+// 	}
+
+// 	req := &video.VerifyVideoIdRequest{Token: queryVar.Token, VideoId: queryVar.VideoId}
+// 	fmt.Println(req.VideoId)
+// 	rOrf, err := rpc.VerifyVideoId(context.Background(), req)
+// 	if err != nil {
+// 		SendResponse(c, errno.ConvertErr(err), rOrf)
+// 		return
+// 	}
+// 	SendResponse(c, errno.Success, rOrf)
+// }

@@ -37,5 +37,5 @@ func GetFeed(c *gin.Context) {
 		return
 	}
 	SendResponseFeed(c, errno.Success, videoList, nextTime)
-	fmt.Println(videoList)
+
 }

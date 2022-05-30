@@ -3341,7 +3341,7 @@ type VideoService interface {
 
 	GetFeed(ctx context.Context, req *GetFeedRequest) (r *GetFeedResponse, err error)
 
-	VerifyVideoId(ctx context.Context, req *VerifyVideoIdResponse) (r *VerifyVideoIdRequest, err error)
+	VerifyVideoId(ctx context.Context, req *VerifyVideoIdRequest) (r *VerifyVideoIdResponse, err error)
 }
 
 type VideoServiceClient struct {
@@ -3400,7 +3400,7 @@ func (p *VideoServiceClient) GetFeed(ctx context.Context, req *GetFeedRequest) (
 	return _result.GetSuccess(), nil
 }
 
-func (p *VideoServiceClient) VerifyVideoId(ctx context.Context, req *VerifyVideoIdResponse) (r *VerifyVideoIdRequest, err error) {
+func (p *VideoServiceClient) VerifyVideoId(ctx context.Context, req *VerifyVideoIdRequest) (r *VerifyVideoIdResponse, err error) {
 	var _args VideoServiceVerifyVideoIdArgs
 	_args.Req = req
 	var _result VideoServiceVerifyVideoIdResult
@@ -3617,7 +3617,7 @@ func (p *videoServiceProcessorVerifyVideoId) Process(ctx context.Context, seqId 
 	iprot.ReadMessageEnd()
 	var err2 error
 	result := VideoServiceVerifyVideoIdResult{}
-	var retval *VerifyVideoIdRequest
+	var retval *VerifyVideoIdResponse
 	if retval, err2 = p.handler.VerifyVideoId(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing VerifyVideoId: "+err2.Error())
 		oprot.WriteMessageBegin("VerifyVideoId", thrift.EXCEPTION, seqId)
@@ -4661,22 +4661,22 @@ func (p *VideoServiceGetFeedResult) Field0DeepEqual(src *GetFeedResponse) bool {
 }
 
 type VideoServiceVerifyVideoIdArgs struct {
-	Req *VerifyVideoIdResponse `thrift:"req,1" json:"req"`
+	Req *VerifyVideoIdRequest `thrift:"req,1" json:"req"`
 }
 
 func NewVideoServiceVerifyVideoIdArgs() *VideoServiceVerifyVideoIdArgs {
 	return &VideoServiceVerifyVideoIdArgs{}
 }
 
-var VideoServiceVerifyVideoIdArgs_Req_DEFAULT *VerifyVideoIdResponse
+var VideoServiceVerifyVideoIdArgs_Req_DEFAULT *VerifyVideoIdRequest
 
-func (p *VideoServiceVerifyVideoIdArgs) GetReq() (v *VerifyVideoIdResponse) {
+func (p *VideoServiceVerifyVideoIdArgs) GetReq() (v *VerifyVideoIdRequest) {
 	if !p.IsSetReq() {
 		return VideoServiceVerifyVideoIdArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *VideoServiceVerifyVideoIdArgs) SetReq(val *VerifyVideoIdResponse) {
+func (p *VideoServiceVerifyVideoIdArgs) SetReq(val *VerifyVideoIdRequest) {
 	p.Req = val
 }
 
@@ -4748,7 +4748,7 @@ ReadStructEndError:
 }
 
 func (p *VideoServiceVerifyVideoIdArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewVerifyVideoIdResponse()
+	p.Req = NewVerifyVideoIdRequest()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
 	}
@@ -4820,7 +4820,7 @@ func (p *VideoServiceVerifyVideoIdArgs) DeepEqual(ano *VideoServiceVerifyVideoId
 	return true
 }
 
-func (p *VideoServiceVerifyVideoIdArgs) Field1DeepEqual(src *VerifyVideoIdResponse) bool {
+func (p *VideoServiceVerifyVideoIdArgs) Field1DeepEqual(src *VerifyVideoIdRequest) bool {
 
 	if !p.Req.DeepEqual(src) {
 		return false
@@ -4829,23 +4829,23 @@ func (p *VideoServiceVerifyVideoIdArgs) Field1DeepEqual(src *VerifyVideoIdRespon
 }
 
 type VideoServiceVerifyVideoIdResult struct {
-	Success *VerifyVideoIdRequest `thrift:"success,0" json:"success,omitempty"`
+	Success *VerifyVideoIdResponse `thrift:"success,0" json:"success,omitempty"`
 }
 
 func NewVideoServiceVerifyVideoIdResult() *VideoServiceVerifyVideoIdResult {
 	return &VideoServiceVerifyVideoIdResult{}
 }
 
-var VideoServiceVerifyVideoIdResult_Success_DEFAULT *VerifyVideoIdRequest
+var VideoServiceVerifyVideoIdResult_Success_DEFAULT *VerifyVideoIdResponse
 
-func (p *VideoServiceVerifyVideoIdResult) GetSuccess() (v *VerifyVideoIdRequest) {
+func (p *VideoServiceVerifyVideoIdResult) GetSuccess() (v *VerifyVideoIdResponse) {
 	if !p.IsSetSuccess() {
 		return VideoServiceVerifyVideoIdResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *VideoServiceVerifyVideoIdResult) SetSuccess(x interface{}) {
-	p.Success = x.(*VerifyVideoIdRequest)
+	p.Success = x.(*VerifyVideoIdResponse)
 }
 
 var fieldIDToName_VideoServiceVerifyVideoIdResult = map[int16]string{
@@ -4916,7 +4916,7 @@ ReadStructEndError:
 }
 
 func (p *VideoServiceVerifyVideoIdResult) ReadField0(iprot thrift.TProtocol) error {
-	p.Success = NewVerifyVideoIdRequest()
+	p.Success = NewVerifyVideoIdResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
 	}
@@ -4990,7 +4990,7 @@ func (p *VideoServiceVerifyVideoIdResult) DeepEqual(ano *VideoServiceVerifyVideo
 	return true
 }
 
-func (p *VideoServiceVerifyVideoIdResult) Field0DeepEqual(src *VerifyVideoIdRequest) bool {
+func (p *VideoServiceVerifyVideoIdResult) Field0DeepEqual(src *VerifyVideoIdResponse) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

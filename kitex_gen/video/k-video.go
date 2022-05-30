@@ -3474,7 +3474,7 @@ ReadStructEndError:
 
 func (p *VideoServiceVerifyVideoIdArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	p.Req = NewVerifyVideoIdResponse()
+	p.Req = NewVerifyVideoIdRequest()
 	if l, err := p.Req.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -3599,7 +3599,7 @@ ReadStructEndError:
 
 func (p *VideoServiceVerifyVideoIdResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	p.Success = NewVerifyVideoIdRequest()
+	p.Success = NewVerifyVideoIdResponse()
 	if l, err := p.Success.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {

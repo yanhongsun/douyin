@@ -22,9 +22,9 @@ func GetPublishList(c *gin.Context) {
 	if err := c.BindQuery(&queryVar); err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
 	}
-	fmt.Println(queryVar)
+
 	//token处理
-	fmt.Println("-----------------------")
+
 	if queryVar.Token != "" {
 		userId, err := strconv.ParseInt(queryVar.Token, 10, 64)
 		if err != nil {

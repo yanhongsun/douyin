@@ -54,7 +54,6 @@ func PublishVideo(ctx context.Context, req *video.PublishVideoRequest) error {
 	return nil
 }
 
-// QueryNotes query list of note info
 func GetPublishList(ctx context.Context, req *video.GetPublishListRequest) ([]*video.Video, error) {
 	resp, err := videoClient.GetPublishList(ctx, req)
 	if err != nil {
@@ -67,7 +66,6 @@ func GetPublishList(ctx context.Context, req *video.GetPublishListRequest) ([]*v
 	return resp.VideoList, nil
 }
 
-// UpdateNote update note info
 func GetFeed(ctx context.Context, req *video.GetFeedRequest) ([]*video.Video, int64, error) {
 
 	resp, err := videoClient.GetFeed(ctx, req)
@@ -81,3 +79,8 @@ func GetFeed(ctx context.Context, req *video.GetFeedRequest) ([]*video.Video, in
 	}
 	return resp.VideoList, *resp.NextTime, nil
 }
+
+// func VerifyVideoId(ctx context.Context, req *video.VerifyVideoIdRequest) (bool, error) {
+// 	resp, err := videoClient.VerifyVideoId(ctx, req)
+// 	return resp.TOrf, err
+// }

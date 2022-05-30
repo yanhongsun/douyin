@@ -6,6 +6,7 @@ import (
 	"douyin/cmd/video/dal/db"
 	"douyin/kitex_gen/video"
 	"douyin/pkg/constants"
+	"douyin/pkg/errno"
 	"strconv"
 
 	"fmt"
@@ -21,6 +22,17 @@ func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *video.PublishV
 	//TODO异常处理
 	var userId int64
 	userId = 1 //req.Token
+	//验证userId是否存在
+	//如果不存在返回err
+	// resp.BaseResp.StatusCode = errno.UserNotExistErr.ErrCode
+	// resp.BaseResp.StatusMsg = &errno.UserNotExistErr.ErrMsg
+	//err=nil
+	if len(req.Data) == 0 {
+		resp.BaseResp.StatusCode = errno.VideoErr.ErrCode
+		resp.BaseResp.StatusMsg = &errno.VideoErr.ErrMsg
+		err = nil
+		return
+	}
 	//将视频数据命名，保存路径
 	name := GetName(userId)
 	playUrl := fmt.Sprintf("%s/%s.mp4", constants.VideoSavePath, name)
@@ -31,12 +43,12 @@ func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *video.PublishV
 	//为db.Video类型变量赋值
 	//为db.Video类型变量写进数据库
 	video := assist.InitDBVideo(userId, playUrl, coverUrl, req.Title)
-	db.PublishVideo(ctx, video)
-	sucess := "sucess"
-	resp.BaseResp.StatusCode = 0
-	resp.BaseResp.StatusMsg = &sucess
-	return
+	if err = db.PublishVideo(ctx, video); err == nil {
+		resp.BaseResp.StatusCode = errno.Success.ErrCode
+		resp.BaseResp.StatusMsg = &errno.Success.ErrMsg
+	}
 
+	return
 }
 
 //userId+当前时间
@@ -48,9 +60,12 @@ func GetName(userId int64) string {
 func (s *VideoServiceImpl) GetPublishList(ctx context.Context, req *video.GetPublishListRequest) (resp *video.GetPublishListResponse, err error) {
 	// TODO: Your code here..
 	//TODO异常处理.
-	//TODO
+	//TODO验证token
 	userId := req.UserId
-	videos, _ := db.GetPublishList(ctx, userId)
+	videos, err := db.GetPublishList(ctx, userId)
+	if err != nil {
+		return nil, err
+	}
 	//为返回值赋值
 	//TODO根据Token得到userId
 	var meId int64
@@ -91,7 +106,9 @@ func (s *VideoServiceImpl) GetFeed(ctx context.Context, req *video.GetFeedReques
 
 	videos, err := db.GetFeed(ctx, *(req.LatestTime), constants.VideoLimitNum)
 	//为返回值赋值
-
+	if err != nil {
+		return nil, err
+	}
 	r := assist.GetFeedResp(ctx, videos, userId)
 
 	resp = &r
@@ -99,8 +116,20 @@ func (s *VideoServiceImpl) GetFeed(ctx context.Context, req *video.GetFeedReques
 }
 
 // VerifyVideoId implements the VideoServiceImpl interface.
-func (s *VideoServiceImpl) VerifyVideoId(ctx context.Context, req *video.VerifyVideoIdResponse) (resp *video.VerifyVideoIdRequest, err error) {
-	// TODO: Your code here...
+func (s *VideoServiceImpl) VerifyVideoId(ctx context.Context, req *video.VerifyVideoIdRequest) (resp *video.VerifyVideoIdResponse, err error) {
 
+	//TODO: 验证token
+	var tOrf bool
+	if req.VideoId < 0 {
+		tOrf = false
+		err = nil
+	} else {
+		tOrf, err = db.VerifyVideoId(ctx, req.VideoId)
+	}
+	if err != nil {
+		return nil, err
+	}
+	r := assist.VerifyVideoIdResp(tOrf)
+	resp = &r
 	return
 }

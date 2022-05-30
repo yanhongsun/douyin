@@ -150,7 +150,7 @@ func (p *kClient) GetFeed(ctx context.Context, req *video.GetFeedRequest) (r *vi
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) VerifyVideoId(ctx context.Context, req *video.VerifyVideoIdResponse) (r *video.VerifyVideoIdRequest, err error) {
+func (p *kClient) VerifyVideoId(ctx context.Context, req *video.VerifyVideoIdRequest) (r *video.VerifyVideoIdResponse, err error) {
 	var _args video.VideoServiceVerifyVideoIdArgs
 	_args.Req = req
 	var _result video.VideoServiceVerifyVideoIdResult

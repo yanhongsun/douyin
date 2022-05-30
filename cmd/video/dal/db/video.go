@@ -39,10 +39,13 @@ func PublishVideo(ctx context.Context, vid Video) error {
 func GetPublishList(ctx context.Context, userId int64) ([]*Video, error) {
 	//
 	var vid []*Video
-	if err := DB.WithContext(ctx).Where("u_id=?", userId).Find(&vid).Error; err != nil {
-		return nil, err
+	err := DB.WithContext(ctx).Where("u_id=?", userId).Find(&vid).Error
+	if err == nil {
+		return vid, nil
+	} else if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
 	}
-	return vid, nil
+	return nil, err
 }
 
 func GetFeed(ctx context.Context, lastTime int64, limit int) ([]*Video, error) {
@@ -50,10 +53,13 @@ func GetFeed(ctx context.Context, lastTime int64, limit int) ([]*Video, error) {
 	if lastTime == 0 {
 		lastTime = constants.MaxTime
 	}
-	if err := DB.WithContext(ctx).Where("create_time <= ?", lastTime).Order("create_time desc").Limit(limit).Find(&vid).Error; err != nil {
-		return nil, err
+	err := DB.WithContext(ctx).Where("create_time <= ?", lastTime).Order("create_time desc").Limit(limit).Find(&vid).Error
+	if err == nil {
+		return vid, nil
+	} else if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
 	}
-	return vid, nil
+	return nil, err
 }
 
 func VerifyVideoId(ctx context.Context, videoId int64) (bool, error) {
