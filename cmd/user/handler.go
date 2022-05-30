@@ -7,7 +7,6 @@ import (
 	"douyin/cmd/user/service"
 	"douyin/kitex_gen/user"
 	"douyin/pkg/errno"
-	"fmt"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -67,12 +66,10 @@ func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserReque
 	}
 
 	userInfo, err := service.NewGetUserInfoService(ctx).GetUserInfo(req)
-	fmt.Println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&=====", userInfo)
 	if err != nil {
 		resp = pack.BuildGetUserResp(err, nil)
 		return resp, nil
 	}
 	resp = pack.BuildGetUserResp(nil, userInfo)
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>resp", resp)
 	return resp, nil
 }

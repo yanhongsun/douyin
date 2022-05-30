@@ -6,7 +6,6 @@ import (
 	"douyin/kitex_gen/user/userservice"
 	"douyin/middleware"
 	"douyin/pkg/errno"
-	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -90,6 +89,5 @@ func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*UserInfo, e
 	userInfo.FollowCount = resp.User.GetFollowCount()
 	userInfo.FollowerCount = resp.User.GetFollowerCount()
 	userInfo.IsFollow = resp.User.IsFollow
-	fmt.Println("----------------------------------------------", userInfo)
 	return &userInfo, nil
 }

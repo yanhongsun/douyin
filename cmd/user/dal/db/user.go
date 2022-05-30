@@ -4,7 +4,6 @@ import (
 	"context"
 	"douyin/cmd/user/global"
 	"douyin/kitex_gen/user"
-	"fmt"
 )
 
 // User user model
@@ -34,7 +33,6 @@ func GetUserInfo(ctx context.Context, userID int64) (*user.User, error) {
 	userInfo.SetFollowCount(&u.FollowCount)
 	userInfo.SetFollowerCount(&u.FollowerCount)
 	userInfo.SetIsFollow(false)
-	fmt.Println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&|||||", userInfo)
 	return &userInfo, nil
 }
 

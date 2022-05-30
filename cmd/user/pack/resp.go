@@ -4,7 +4,6 @@ import (
 	"douyin/kitex_gen/user"
 	"douyin/pkg/errno"
 	"errors"
-	"fmt"
 )
 
 func BuildRegisterResp(err error, userID int64, token string) *user.DouyinUserRegisterResponse {
@@ -19,10 +18,7 @@ func BuildRegisterResp(err error, userID int64, token string) *user.DouyinUserRe
 
 	e := errno.ErrNo{}
 	if errors.As(err, &e) {
-		fmt.Println(">>>>>>>>>>>>>>>>", e)
-		fmt.Println(">>>>>>>>>>>>>>>>", e.ErrCode)
-		fmt.Println(">>>>>>>>>>>>>>>>", e.ErrMsg)
-		resp.SetStatusCode(e.ErrCode) // TODO: there may have a problem
+		resp.SetStatusCode(e.ErrCode)
 		resp.SetStatusMsg(&e.ErrMsg)
 		resp.SetUserId(userID)
 		resp.SetToken(token)
@@ -66,8 +62,6 @@ func BuildLoginResp(err error, userID int64, token string) *user.DouyinUserLogin
 
 func BuildGetUserResp(err error, userInfo *user.User) *user.DouyinUserResponse {
 	var resp user.DouyinUserResponse
-	fmt.Println("||||||||||||||||", err)
-	fmt.Println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&>>>>>", userInfo)
 	if err == nil {
 		resp.SetStatusCode(errno.Success.ErrCode)
 		resp.SetStatusMsg(&errno.Success.ErrMsg)

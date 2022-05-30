@@ -5,15 +5,12 @@ import (
 	"douyin/cmd/api/rpc"
 	"douyin/kitex_gen/user"
 	"douyin/pkg/errno"
-	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
 func QueryUser(c *gin.Context) {
 	var queryVar UserInfoParam
-	// fmt.Println(c.)
 	if err := c.ShouldBind(&queryVar); err != nil {
-		fmt.Println("........", queryVar)
 		SendUserInfoResponse(c, errno.ConvertErr(err), &UserInfo{
 			ID:            -1,
 			Name:          "",
@@ -38,7 +35,6 @@ func QueryUser(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", userInfo)
 	SendUserInfoResponse(c, errno.Success, &UserInfo{
 		ID:            userInfo.ID,
 		Name:          userInfo.Name,

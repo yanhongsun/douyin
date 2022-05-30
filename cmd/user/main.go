@@ -8,7 +8,6 @@ import (
 	"douyin/middleware"
 	"douyin/pkg/bound"
 	"douyin/pkg/tracer"
-	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -34,7 +33,6 @@ func Init() {
 
 func main() {
 	Init()
-	fmt.Println("=====>>>>>", global.ServerSetting.EtcdHost)
 	r, err := etcd.NewEtcdRegistry([]string{global.ServerSetting.EtcdHost})
 	if err != nil {
 		panic(err)
@@ -59,7 +57,6 @@ func main() {
 	err = svr.Run()
 
 	if err != nil {
-		// log.Println(err.Error())
 		klog.Fatal(err)
 	}
 }

@@ -90,5 +90,5 @@ curl --location --request GET '127.0.0.1:8080/douyin/user/' --header 'Content-Ty
 # 错误token
 {"status_code":10034,"status_msg":"Couldn't handle this token","user":{"id":-1,"name":"","follow_count":0,"follower_count":0,"is_follow":false}}
 # 过期token
-
+{"status_code":10033,"status_msg":"That's not even a token","user":{"id":-1,"name":"","follow_count":0,"follower_count":0,"is_follow":false}}
 ```
