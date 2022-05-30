@@ -15,7 +15,7 @@ require (
 	github.com/spf13/viper v1.12.0
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.408
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tms v1.0.408
-	github.com/topfreegames/go-extensions-kafka v1.1.0
+	github.com/topfreegames/go-extensions-tracing v1.0.0
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	gorm.io/driver/mysql v1.3.3
@@ -81,7 +81,6 @@ require (
 	github.com/tidwall/gjson v1.9.3 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
-	github.com/topfreegames/go-extensions-tracing v1.0.0 // indirect
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.4 // indirect

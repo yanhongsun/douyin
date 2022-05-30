@@ -9,7 +9,6 @@ import (
 )
 
 func InitJaeger(service string) {
-	// export JAEGER_DISABLED=false
 	cfg := &jaegercfg.Configuration{
 		Disabled: false,
 		Sampler: &jaegercfg.SamplerConfig{

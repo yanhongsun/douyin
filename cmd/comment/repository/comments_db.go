@@ -5,12 +5,12 @@ import (
 	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/pack"
 	"douyin/cmd/comment/pack/configdata"
+	"douyin/pkg/tracer"
 	"encoding/json"
 	"log"
 	"strconv"
 
 	"github.com/Shopify/sarama"
-	kafka "github.com/topfreegames/go-extensions-kafka"
 )
 
 type repositoryCom struct {
@@ -18,8 +18,10 @@ type repositoryCom struct {
 	Type      int64            `json:"type"`
 	Comment   *mysqldb.Comment `json:"comment"`
 	CommentId int64            `json:"comment_id"`
-	VideoId   int64            `json:"video_id"`
-	UserId    int64            `json:"user_id"`
+
+	// can choose
+	VideoId int64 `json:"video_id"`
+	UserId  int64 `json:"user_id"`
 }
 
 func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment, commentId, videoId, userId int64) error {
@@ -40,13 +42,16 @@ func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment,
 	}
 
 	data, err := json.Marshal(dataRepository)
+
 	if err != nil {
 		return err
 	}
 	msg.Value = sarama.StringEncoder(string(data))
 
 	clients, err := sarama.NewSyncProducer([]string{configdata.KafkaConfig.Host}, config)
-	client := kafka.NewSyncProducerFromClient(clients)
+	client := tracer.NewSyncProducerFromClient(clients)
+	client = client.WithContext(ctx)
+
 	if err != nil {
 		return err
 	}
@@ -59,7 +64,7 @@ func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment,
 	return nil
 }
 
-func ConsumeComment() {
+func ConsumeComments(ctx context.Context) {
 	config := sarama.NewConfig()
 	consumer, err := sarama.NewConsumer([]string{configdata.KafkaConfig.Host}, config)
 	if err != nil {
@@ -104,19 +109,19 @@ func ConsumeComment() {
 			} else if moderationRes == "Block" {
 				continue
 			}
-			err = mysqldb.CreateComment(context.Background(), data.Comment)
+			err = mysqldb.CreateComment(ctx, data.Comment)
 			if err != nil {
 				// log
 				continue
 			}
-			ProducerCommentsCache(context.Background(), 2, data.Comment.VideoID, nil, pack.ChangeComment(data.Comment), -10001, -10001)
+			ProducerCommentsCache(ctx, 2, data.Comment.VideoID, nil, pack.ChangeComment(data.Comment), -10001, -10001)
 			continue
 		} else if data.Type == 2 {
-			err = mysqldb.DeleteComment(context.Background(), data.CommentId, data.VideoId, data.UserId)
+			err = mysqldb.DeleteComment(ctx, data.CommentId, data.VideoId, data.UserId)
 			if err != nil {
 				continue
 			}
-			ProducerCommentsCache(context.Background(), 3, data.VideoId, nil, nil, data.CommentId, -10001)
+			ProducerCommentsCache(ctx, 3, data.VideoId, nil, nil, data.CommentId, -10001)
 			continue
 		}
 		log.Fatal("type is wrong")

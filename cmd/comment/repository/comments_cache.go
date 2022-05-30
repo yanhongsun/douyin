@@ -5,12 +5,12 @@ import (
 	"douyin/cmd/comment/dal/redisdb"
 	"douyin/cmd/comment/pack/configdata"
 	"douyin/kitex_gen/comment"
+	"douyin/pkg/tracer"
 	"encoding/json"
 	"log"
 
 	"github.com/Shopify/sarama"
 	"github.com/cloudwego/kitex/pkg/klog"
-	kafka "github.com/topfreegames/go-extensions-kafka"
 )
 
 type repositoryCache struct {
@@ -47,7 +47,8 @@ func ProducerCommentsCache(ctx context.Context, types, videoId int64, comments [
 	msg.Value = sarama.StringEncoder(string(data))
 
 	clients, err := sarama.NewSyncProducer([]string{configdata.KafkaConfig.Host}, config)
-	client := kafka.NewSyncProducerFromClient(clients)
+	client := tracer.NewSyncProducerFromClient(clients)
+	client = client.WithContext(ctx)
 	if err != nil {
 		return err
 	}
@@ -58,9 +59,11 @@ func ProducerCommentsCache(ctx context.Context, types, videoId int64, comments [
 	}
 
 	return nil
+
+	// context.WithValue()
 }
 
-func ConsumeCommentsCache() {
+func ConsumeCommentsCache(ctx context.Context) {
 	config := sarama.NewConfig()
 	consumer, err := sarama.NewConsumer([]string{configdata.KafkaConfig.Host}, config)
 	if err != nil {
@@ -88,16 +91,16 @@ func ConsumeCommentsCache() {
 			continue
 		}
 		if data.Type == 1 {
-			redisdb.AddCommentsCache(context.Background(), data.VideoId, data.Comments)
+			redisdb.AddCommentsCache(ctx, data.VideoId, data.Comments)
 			continue
 		} else if data.Type == 2 {
-			redisdb.UpdateCommentsCache(context.Background(), data.VideoId, data.Comment)
+			redisdb.UpdateCommentsCache(ctx, data.VideoId, data.Comment)
 			continue
 		} else if data.Type == 3 {
-			redisdb.DeleteCommentsCache(context.Background(), data.VideoId, data.CommentId)
+			redisdb.DeleteCommentsCache(ctx, data.VideoId, data.CommentId)
 			continue
 		} else if data.Type == 4 {
-			redisdb.AddCommentNumberCache(context.Background(), data.VideoId, data.CommentNumber)
+			redisdb.AddCommentNumberCache(ctx, data.VideoId, data.CommentNumber)
 			continue
 		}
 		log.Fatal("type is wrong")

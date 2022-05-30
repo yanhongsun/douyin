@@ -1,6 +1,8 @@
 package repository
 
+import "context"
+
 func Init() {
-	go ConsumeComment()
-	go ConsumeCommentsCache()
+	go ConsumeComments(context.Background())
+	go ConsumeCommentsCache(context.Background())
 }
