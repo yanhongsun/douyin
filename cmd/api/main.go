@@ -23,7 +23,7 @@ func main() {
 	userGroup := douyin.Group("/user")
 	userGroup.POST("/login", handlers.Login)
 	userGroup.POST("/register", handlers.Register)
-	userGroup.POST("/", handlers.QueryUser)
+	userGroup.GET("/", handlers.QueryUser)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)
