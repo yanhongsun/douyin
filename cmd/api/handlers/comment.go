@@ -30,6 +30,7 @@ func CommentAction(c *gin.Context) {
 	userId, err := strconv.ParseInt(userIdS, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusOK, &rpc.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
+		return
 	}
 
 	_, err = rpc.GetUserInfo(context.Background(), &user.DouyinUserRequest{
@@ -39,6 +40,7 @@ func CommentAction(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusOK, rpc.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		return
 	}
 
 	if actionType == "1" {
@@ -48,6 +50,7 @@ func CommentAction(c *gin.Context) {
 
 		if err != nil {
 			c.JSON(http.StatusOK, &rpc.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
+			return
 		}
 
 		response, comment := rpc.CreateComment(context.Background(), &comment.CreateCommentRequest{
@@ -58,7 +61,9 @@ func CommentAction(c *gin.Context) {
 		})
 		if response.StatusCode != 0 {
 			c.JSON(http.StatusOK, response)
+			return
 		}
+
 		c.JSON(http.StatusOK, CommentActionResponse{Response: *response, Comment: *comment})
 		return
 	} else if actionType == "2" {
@@ -67,6 +72,7 @@ func CommentAction(c *gin.Context) {
 
 		if err != nil {
 			c.JSON(http.StatusOK, &rpc.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
+			return
 		}
 
 		commentIdS := c.Query("comment_id")
@@ -74,6 +80,7 @@ func CommentAction(c *gin.Context) {
 
 		if err != nil {
 			c.JSON(http.StatusOK, &rpc.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
+			return
 		}
 
 		response := rpc.DeleteComment(context.Background(), &comment.DeleteCommentRequest{
@@ -96,12 +103,14 @@ func CommentList(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusOK, &rpc.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
+		return
 	}
 
 	response, comments := rpc.QueryComments(context.Background(), &comment.QueryCommentsRequest{VideoId: videoId, Token: &token})
 
 	if response.StatusCode != 0 {
 		c.JSON(http.StatusOK, response)
+		return
 	}
 
 	c.JSON(http.StatusOK, CommentListResponse{

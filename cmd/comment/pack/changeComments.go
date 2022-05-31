@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+var User *rpc.UserInfo = &rpc.UserInfo{
+	ID:            1,
+	Name:          "barar",
+	FollowCount:   0,
+	FollowerCount: 0,
+	IsFollow:      false,
+}
+
 func ChangeComment(source *mysqldb.Comment, user *rpc.UserInfo) *comment.Comment {
 	return &comment.Comment{
 		CommentId: source.CommentID,
@@ -28,11 +36,11 @@ func ChangeComments(ctx context.Context, source []*mysqldb.Comment, token *strin
 	res := make([]*comment.Comment, size)
 
 	for i := 0; i < size; i++ {
-		user, err := rpc.GetUserInfo(ctx, source[i].UserID, *token)
-		if err != nil {
-			return nil, err
-		}
-		res[i] = ChangeComment(source[i], user)
+		// user, err := rpc.GetUserInfo(ctx, source[i].UserID, *token)
+		// if err != nil {
+		// 	return nil, err
+		// }
+		res[i] = ChangeComment(source[i], User)
 	}
 
 	return res, nil
