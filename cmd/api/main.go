@@ -3,7 +3,6 @@ package main
 import (
 	"douyin/cmd/api/handlers"
 	"douyin/cmd/api/rpc"
-	"douyin/pkg/tracer"
 	"net/http"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -11,7 +10,8 @@ import (
 )
 
 func Init() {
-	tracer.InitJaeger("api")
+	// TODO
+	// tracer.InitJaeger("api")
 	rpc.InitRPC()
 }
 
@@ -26,11 +26,13 @@ func main() {
 	douyin.POST("/publish/action/", handlers.PublishVideo)
 	//vid.GET("/verifyVideoId/", handlers.VerifyVideoId)
 	userGroup := douyin.Group("/user")
-	userGroup.POST("/login", handlers.Login)
-	userGroup.POST("/register", handlers.Register)
+	userGroup.POST("/login/", handlers.Login)
+	userGroup.POST("/register/", handlers.Register)
 	userGroup.GET("/", handlers.QueryUser)
+	// TODO: remove the handler for checking user existence
+	userGroup.GET("/exist/", handlers.IsUserExisted)
 
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	if err := http.ListenAndServe(":8090", r); err != nil {
 		klog.Fatal(err)
 	}
 }

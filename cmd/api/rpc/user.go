@@ -91,3 +91,15 @@ func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*UserInfo, e
 	userInfo.IsFollow = resp.User.IsFollow
 	return &userInfo, nil
 }
+
+func IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest) (bool, error) {
+	resp, err := userClient.IsUserExisted(ctx, req)
+	if err != nil {
+		return false, err
+	}
+	if resp.StatusCode != 0 {
+		return false, errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
+	}
+
+	return resp.IsExisted, nil
+}

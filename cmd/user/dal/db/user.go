@@ -65,6 +65,20 @@ func CreateUser(ctx context.Context, username, password string) ([]*User, error)
 	return res, nil
 }
 
+// UserExist  do db operation
+func UserExist(ctx context.Context, targetID int64) (bool, error) {
+	res := make([]*User, 0)
+	if err := DB.WithContext(ctx).Where("id = ?", targetID).Find(&res).Error; err != nil {
+		return false, err
+	}
+	// user doesn't exist
+	if len(res) == 0 {
+		return false, nil
+	}
+	// user exists
+	return true, nil
+}
+
 func CreateSalt(ctx context.Context, username string, salt []byte) error {
 	return nil
 }

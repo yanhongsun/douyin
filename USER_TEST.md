@@ -2,6 +2,9 @@
 
 ### 1. Setup Basic Dependence
 
+- `docker-compose.yml` 中的 address 信息需要更改
+- `cmd/user/config.yaml` 中的 address 信息需要与 `docker-compose.yml` 一致
+
 ```shell
 docker-compose up
 ```

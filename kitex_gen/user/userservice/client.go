@@ -4,9 +4,9 @@ package userservice
 
 import (
 	"context"
+	"douyin/kitex_gen/user"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/client/callopt"
-	"douyin/kitex_gen/user"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
@@ -14,6 +14,7 @@ type Client interface {
 	CreateUser(ctx context.Context, req *user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *user.DouyinUserRegisterResponse, err error)
 	CheckUser(ctx context.Context, req *user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *user.DouyinUserLoginResponse, err error)
 	GetUser(ctx context.Context, req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error)
+	IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest, callOptions ...callopt.Option) (r *user.DouyinUserExistResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -58,4 +59,9 @@ func (p *kUserServiceClient) CheckUser(ctx context.Context, req *user.DouyinUser
 func (p *kUserServiceClient) GetUser(ctx context.Context, req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetUser(ctx, req)
+}
+
+func (p *kUserServiceClient) IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest, callOptions ...callopt.Option) (r *user.DouyinUserExistResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.IsUserExisted(ctx, req)
 }

@@ -4,7 +4,6 @@ import (
 	"douyin/pkg/errno"
 	"net/http"
 
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,6 +42,13 @@ type UserInfoResponse struct {
 	StatusMsg  string   `json:"status_msg"`
 	Data       UserInfo `json:"user"`
 }
+
+type IsUserExistedResponse struct {
+	StatusCode int32    `json:"status_code"`
+	StatusMsg  string   `json:"status_msg"`
+	IsExisted  bool     `json:"is_existed"`
+}
+
 type ResponseV struct {
 	Code    int32       `json:"status_code"`
 	Message string      `json:"status_msg"`
@@ -70,10 +76,6 @@ func SendResponse(c *gin.Context, err error, userID int64, token string) {
 // SendUserInfoResponse send response of get_user_info
 func SendUserInfoResponse(c *gin.Context, err error, userInfo *UserInfo) {
 	Err := errno.ConvertErr(err)
-	klog.Info("================================")
-	klog.Info(userInfo)
-	klog.Info(Err)
-	klog.Info("================================")
 	c.JSON(http.StatusOK, UserInfoResponse{
 		StatusCode: Err.ErrCode,
 		StatusMsg:  Err.ErrMsg,
@@ -84,6 +86,15 @@ func SendUserInfoResponse(c *gin.Context, err error, userInfo *UserInfo) {
 			FollowerCount: userInfo.FollowerCount,
 			IsFollow:      userInfo.IsFollow,
 		},
+	})
+}
+
+func SendIsUserExistedResponse(c *gin.Context, err error, isExisted bool) {
+	Err := errno.ConvertErr(err)
+	c.JSON(http.StatusOK, IsUserExistedResponse{
+		StatusCode: Err.ErrCode,
+		StatusMsg: Err.ErrMsg,
+		IsExisted: isExisted,
 	})
 }
 

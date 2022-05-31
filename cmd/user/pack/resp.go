@@ -87,3 +87,26 @@ func BuildGetUserResp(err error, userInfo *user.User) *user.DouyinUserResponse {
 	})
 	return &resp
 }
+
+func BuildUserExistResp(err error, isExist bool) *user.DouyinUserExistResponse {
+	var resp user.DouyinUserExistResponse
+	if err == nil {
+		resp.SetStatusCode(errno.Success.ErrCode)
+		resp.SetStatusMsg(&errno.Success.ErrMsg)
+		resp.SetIsExisted(isExist)
+		return &resp
+	}
+
+	e := errno.ErrNo{}
+	if errors.As(err, &e) {
+		resp.SetStatusCode(e.ErrCode)
+		resp.SetStatusMsg(&e.ErrMsg)
+		resp.SetIsExisted(isExist)
+		return &resp
+	}
+	s := errno.ServiceErr.WithMessage(err.Error())
+	resp.SetStatusCode(s.ErrCode)
+	resp.SetStatusMsg(&s.ErrMsg)
+	resp.SetIsExisted(isExist)
+	return &resp
+}

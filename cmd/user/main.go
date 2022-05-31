@@ -7,7 +7,6 @@ import (
 	user "douyin/kitex_gen/user/userservice"
 	"douyin/middleware"
 	"douyin/pkg/bound"
-	"douyin/pkg/tracer"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -25,8 +24,8 @@ func Init() {
 	}
 
 	setupJWT()
-
-	tracer.InitJaeger(global.ServerSetting.UserServName)
+	// TODO
+	// tracer.InitJaeger(global.ServerSetting.UserServName)
 
 	dal.Init()
 }

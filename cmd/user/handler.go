@@ -7,6 +7,7 @@ import (
 	"douyin/cmd/user/service"
 	"douyin/kitex_gen/user"
 	"douyin/pkg/errno"
+	"fmt"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -56,6 +57,11 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 
 // GetUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
+	if req.UserId == 0 {
+		resp = pack.BuildGetUserResp(errno.ParamErr, nil)
+		return resp, nil
+	}
+
 	claim, err := global.Jwt.ParseToken(req.Token)
 	if err != nil {
 		resp = pack.BuildGetUserResp(err, nil)
@@ -71,5 +77,21 @@ func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserReque
 		return resp, nil
 	}
 	resp = pack.BuildGetUserResp(nil, userInfo)
+	return resp, nil
+}
+
+// IsUserExisted implements the UserServiceImpl interface.
+func (s *UserServiceImpl) IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest) (resp *user.DouyinUserExistResponse, err error) {
+	fmt.Println("============ IsUserExisted", req.TargetId)
+	if req.TargetId == 0 {
+		resp = pack.BuildUserExistResp(errno.ParamErr, false)
+		return resp, nil
+	}
+	res, err := service.NewUserExistService(ctx).UserExist(req)
+	if err != nil {
+		resp = pack.BuildUserExistResp(err, false)
+		return resp, nil
+	}
+	resp = pack.BuildUserExistResp(err, res)
 	return resp, nil
 }

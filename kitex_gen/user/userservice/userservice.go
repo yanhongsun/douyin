@@ -4,9 +4,9 @@ package userservice
 
 import (
 	"context"
+	"douyin/kitex_gen/user"
 	"github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
-	"douyin/kitex_gen/user"
 )
 
 func serviceInfo() *kitex.ServiceInfo {
@@ -19,9 +19,10 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*user.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"CreateUser": kitex.NewMethodInfo(createUserHandler, newUserServiceCreateUserArgs, newUserServiceCreateUserResult, false),
-		"CheckUser":  kitex.NewMethodInfo(checkUserHandler, newUserServiceCheckUserArgs, newUserServiceCheckUserResult, false),
-		"GetUser":    kitex.NewMethodInfo(getUserHandler, newUserServiceGetUserArgs, newUserServiceGetUserResult, false),
+		"CreateUser":    kitex.NewMethodInfo(createUserHandler, newUserServiceCreateUserArgs, newUserServiceCreateUserResult, false),
+		"CheckUser":     kitex.NewMethodInfo(checkUserHandler, newUserServiceCheckUserArgs, newUserServiceCheckUserResult, false),
+		"GetUser":       kitex.NewMethodInfo(getUserHandler, newUserServiceGetUserArgs, newUserServiceGetUserResult, false),
+		"IsUserExisted": kitex.NewMethodInfo(isUserExistedHandler, newUserServiceIsUserExistedArgs, newUserServiceIsUserExistedResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -91,6 +92,24 @@ func newUserServiceGetUserResult() interface{} {
 	return user.NewUserServiceGetUserResult()
 }
 
+func isUserExistedHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceIsUserExistedArgs)
+	realResult := result.(*user.UserServiceIsUserExistedResult)
+	success, err := handler.(user.UserService).IsUserExisted(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceIsUserExistedArgs() interface{} {
+	return user.NewUserServiceIsUserExistedArgs()
+}
+
+func newUserServiceIsUserExistedResult() interface{} {
+	return user.NewUserServiceIsUserExistedResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -126,6 +145,16 @@ func (p *kClient) GetUser(ctx context.Context, req *user.DouyinUserRequest) (r *
 	_args.Req = req
 	var _result user.UserServiceGetUserResult
 	if err = p.c.Call(ctx, "GetUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest) (r *user.DouyinUserExistResponse, err error) {
+	var _args user.UserServiceIsUserExistedArgs
+	_args.Req = req
+	var _result user.UserServiceIsUserExistedResult
+	if err = p.c.Call(ctx, "IsUserExisted", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
