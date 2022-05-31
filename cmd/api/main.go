@@ -30,6 +30,10 @@ func main() {
 	userGroup.POST("/register/", handlers.Register)
 	userGroup.GET("/", handlers.QueryUser)
 
+	commentGroup := douyin.Group("/comment")
+	commentGroup.POST("/action/", handlers.CommentAction)
+	commentGroup.GET("/list/", handlers.CommentList)
+
 	if err := http.ListenAndServe(":8086", r); err != nil {
 		klog.Fatal(err)
 	}
