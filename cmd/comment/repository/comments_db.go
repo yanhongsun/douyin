@@ -23,9 +23,10 @@ type repositoryCom struct {
 	// can choose
 	VideoId int64         `json:"video_id"`
 	User    *rpc.UserInfo `json:"user"`
+	UserId  int64         `json:user_id`
 }
 
-func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment, commentId, videoId int64, user *rpc.UserInfo) error {
+func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment, commentId, videoId int64, user *rpc.UserInfo, userId int64) error {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
@@ -40,6 +41,7 @@ func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment,
 		CommentId: commentId,
 		VideoId:   videoId,
 		User:      user,
+		UserId:    userId,
 	}
 
 	data, err := json.Marshal(dataRepository)
@@ -118,7 +120,7 @@ func ConsumeComments(ctx context.Context) {
 			ProducerCommentsCache(ctx, 2, data.Comment.VideoID, nil, pack.ChangeComment(data.Comment, data.User), -10001, -10001)
 			continue
 		} else if data.Type == 2 {
-			err = mysqldb.DeleteComment(ctx, data.CommentId, data.VideoId, data.User.ID)
+			err = mysqldb.DeleteComment(ctx, data.CommentId, data.VideoId, data.UserId)
 			if err != nil {
 				continue
 			}

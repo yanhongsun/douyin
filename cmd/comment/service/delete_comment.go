@@ -23,7 +23,7 @@ func (s *DeleteCommentService) DeleteComment(req *comment.DeleteCommentRequest) 
 	key := strconv.FormatInt(req.CommentId, 10)
 
 	_, err, _ := gDeleteComment.Do(key, func() (interface{}, error) {
-		return nil, repository.ProducerComment(s.ctx, 2, nil, req.CommentId, req.VideoId, nil)
+		return nil, repository.ProducerComment(s.ctx, 2, nil, req.CommentId, req.VideoId, nil, req.UserId)
 	})
 
 	return err
