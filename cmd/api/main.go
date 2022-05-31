@@ -3,6 +3,7 @@ package main
 import (
 	"douyin/cmd/api/handlers"
 	"douyin/cmd/api/rpc"
+	"douyin/pkg/tracer"
 	"net/http"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -10,6 +11,7 @@ import (
 )
 
 func Init() {
+	tracer.InitJaeger("api")
 	rpc.InitRPC()
 }
 
@@ -17,12 +19,28 @@ func main() {
 	Init()
 	r := gin.New()
 	douyin := r.Group("/douyin")
-	douyin.GET("/relation/follower/list/", handlers.GetFollowerList)
-	douyin.GET("/relation/follow/list/", handlers.GetFollowList)
-	douyin.GET("/relation/isfollow/", handlers.IsFollow)
-	douyin.POST("/relation/action/", handlers.RelationAction)
+	relationGroup := douyin.Group("/relation")
+	relationGroup.GET("/follower/list/", handlers.GetFollowerList)
+	relationGroup.GET("/follow/list/", handlers.GetFollowList)
+	relationGroup.GET("/isfollow/", handlers.IsFollow)
+	relationGroup.POST("/action/", handlers.RelationAction)
 
-	if err := http.ListenAndServe(":8081", r); err != nil {
+	r.Static("/resource", "./resource")
+
+	douyin.GET("/feed/", handlers.GetFeed)
+	douyin.GET("/publish/list/", handlers.GetPublishList)
+	douyin.POST("/publish/action/", handlers.PublishVideo)
+	//vid.GET("/verifyVideoId/", handlers.VerifyVideoId)
+	userGroup := douyin.Group("/user")
+	userGroup.POST("/login/", handlers.Login)
+	userGroup.POST("/register/", handlers.Register)
+	userGroup.GET("/", handlers.QueryUser)
+
+	commentGroup := douyin.Group("/comment")
+	commentGroup.POST("/action/", handlers.CommentAction)
+	commentGroup.GET("/list/", handlers.CommentList)
+
+	if err := http.ListenAndServe(":8086", r); err != nil {
 		klog.Fatal(err)
 	}
 }

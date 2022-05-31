@@ -1,0 +1,26 @@
+CommentServer:
+  EtcdHost: localhost:2379
+  CommentServName: comment
+  CommentServHost: localhost:8888
+
+MysqlDatabase:
+  User: gorm
+  Password: gorm
+  Host: localhost:3306
+  Name: douyin
+  Charset: utf8
+  ParseTime: True
+
+RedisDatabase:
+  Host: localhost:6379
+  Password: gorm
+
+Kafka:
+  Host: localhost:9092
+  TopicComments: comments_cache
+  TopicCommentNumber: comment_number_cache
+
+TencentCloud:
+  TextModeration: false
+  SecretId: AKIDNaOxHMBlBMHwMXS8YjhQu98sMbbLp32m
+  SecretKey: XpreBTWJr9ByVnpcASWMwHNDn8D2bvzn

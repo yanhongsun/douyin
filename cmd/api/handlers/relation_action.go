@@ -19,12 +19,12 @@ func RelationAction(c *gin.Context) {
 	}
 	//TODO错误处理
 	if err := c.BindQuery(&queryVar); err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseRelation(c, errno.ConvertErr(err), nil)
 		return
 	}
 	//TODO错误处理
 	if queryVar.UserId < 0 {
-		SendResponse(c, errno.ParamErr, nil)
+		SendResponseRelation(c, errno.ParamErr, nil)
 		return
 	}
 

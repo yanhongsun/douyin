@@ -18,14 +18,14 @@ func GetFollowerList(c *gin.Context) {
 	}
 	//TODO错误处理
 	if err := c.BindQuery(&queryVar); err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseRelation(c, errno.ConvertErr(err), nil)
 		return
 	}
 	fmt.Println(queryVar.UserId)
 	fmt.Println(queryVar.Token)
 	//TODO错误处理
 	if queryVar.UserId < 0 {
-		SendResponse(c, errno.ParamErr, nil)
+		SendResponseRelation(c, errno.ParamErr, nil)
 		return
 	}
 	/*
@@ -42,9 +42,8 @@ func GetFollowerList(c *gin.Context) {
 	}
 	user_list, err := rpc.GetFollowerList(context.Background(), &req)
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseRelation(c, errno.ConvertErr(err), nil)
 		return
 	}
-	// TODO  这里序列化有问题
-	SendResponse(c, errno.Success, user_list)
+	SendResponseRelation(c, errno.Success, user_list)
 }

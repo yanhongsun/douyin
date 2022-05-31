@@ -17,12 +17,12 @@ func IsFollow(c *gin.Context) {
 	}
 	//TODO错误处理
 	if err := c.BindQuery(&queryVar); err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseRelation(c, errno.ConvertErr(err), nil)
 		return
 	}
 	//TODO错误处理
 	if queryVar.UserId < 0 {
-		SendResponse(c, errno.ParamErr, nil)
+		SendResponseRelation(c, errno.ParamErr, nil)
 		return
 	}
 	req := relation.IsFollowRequest{
@@ -32,8 +32,8 @@ func IsFollow(c *gin.Context) {
 	}
 	tag, err := rpc.IsFollow(context.Background(), &req)
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), false)
+		SendResponseRelation(c, errno.ConvertErr(err), false)
 		return
 	}
-	SendResponse(c, errno.Success, tag)
+	SendResponseRelation(c, errno.Success, tag)
 }
