@@ -35,10 +35,10 @@ func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *video.PublishV
 	}
 	//将视频数据命名，保存路径
 	name := GetName(userId)
-	playUrl := fmt.Sprintf("%s/%s.mp4", constants.VideoSavePath, name)
+	playUrl := fmt.Sprintf("%s/%s/%s.mp4", constants.VideoResourceIpPort, constants.VideoSavePath, name)
 	assist.SaveVideo(playUrl, req.Data)
 	//从视频数据中提取封面，保存路径
-	coverUrl := fmt.Sprintf("%s/%s.png", constants.VideoCoverSavePath, name)
+	coverUrl := fmt.Sprintf("%s/%s/%s.png", constants.VideoResourceIpPort, constants.VideoCoverSavePath, name)
 	assist.GetCover(coverUrl, playUrl)
 	//为db.Video类型变量赋值
 	//为db.Video类型变量写进数据库
