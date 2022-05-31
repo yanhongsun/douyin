@@ -2,6 +2,7 @@ package main
 
 import (
 	"douyin/cmd/api/handlers"
+	"douyin/cmd/api/middleware"
 	"douyin/cmd/api/rpc"
 	"net/http"
 
@@ -28,11 +29,11 @@ func main() {
 	userGroup := douyin.Group("/user")
 	userGroup.POST("/login/", handlers.Login)
 	userGroup.POST("/register/", handlers.Register)
-	userGroup.GET("/", handlers.QueryUser)
+	userGroup.GET("/", middleware.AuthMiddleware(), handlers.QueryUser)
 	// TODO: remove the handler for checking user existence
 	userGroup.GET("/exist/", handlers.IsUserExisted)
 
-	if err := http.ListenAndServe(":8090", r); err != nil {
+	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)
 	}
 }

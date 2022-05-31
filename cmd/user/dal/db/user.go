@@ -2,8 +2,8 @@ package db
 
 import (
 	"context"
-	"douyin/cmd/user/global"
 	"douyin/kitex_gen/user"
+	"douyin/pkg/constants"
 )
 
 // User user model
@@ -17,7 +17,7 @@ type User struct {
 }
 
 func (u *User) TableName() string {
-	return global.DatabaseSetting.UserTableName
+	return constants.UserTableName
 }
 
 // GetUserInfo  do db operation

@@ -2,12 +2,11 @@ package main
 
 import (
 	"context"
-	"douyin/cmd/user/global"
 	"douyin/cmd/user/pack"
 	"douyin/cmd/user/service"
 	"douyin/kitex_gen/user"
+	"douyin/middleware"
 	"douyin/pkg/errno"
-	"fmt"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -26,9 +25,12 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.DouyinUserRe
 		return resp, nil
 	}
 
-	token, _ := global.Jwt.CreateToken(global.CustomClaims{
-		Id: userID,
-	})
+	// token, _ := global.Jwt.CreateToken(userID, global.JWTSetting.AppKey, global.JWTSetting.AppSecret)
+	token, err := middleware.CreateToken(userID)
+	if err != nil {
+		resp = pack.BuildRegisterResp(err, -1, "")
+		return resp, nil
+	}
 
 	resp = pack.BuildRegisterResp(nil, userID, token)
 	return resp, nil
@@ -47,9 +49,12 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 		return resp, nil
 	}
 
-	token, _ := global.Jwt.CreateToken(global.CustomClaims{
-		Id: userID,
-	})
+	// token, _ := global.Jwt.CreateToken(userID, global.JWTSetting.AppKey, global.JWTSetting.AppSecret)
+	token, err := middleware.CreateToken(userID)
+	if err != nil {
+		resp = pack.BuildLoginResp(err, -1, "")
+		return resp, nil
+	}
 
 	resp = pack.BuildLoginResp(nil, userID, token)
 	return resp, nil
@@ -59,15 +64,6 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
 	if req.UserId == 0 {
 		resp = pack.BuildGetUserResp(errno.ParamErr, nil)
-		return resp, nil
-	}
-
-	claim, err := global.Jwt.ParseToken(req.Token)
-	if err != nil {
-		resp = pack.BuildGetUserResp(err, nil)
-		return resp, nil
-	} else if claim.Id != int64(req.UserId) {
-		resp = pack.BuildGetUserResp(errno.TokenInvalidErr, nil)
 		return resp, nil
 	}
 
@@ -82,7 +78,6 @@ func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserReque
 
 // IsUserExisted implements the UserServiceImpl interface.
 func (s *UserServiceImpl) IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest) (resp *user.DouyinUserExistResponse, err error) {
-	fmt.Println("============ IsUserExisted", req.TargetId)
 	if req.TargetId == 0 {
 		resp = pack.BuildUserExistResp(errno.ParamErr, false)
 		return resp, nil
