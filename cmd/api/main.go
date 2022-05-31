@@ -17,12 +17,12 @@ func main() {
 	Init()
 	r := gin.New()
 	douyin := r.Group("/douyin")
-	douyin.GET("/follower/list/", handlers.GetFollowerList)
-	douyin.GET("/follow/list/", handlers.GetFollowList)
-	douyin.GET("/isfollow/", handlers.IsFollow)
-	douyin.POST("/action/", handlers.RelationAction)
+	douyin.GET("/relation/follower/list/", handlers.GetFollowerList)
+	douyin.GET("/relation/follow/list/", handlers.GetFollowList)
+	douyin.GET("/relation/isfollow/", handlers.IsFollow)
+	douyin.POST("/relation/action/", handlers.RelationAction)
 
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	if err := http.ListenAndServe(":8081", r); err != nil {
 		klog.Fatal(err)
 	}
 }

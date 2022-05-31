@@ -5,11 +5,13 @@ import (
 	"douyin/cmd/api/rpc"
 	"douyin/kitex_gen/relation"
 	"douyin/pkg/errno"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GetFollowerList(c *gin.Context) {
+	fmt.Println("sun yan hong")
 	var queryVar struct {
 		UserId int64  `json:"user_id" form:"user_id"`
 		Token  string `json:"token" form:"token"`
@@ -19,6 +21,8 @@ func GetFollowerList(c *gin.Context) {
 		SendResponse(c, errno.ConvertErr(err), nil)
 		return
 	}
+	fmt.Println(queryVar.UserId)
+	fmt.Println(queryVar.Token)
 	//TODO错误处理
 	if queryVar.UserId < 0 {
 		SendResponse(c, errno.ParamErr, nil)
