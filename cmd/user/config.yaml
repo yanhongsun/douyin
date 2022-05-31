@@ -1,14 +1,14 @@
 Server:
-  EtcdHost: 127.0.0.1:2379
+  EtcdHost: 127.0.0.1:4100
   ApiServName: api
   ApiServHost: :8080
   UserServName: user
   UserServHost: 127.0.0.1:8889
 Database:
   DBType: mysql
-  Username: root
+  Username: douyin
   Password: 111111
-  Host: 127.0.0.1:3306
+  Host: 127.0.0.1:9910
   DBName: douyin
   Charset: utf8
   ParseTime: True

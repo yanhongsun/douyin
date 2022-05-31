@@ -7,15 +7,15 @@ services:
       - 9910:3306
     environment:
       - MYSQL_DATABASE=douyin
-      - MYSQL_USER=douyin_admin
-      - MYSQL_PASSWORD=rootroot
+      - MYSQL_USER=douyin
+      - MYSQL_PASSWORD=111111
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
   Etcd:
     image: 'bitnami/etcd:latest'
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
     ports:
-      - 2379:2379
+      - 4100:2379
   jaeger:
     image: jaegertracing/all-in-one:latest
     ports:
