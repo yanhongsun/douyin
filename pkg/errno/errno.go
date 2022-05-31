@@ -1,18 +1,3 @@
-// Copyright 2021 CloudWeGo Authors
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-
 package errno
 
 import (
@@ -27,6 +12,18 @@ const (
 	LoginErrCode            = 10003
 	UserNotExistErrCode     = 10004
 	UserAlreadyExistErrCode = 10005
+	VideoErrCode            = 10006
+	TokenExpiredErrCode     = 10031
+	TokenNotValidYetErrCode = 10032
+	TokenMalformedErrCode   = 10033
+	TokenInvalidErrCode     = 10034
+
+	CommentServiceErrCode = 40001
+	CommentParamErrCode   = 40002
+	UserIdErrCode         = 40003
+	VideoIdErrCode        = 40004
+	CommentIdErrCode      = 40005
+	ActionTypeErrCode     = 40006
 )
 
 type ErrNo struct {
@@ -48,15 +45,26 @@ func (e ErrNo) WithMessage(msg string) ErrNo {
 }
 
 var (
-	Success             = NewErrNo(SuccessCode, "Success")
 	ServiceErr          = NewErrNo(ServiceErrCode, "Service is unable to start successfully")
 	ParamErr            = NewErrNo(ParamErrCode, "Wrong Parameter has been given")
 	LoginErr            = NewErrNo(LoginErrCode, "Wrong username or password")
 	UserNotExistErr     = NewErrNo(UserNotExistErrCode, "User does not exists")
 	UserAlreadyExistErr = NewErrNo(UserAlreadyExistErrCode, "User already exists")
+	VideoErr            = NewErrNo(VideoErrCode, "Video is Empty or Invalid")
+	TokenExpiredErr     = NewErrNo(TokenExpiredErrCode, "Token is expired")
+	TokenNotValidYetErr = NewErrNo(TokenNotValidYetErrCode, "Token is not active yet")
+	TokenMalformedErr   = NewErrNo(TokenMalformedErrCode, "That's not even a token")
+	TokenInvalidErr     = NewErrNo(TokenInvalidErrCode, "Couldn't handle this token")
+
+	Success           = NewErrNo(SuccessCode, "Success")
+	CommentServiceErr = NewErrNo(CommentServiceErrCode, "Service is unable to start successfully")
+	CommentParamErr   = NewErrNo(CommentParamErrCode, "Wrong Comment Parameter has been given")
+	UserIdErr         = NewErrNo(UserIdErrCode, "Wrong UserId Parameter or Wrong UserId has been given")
+	VideoIdErr        = NewErrNo(VideoIdErrCode, "Wrong VedioId Parameter or Wrong VedioId has been given")
+	CommentIdErr      = NewErrNo(CommentIdErrCode, "Wrong CommentId Parameter or Wrong CommentId has been given")
+	ActionTypeErr     = NewErrNo(ActionTypeErrCode, "Wrong ActionTypeErr has been given")
 )
 
-// ConvertErr convert error to Errno
 func ConvertErr(err error) ErrNo {
 	Err := ErrNo{}
 	if errors.As(err, &Err) {
