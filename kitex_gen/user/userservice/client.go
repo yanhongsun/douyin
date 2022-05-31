@@ -4,9 +4,9 @@ package userservice
 
 import (
 	"context"
+	"douyin/kitex_gen/user"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/client/callopt"
-	"douyin/kitex_gen/user"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
