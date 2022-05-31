@@ -22,7 +22,6 @@ func GetPublishList(c *gin.Context) {
 	if err := c.BindQuery(&queryVar); err != nil {
 		SendResponseV(c, errno.ConvertErr(err), nil)
 	}
-
 	//token处理
 
 	if queryVar.Token != "" {

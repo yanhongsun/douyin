@@ -5,6 +5,7 @@ import (
 	"douyin/cmd/api/rpc"
 	"douyin/kitex_gen/user"
 	"douyin/pkg/errno"
+
 	"github.com/gin-gonic/gin"
 )
 

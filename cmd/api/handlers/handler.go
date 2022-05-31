@@ -7,6 +7,34 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ResponseRelation struct {
+	Code    int32       `json:"status_code"`
+	Message string      `json:"status_msg"`
+	Data    interface{} `json:"user_list"`
+}
+type BaseResponse struct {
+	Code    int32  `json:"status_code"`
+	Message string `json:"status_msg"`
+}
+
+// SendResponse pack response
+func SendResponseRelation(c *gin.Context, err error, data interface{}) {
+	Err := errno.ConvertErr(err)
+	c.JSON(http.StatusOK, ResponseRelation{
+		Code:    Err.ErrCode,
+		Message: Err.ErrMsg,
+		Data:    data,
+	})
+}
+
+func SendBaseResponse(c *gin.Context, err error) {
+	Err := errno.ConvertErr(err)
+	c.JSON(http.StatusOK, BaseResponse{
+		Code:    Err.ErrCode,
+		Message: Err.ErrMsg,
+	})
+}
+
 // RequestParam req format for register/login
 type RequestParam struct {
 	Username string `json:"username" form:"username"`

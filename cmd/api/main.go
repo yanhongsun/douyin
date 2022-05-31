@@ -19,8 +19,14 @@ func Init() {
 func main() {
 	Init()
 	r := gin.New()
-	r.Static("/resource", "./resource")
 	douyin := r.Group("/douyin")
+	relationGroup := douyin.Group("/relation")
+	relationGroup.GET("/follower/list/", handlers.GetFollowerList)
+	relationGroup.GET("/follow/list/", handlers.GetFollowList)
+	relationGroup.GET("/isfollow/", handlers.IsFollow)
+	relationGroup.POST("/action/", handlers.RelationAction)
+
+	r.Static("/resource", "./resource")
 
 	douyin.GET("/feed/", handlers.GetFeed)
 	douyin.GET("/publish/list/", handlers.GetPublishList)
@@ -31,7 +37,11 @@ func main() {
 	userGroup.POST("/register/", handlers.Register)
 	userGroup.GET("/", middleware.AuthMiddleware(), handlers.QueryCurUser)
 
-	if err := http.ListenAndServe(":8090", r); err != nil {
+	commentGroup := douyin.Group("/comment")
+	commentGroup.POST("/action/", handlers.CommentAction)
+	commentGroup.GET("/list/", handlers.CommentList)
+
+	if err := http.ListenAndServe(":8086", r); err != nil {
 		klog.Fatal(err)
 	}
 }
