@@ -74,8 +74,8 @@ type UserInfo struct {
 	IsFollow      bool   `json:"is_follow"`
 }
 
-func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*UserInfo, error) {
-	resp, err := userClient.GetUser(ctx, req)
+func QueryUser(ctx context.Context, req *user.DouyinUserRequest) (*UserInfo, error) {
+	resp, err := userClient.QueryCurUser(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -92,6 +92,7 @@ func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*UserInfo, e
 	return &userInfo, nil
 }
 
+// TODO: remove later
 func IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest) (bool, error) {
 	resp, err := userClient.IsUserExisted(ctx, req)
 	if err != nil {
@@ -102,4 +103,23 @@ func IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest) (bool,
 	}
 
 	return resp.IsExisted, nil
+}
+
+// TODO: remove later
+func QueryOtherUser(ctx context.Context, req *user.DouyinQueryUserRequest) (*UserInfo, error) {
+	resp, err := userClient.QueryOtherUser(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
+	}
+
+	var userInfo UserInfo
+	userInfo.ID = resp.User.Id
+	userInfo.Name = resp.User.Name
+	userInfo.FollowCount = resp.User.GetFollowCount()
+	userInfo.FollowerCount = resp.User.GetFollowerCount()
+	userInfo.IsFollow = resp.User.IsFollow
+	return &userInfo, nil
 }

@@ -2705,14 +2705,913 @@ func (p *DouyinUserExistResponse) Field3DeepEqual(src bool) bool {
 	return true
 }
 
+type DouyinQueryUserRequest struct {
+	UserId   int64  `thrift:"user_id,1,required" json:"user_id"`
+	TargetId int64  `thrift:"target_id,2,required" json:"target_id"`
+	Token    string `thrift:"token,3,required" json:"token"`
+}
+
+func NewDouyinQueryUserRequest() *DouyinQueryUserRequest {
+	return &DouyinQueryUserRequest{}
+}
+
+func (p *DouyinQueryUserRequest) GetUserId() (v int64) {
+	return p.UserId
+}
+
+func (p *DouyinQueryUserRequest) GetTargetId() (v int64) {
+	return p.TargetId
+}
+
+func (p *DouyinQueryUserRequest) GetToken() (v string) {
+	return p.Token
+}
+func (p *DouyinQueryUserRequest) SetUserId(val int64) {
+	p.UserId = val
+}
+func (p *DouyinQueryUserRequest) SetTargetId(val int64) {
+	p.TargetId = val
+}
+func (p *DouyinQueryUserRequest) SetToken(val string) {
+	p.Token = val
+}
+
+var fieldIDToName_DouyinQueryUserRequest = map[int16]string{
+	1: "user_id",
+	2: "target_id",
+	3: "token",
+}
+
+func (p *DouyinQueryUserRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetUserId bool = false
+	var issetTargetId bool = false
+	var issetToken bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUserId = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetTargetId = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetToken = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetUserId {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetTargetId {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetToken {
+		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_DouyinQueryUserRequest[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_DouyinQueryUserRequest[fieldId]))
+}
+
+func (p *DouyinQueryUserRequest) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UserId = v
+	}
+	return nil
+}
+
+func (p *DouyinQueryUserRequest) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.TargetId = v
+	}
+	return nil
+}
+
+func (p *DouyinQueryUserRequest) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Token = v
+	}
+	return nil
+}
+
+func (p *DouyinQueryUserRequest) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("douyin_query_user_request"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *DouyinQueryUserRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UserId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *DouyinQueryUserRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("target_id", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.TargetId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *DouyinQueryUserRequest) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("token", thrift.STRING, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Token); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
+func (p *DouyinQueryUserRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DouyinQueryUserRequest(%+v)", *p)
+}
+
+func (p *DouyinQueryUserRequest) DeepEqual(ano *DouyinQueryUserRequest) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.UserId) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.TargetId) {
+		return false
+	}
+	if !p.Field3DeepEqual(ano.Token) {
+		return false
+	}
+	return true
+}
+
+func (p *DouyinQueryUserRequest) Field1DeepEqual(src int64) bool {
+
+	if p.UserId != src {
+		return false
+	}
+	return true
+}
+func (p *DouyinQueryUserRequest) Field2DeepEqual(src int64) bool {
+
+	if p.TargetId != src {
+		return false
+	}
+	return true
+}
+func (p *DouyinQueryUserRequest) Field3DeepEqual(src string) bool {
+
+	if strings.Compare(p.Token, src) != 0 {
+		return false
+	}
+	return true
+}
+
+type DouyinMqueryUserRequest struct {
+	UserId    int64   `thrift:"user_id,1,required" json:"user_id"`
+	TargetIds []int64 `thrift:"target_ids,2,required" json:"target_ids"`
+}
+
+func NewDouyinMqueryUserRequest() *DouyinMqueryUserRequest {
+	return &DouyinMqueryUserRequest{}
+}
+
+func (p *DouyinMqueryUserRequest) GetUserId() (v int64) {
+	return p.UserId
+}
+
+func (p *DouyinMqueryUserRequest) GetTargetIds() (v []int64) {
+	return p.TargetIds
+}
+func (p *DouyinMqueryUserRequest) SetUserId(val int64) {
+	p.UserId = val
+}
+func (p *DouyinMqueryUserRequest) SetTargetIds(val []int64) {
+	p.TargetIds = val
+}
+
+var fieldIDToName_DouyinMqueryUserRequest = map[int16]string{
+	1: "user_id",
+	2: "target_ids",
+}
+
+func (p *DouyinMqueryUserRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetUserId bool = false
+	var issetTargetIds bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUserId = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetTargetIds = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetUserId {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetTargetIds {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_DouyinMqueryUserRequest[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_DouyinMqueryUserRequest[fieldId]))
+}
+
+func (p *DouyinMqueryUserRequest) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UserId = v
+	}
+	return nil
+}
+
+func (p *DouyinMqueryUserRequest) ReadField2(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	p.TargetIds = make([]int64, 0, size)
+	for i := 0; i < size; i++ {
+		var _elem int64
+		if v, err := iprot.ReadI64(); err != nil {
+			return err
+		} else {
+			_elem = v
+		}
+
+		p.TargetIds = append(p.TargetIds, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *DouyinMqueryUserRequest) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("douyin_mquery_user_request"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *DouyinMqueryUserRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UserId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *DouyinMqueryUserRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("target_ids", thrift.LIST, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.I64, len(p.TargetIds)); err != nil {
+		return err
+	}
+	for _, v := range p.TargetIds {
+		if err := oprot.WriteI64(v); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *DouyinMqueryUserRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DouyinMqueryUserRequest(%+v)", *p)
+}
+
+func (p *DouyinMqueryUserRequest) DeepEqual(ano *DouyinMqueryUserRequest) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.UserId) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.TargetIds) {
+		return false
+	}
+	return true
+}
+
+func (p *DouyinMqueryUserRequest) Field1DeepEqual(src int64) bool {
+
+	if p.UserId != src {
+		return false
+	}
+	return true
+}
+func (p *DouyinMqueryUserRequest) Field2DeepEqual(src []int64) bool {
+
+	if len(p.TargetIds) != len(src) {
+		return false
+	}
+	for i, v := range p.TargetIds {
+		_src := src[i]
+		if v != _src {
+			return false
+		}
+	}
+	return true
+}
+
+type DouyinMqueryUserResponse struct {
+	StatusCode int32   `thrift:"status_code,1,required" json:"status_code"`
+	StatusMsg  *string `thrift:"status_msg,2" json:"status_msg,omitempty"`
+	Users      []*User `thrift:"users,3,required" json:"users"`
+}
+
+func NewDouyinMqueryUserResponse() *DouyinMqueryUserResponse {
+	return &DouyinMqueryUserResponse{}
+}
+
+func (p *DouyinMqueryUserResponse) GetStatusCode() (v int32) {
+	return p.StatusCode
+}
+
+var DouyinMqueryUserResponse_StatusMsg_DEFAULT string
+
+func (p *DouyinMqueryUserResponse) GetStatusMsg() (v string) {
+	if !p.IsSetStatusMsg() {
+		return DouyinMqueryUserResponse_StatusMsg_DEFAULT
+	}
+	return *p.StatusMsg
+}
+
+func (p *DouyinMqueryUserResponse) GetUsers() (v []*User) {
+	return p.Users
+}
+func (p *DouyinMqueryUserResponse) SetStatusCode(val int32) {
+	p.StatusCode = val
+}
+func (p *DouyinMqueryUserResponse) SetStatusMsg(val *string) {
+	p.StatusMsg = val
+}
+func (p *DouyinMqueryUserResponse) SetUsers(val []*User) {
+	p.Users = val
+}
+
+var fieldIDToName_DouyinMqueryUserResponse = map[int16]string{
+	1: "status_code",
+	2: "status_msg",
+	3: "users",
+}
+
+func (p *DouyinMqueryUserResponse) IsSetStatusMsg() bool {
+	return p.StatusMsg != nil
+}
+
+func (p *DouyinMqueryUserResponse) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetStatusCode bool = false
+	var issetUsers bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetStatusCode = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUsers = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetStatusCode {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUsers {
+		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_DouyinMqueryUserResponse[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_DouyinMqueryUserResponse[fieldId]))
+}
+
+func (p *DouyinMqueryUserResponse) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		p.StatusCode = v
+	}
+	return nil
+}
+
+func (p *DouyinMqueryUserResponse) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.StatusMsg = &v
+	}
+	return nil
+}
+
+func (p *DouyinMqueryUserResponse) ReadField3(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	p.Users = make([]*User, 0, size)
+	for i := 0; i < size; i++ {
+		_elem := NewUser()
+		if err := _elem.Read(iprot); err != nil {
+			return err
+		}
+
+		p.Users = append(p.Users, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *DouyinMqueryUserResponse) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("douyin_mquery_user_response"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *DouyinMqueryUserResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("status_code", thrift.I32, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI32(p.StatusCode); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *DouyinMqueryUserResponse) writeField2(oprot thrift.TProtocol) (err error) {
+	if p.IsSetStatusMsg() {
+		if err = oprot.WriteFieldBegin("status_msg", thrift.STRING, 2); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.StatusMsg); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *DouyinMqueryUserResponse) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("users", thrift.LIST, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Users)); err != nil {
+		return err
+	}
+	for _, v := range p.Users {
+		if err := v.Write(oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
+func (p *DouyinMqueryUserResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DouyinMqueryUserResponse(%+v)", *p)
+}
+
+func (p *DouyinMqueryUserResponse) DeepEqual(ano *DouyinMqueryUserResponse) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.StatusCode) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.StatusMsg) {
+		return false
+	}
+	if !p.Field3DeepEqual(ano.Users) {
+		return false
+	}
+	return true
+}
+
+func (p *DouyinMqueryUserResponse) Field1DeepEqual(src int32) bool {
+
+	if p.StatusCode != src {
+		return false
+	}
+	return true
+}
+func (p *DouyinMqueryUserResponse) Field2DeepEqual(src *string) bool {
+
+	if p.StatusMsg == src {
+		return true
+	} else if p.StatusMsg == nil || src == nil {
+		return false
+	}
+	if strings.Compare(*p.StatusMsg, *src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *DouyinMqueryUserResponse) Field3DeepEqual(src []*User) bool {
+
+	if len(p.Users) != len(src) {
+		return false
+	}
+	for i, v := range p.Users {
+		_src := src[i]
+		if !v.DeepEqual(_src) {
+			return false
+		}
+	}
+	return true
+}
+
 type UserService interface {
 	CreateUser(ctx context.Context, req *DouyinUserRegisterRequest) (r *DouyinUserRegisterResponse, err error)
 
 	CheckUser(ctx context.Context, req *DouyinUserLoginRequest) (r *DouyinUserLoginResponse, err error)
 
-	GetUser(ctx context.Context, req *DouyinUserRequest) (r *DouyinUserResponse, err error)
+	QueryCurUser(ctx context.Context, req *DouyinUserRequest) (r *DouyinUserResponse, err error)
+
+	QueryOtherUser(ctx context.Context, req *DouyinQueryUserRequest) (r *DouyinUserResponse, err error)
 
 	IsUserExisted(ctx context.Context, req *DouyinUserExistRequest) (r *DouyinUserExistResponse, err error)
+
+	MultiQueryUser(ctx context.Context, req *DouyinMqueryUserRequest) (r *DouyinMqueryUserResponse, err error)
 }
 
 type UserServiceClient struct {
@@ -2761,11 +3660,21 @@ func (p *UserServiceClient) CheckUser(ctx context.Context, req *DouyinUserLoginR
 	return _result.GetSuccess(), nil
 }
 
-func (p *UserServiceClient) GetUser(ctx context.Context, req *DouyinUserRequest) (r *DouyinUserResponse, err error) {
-	var _args UserServiceGetUserArgs
+func (p *UserServiceClient) QueryCurUser(ctx context.Context, req *DouyinUserRequest) (r *DouyinUserResponse, err error) {
+	var _args UserServiceQueryCurUserArgs
 	_args.Req = req
-	var _result UserServiceGetUserResult
-	if err = p.Client_().Call(ctx, "GetUser", &_args, &_result); err != nil {
+	var _result UserServiceQueryCurUserResult
+	if err = p.Client_().Call(ctx, "QueryCurUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *UserServiceClient) QueryOtherUser(ctx context.Context, req *DouyinQueryUserRequest) (r *DouyinUserResponse, err error) {
+	var _args UserServiceQueryOtherUserArgs
+	_args.Req = req
+	var _result UserServiceQueryOtherUserResult
+	if err = p.Client_().Call(ctx, "QueryOtherUser", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -2776,6 +3685,16 @@ func (p *UserServiceClient) IsUserExisted(ctx context.Context, req *DouyinUserEx
 	_args.Req = req
 	var _result UserServiceIsUserExistedResult
 	if err = p.Client_().Call(ctx, "IsUserExisted", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *UserServiceClient) MultiQueryUser(ctx context.Context, req *DouyinMqueryUserRequest) (r *DouyinMqueryUserResponse, err error) {
+	var _args UserServiceMultiQueryUserArgs
+	_args.Req = req
+	var _result UserServiceMultiQueryUserResult
+	if err = p.Client_().Call(ctx, "MultiQueryUser", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -2803,8 +3722,10 @@ func NewUserServiceProcessor(handler UserService) *UserServiceProcessor {
 	self := &UserServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
 	self.AddToProcessorMap("CreateUser", &userServiceProcessorCreateUser{handler: handler})
 	self.AddToProcessorMap("CheckUser", &userServiceProcessorCheckUser{handler: handler})
-	self.AddToProcessorMap("GetUser", &userServiceProcessorGetUser{handler: handler})
+	self.AddToProcessorMap("QueryCurUser", &userServiceProcessorQueryCurUser{handler: handler})
+	self.AddToProcessorMap("QueryOtherUser", &userServiceProcessorQueryOtherUser{handler: handler})
 	self.AddToProcessorMap("IsUserExisted", &userServiceProcessorIsUserExisted{handler: handler})
+	self.AddToProcessorMap("MultiQueryUser", &userServiceProcessorMultiQueryUser{handler: handler})
 	return self
 }
 func (p *UserServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -2921,16 +3842,16 @@ func (p *userServiceProcessorCheckUser) Process(ctx context.Context, seqId int32
 	return true, err
 }
 
-type userServiceProcessorGetUser struct {
+type userServiceProcessorQueryCurUser struct {
 	handler UserService
 }
 
-func (p *userServiceProcessorGetUser) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := UserServiceGetUserArgs{}
+func (p *userServiceProcessorQueryCurUser) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := UserServiceQueryCurUserArgs{}
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
-		oprot.WriteMessageBegin("GetUser", thrift.EXCEPTION, seqId)
+		oprot.WriteMessageBegin("QueryCurUser", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
@@ -2939,11 +3860,11 @@ func (p *userServiceProcessorGetUser) Process(ctx context.Context, seqId int32, 
 
 	iprot.ReadMessageEnd()
 	var err2 error
-	result := UserServiceGetUserResult{}
+	result := UserServiceQueryCurUserResult{}
 	var retval *DouyinUserResponse
-	if retval, err2 = p.handler.GetUser(ctx, args.Req); err2 != nil {
-		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetUser: "+err2.Error())
-		oprot.WriteMessageBegin("GetUser", thrift.EXCEPTION, seqId)
+	if retval, err2 = p.handler.QueryCurUser(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing QueryCurUser: "+err2.Error())
+		oprot.WriteMessageBegin("QueryCurUser", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
@@ -2951,7 +3872,55 @@ func (p *userServiceProcessorGetUser) Process(ctx context.Context, seqId int32, 
 	} else {
 		result.Success = retval
 	}
-	if err2 = oprot.WriteMessageBegin("GetUser", thrift.REPLY, seqId); err2 != nil {
+	if err2 = oprot.WriteMessageBegin("QueryCurUser", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type userServiceProcessorQueryOtherUser struct {
+	handler UserService
+}
+
+func (p *userServiceProcessorQueryOtherUser) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := UserServiceQueryOtherUserArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("QueryOtherUser", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := UserServiceQueryOtherUserResult{}
+	var retval *DouyinUserResponse
+	if retval, err2 = p.handler.QueryOtherUser(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing QueryOtherUser: "+err2.Error())
+		oprot.WriteMessageBegin("QueryOtherUser", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("QueryOtherUser", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -3000,6 +3969,54 @@ func (p *userServiceProcessorIsUserExisted) Process(ctx context.Context, seqId i
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("IsUserExisted", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type userServiceProcessorMultiQueryUser struct {
+	handler UserService
+}
+
+func (p *userServiceProcessorMultiQueryUser) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := UserServiceMultiQueryUserArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("MultiQueryUser", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := UserServiceMultiQueryUserResult{}
+	var retval *DouyinMqueryUserResponse
+	if retval, err2 = p.handler.MultiQueryUser(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing MultiQueryUser: "+err2.Error())
+		oprot.WriteMessageBegin("MultiQueryUser", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("MultiQueryUser", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -3693,35 +4710,35 @@ func (p *UserServiceCheckUserResult) Field0DeepEqual(src *DouyinUserLoginRespons
 	return true
 }
 
-type UserServiceGetUserArgs struct {
+type UserServiceQueryCurUserArgs struct {
 	Req *DouyinUserRequest `thrift:"req,1" json:"req"`
 }
 
-func NewUserServiceGetUserArgs() *UserServiceGetUserArgs {
-	return &UserServiceGetUserArgs{}
+func NewUserServiceQueryCurUserArgs() *UserServiceQueryCurUserArgs {
+	return &UserServiceQueryCurUserArgs{}
 }
 
-var UserServiceGetUserArgs_Req_DEFAULT *DouyinUserRequest
+var UserServiceQueryCurUserArgs_Req_DEFAULT *DouyinUserRequest
 
-func (p *UserServiceGetUserArgs) GetReq() (v *DouyinUserRequest) {
+func (p *UserServiceQueryCurUserArgs) GetReq() (v *DouyinUserRequest) {
 	if !p.IsSetReq() {
-		return UserServiceGetUserArgs_Req_DEFAULT
+		return UserServiceQueryCurUserArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *UserServiceGetUserArgs) SetReq(val *DouyinUserRequest) {
+func (p *UserServiceQueryCurUserArgs) SetReq(val *DouyinUserRequest) {
 	p.Req = val
 }
 
-var fieldIDToName_UserServiceGetUserArgs = map[int16]string{
+var fieldIDToName_UserServiceQueryCurUserArgs = map[int16]string{
 	1: "req",
 }
 
-func (p *UserServiceGetUserArgs) IsSetReq() bool {
+func (p *UserServiceQueryCurUserArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *UserServiceGetUserArgs) Read(iprot thrift.TProtocol) (err error) {
+func (p *UserServiceQueryCurUserArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -3770,7 +4787,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceGetUserArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceQueryCurUserArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -3780,7 +4797,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *UserServiceGetUserArgs) ReadField1(iprot thrift.TProtocol) error {
+func (p *UserServiceQueryCurUserArgs) ReadField1(iprot thrift.TProtocol) error {
 	p.Req = NewDouyinUserRequest()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
@@ -3788,9 +4805,9 @@ func (p *UserServiceGetUserArgs) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *UserServiceGetUserArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *UserServiceQueryCurUserArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("GetUser_args"); err != nil {
+	if err = oprot.WriteStructBegin("QueryCurUser_args"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -3817,7 +4834,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *UserServiceGetUserArgs) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *UserServiceQueryCurUserArgs) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -3834,14 +4851,14 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *UserServiceGetUserArgs) String() string {
+func (p *UserServiceQueryCurUserArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("UserServiceGetUserArgs(%+v)", *p)
+	return fmt.Sprintf("UserServiceQueryCurUserArgs(%+v)", *p)
 }
 
-func (p *UserServiceGetUserArgs) DeepEqual(ano *UserServiceGetUserArgs) bool {
+func (p *UserServiceQueryCurUserArgs) DeepEqual(ano *UserServiceQueryCurUserArgs) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -3853,7 +4870,7 @@ func (p *UserServiceGetUserArgs) DeepEqual(ano *UserServiceGetUserArgs) bool {
 	return true
 }
 
-func (p *UserServiceGetUserArgs) Field1DeepEqual(src *DouyinUserRequest) bool {
+func (p *UserServiceQueryCurUserArgs) Field1DeepEqual(src *DouyinUserRequest) bool {
 
 	if !p.Req.DeepEqual(src) {
 		return false
@@ -3861,35 +4878,35 @@ func (p *UserServiceGetUserArgs) Field1DeepEqual(src *DouyinUserRequest) bool {
 	return true
 }
 
-type UserServiceGetUserResult struct {
+type UserServiceQueryCurUserResult struct {
 	Success *DouyinUserResponse `thrift:"success,0" json:"success,omitempty"`
 }
 
-func NewUserServiceGetUserResult() *UserServiceGetUserResult {
-	return &UserServiceGetUserResult{}
+func NewUserServiceQueryCurUserResult() *UserServiceQueryCurUserResult {
+	return &UserServiceQueryCurUserResult{}
 }
 
-var UserServiceGetUserResult_Success_DEFAULT *DouyinUserResponse
+var UserServiceQueryCurUserResult_Success_DEFAULT *DouyinUserResponse
 
-func (p *UserServiceGetUserResult) GetSuccess() (v *DouyinUserResponse) {
+func (p *UserServiceQueryCurUserResult) GetSuccess() (v *DouyinUserResponse) {
 	if !p.IsSetSuccess() {
-		return UserServiceGetUserResult_Success_DEFAULT
+		return UserServiceQueryCurUserResult_Success_DEFAULT
 	}
 	return p.Success
 }
-func (p *UserServiceGetUserResult) SetSuccess(x interface{}) {
+func (p *UserServiceQueryCurUserResult) SetSuccess(x interface{}) {
 	p.Success = x.(*DouyinUserResponse)
 }
 
-var fieldIDToName_UserServiceGetUserResult = map[int16]string{
+var fieldIDToName_UserServiceQueryCurUserResult = map[int16]string{
 	0: "success",
 }
 
-func (p *UserServiceGetUserResult) IsSetSuccess() bool {
+func (p *UserServiceQueryCurUserResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *UserServiceGetUserResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *UserServiceQueryCurUserResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -3938,7 +4955,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceGetUserResult[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceQueryCurUserResult[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -3948,7 +4965,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *UserServiceGetUserResult) ReadField0(iprot thrift.TProtocol) error {
+func (p *UserServiceQueryCurUserResult) ReadField0(iprot thrift.TProtocol) error {
 	p.Success = NewDouyinUserResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
@@ -3956,9 +4973,9 @@ func (p *UserServiceGetUserResult) ReadField0(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *UserServiceGetUserResult) Write(oprot thrift.TProtocol) (err error) {
+func (p *UserServiceQueryCurUserResult) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("GetUser_result"); err != nil {
+	if err = oprot.WriteStructBegin("QueryCurUser_result"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -3985,7 +5002,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *UserServiceGetUserResult) writeField0(oprot thrift.TProtocol) (err error) {
+func (p *UserServiceQueryCurUserResult) writeField0(oprot thrift.TProtocol) (err error) {
 	if p.IsSetSuccess() {
 		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
 			goto WriteFieldBeginError
@@ -4004,14 +5021,14 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
 }
 
-func (p *UserServiceGetUserResult) String() string {
+func (p *UserServiceQueryCurUserResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("UserServiceGetUserResult(%+v)", *p)
+	return fmt.Sprintf("UserServiceQueryCurUserResult(%+v)", *p)
 }
 
-func (p *UserServiceGetUserResult) DeepEqual(ano *UserServiceGetUserResult) bool {
+func (p *UserServiceQueryCurUserResult) DeepEqual(ano *UserServiceQueryCurUserResult) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -4023,7 +5040,345 @@ func (p *UserServiceGetUserResult) DeepEqual(ano *UserServiceGetUserResult) bool
 	return true
 }
 
-func (p *UserServiceGetUserResult) Field0DeepEqual(src *DouyinUserResponse) bool {
+func (p *UserServiceQueryCurUserResult) Field0DeepEqual(src *DouyinUserResponse) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type UserServiceQueryOtherUserArgs struct {
+	Req *DouyinQueryUserRequest `thrift:"req,1" json:"req"`
+}
+
+func NewUserServiceQueryOtherUserArgs() *UserServiceQueryOtherUserArgs {
+	return &UserServiceQueryOtherUserArgs{}
+}
+
+var UserServiceQueryOtherUserArgs_Req_DEFAULT *DouyinQueryUserRequest
+
+func (p *UserServiceQueryOtherUserArgs) GetReq() (v *DouyinQueryUserRequest) {
+	if !p.IsSetReq() {
+		return UserServiceQueryOtherUserArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *UserServiceQueryOtherUserArgs) SetReq(val *DouyinQueryUserRequest) {
+	p.Req = val
+}
+
+var fieldIDToName_UserServiceQueryOtherUserArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *UserServiceQueryOtherUserArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *UserServiceQueryOtherUserArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceQueryOtherUserArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *UserServiceQueryOtherUserArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewDouyinQueryUserRequest()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *UserServiceQueryOtherUserArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("QueryOtherUser_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserServiceQueryOtherUserArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *UserServiceQueryOtherUserArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceQueryOtherUserArgs(%+v)", *p)
+}
+
+func (p *UserServiceQueryOtherUserArgs) DeepEqual(ano *UserServiceQueryOtherUserArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *UserServiceQueryOtherUserArgs) Field1DeepEqual(src *DouyinQueryUserRequest) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type UserServiceQueryOtherUserResult struct {
+	Success *DouyinUserResponse `thrift:"success,0" json:"success,omitempty"`
+}
+
+func NewUserServiceQueryOtherUserResult() *UserServiceQueryOtherUserResult {
+	return &UserServiceQueryOtherUserResult{}
+}
+
+var UserServiceQueryOtherUserResult_Success_DEFAULT *DouyinUserResponse
+
+func (p *UserServiceQueryOtherUserResult) GetSuccess() (v *DouyinUserResponse) {
+	if !p.IsSetSuccess() {
+		return UserServiceQueryOtherUserResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *UserServiceQueryOtherUserResult) SetSuccess(x interface{}) {
+	p.Success = x.(*DouyinUserResponse)
+}
+
+var fieldIDToName_UserServiceQueryOtherUserResult = map[int16]string{
+	0: "success",
+}
+
+func (p *UserServiceQueryOtherUserResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *UserServiceQueryOtherUserResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceQueryOtherUserResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *UserServiceQueryOtherUserResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewDouyinUserResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *UserServiceQueryOtherUserResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("QueryOtherUser_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserServiceQueryOtherUserResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *UserServiceQueryOtherUserResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceQueryOtherUserResult(%+v)", *p)
+}
+
+func (p *UserServiceQueryOtherUserResult) DeepEqual(ano *UserServiceQueryOtherUserResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *UserServiceQueryOtherUserResult) Field0DeepEqual(src *DouyinUserResponse) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false
@@ -4362,6 +5717,344 @@ func (p *UserServiceIsUserExistedResult) DeepEqual(ano *UserServiceIsUserExisted
 }
 
 func (p *UserServiceIsUserExistedResult) Field0DeepEqual(src *DouyinUserExistResponse) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type UserServiceMultiQueryUserArgs struct {
+	Req *DouyinMqueryUserRequest `thrift:"req,1" json:"req"`
+}
+
+func NewUserServiceMultiQueryUserArgs() *UserServiceMultiQueryUserArgs {
+	return &UserServiceMultiQueryUserArgs{}
+}
+
+var UserServiceMultiQueryUserArgs_Req_DEFAULT *DouyinMqueryUserRequest
+
+func (p *UserServiceMultiQueryUserArgs) GetReq() (v *DouyinMqueryUserRequest) {
+	if !p.IsSetReq() {
+		return UserServiceMultiQueryUserArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *UserServiceMultiQueryUserArgs) SetReq(val *DouyinMqueryUserRequest) {
+	p.Req = val
+}
+
+var fieldIDToName_UserServiceMultiQueryUserArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *UserServiceMultiQueryUserArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *UserServiceMultiQueryUserArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceMultiQueryUserArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *UserServiceMultiQueryUserArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewDouyinMqueryUserRequest()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *UserServiceMultiQueryUserArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("MultiQueryUser_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserServiceMultiQueryUserArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *UserServiceMultiQueryUserArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceMultiQueryUserArgs(%+v)", *p)
+}
+
+func (p *UserServiceMultiQueryUserArgs) DeepEqual(ano *UserServiceMultiQueryUserArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *UserServiceMultiQueryUserArgs) Field1DeepEqual(src *DouyinMqueryUserRequest) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type UserServiceMultiQueryUserResult struct {
+	Success *DouyinMqueryUserResponse `thrift:"success,0" json:"success,omitempty"`
+}
+
+func NewUserServiceMultiQueryUserResult() *UserServiceMultiQueryUserResult {
+	return &UserServiceMultiQueryUserResult{}
+}
+
+var UserServiceMultiQueryUserResult_Success_DEFAULT *DouyinMqueryUserResponse
+
+func (p *UserServiceMultiQueryUserResult) GetSuccess() (v *DouyinMqueryUserResponse) {
+	if !p.IsSetSuccess() {
+		return UserServiceMultiQueryUserResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *UserServiceMultiQueryUserResult) SetSuccess(x interface{}) {
+	p.Success = x.(*DouyinMqueryUserResponse)
+}
+
+var fieldIDToName_UserServiceMultiQueryUserResult = map[int16]string{
+	0: "success",
+}
+
+func (p *UserServiceMultiQueryUserResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *UserServiceMultiQueryUserResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceMultiQueryUserResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *UserServiceMultiQueryUserResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewDouyinMqueryUserResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *UserServiceMultiQueryUserResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("MultiQueryUser_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserServiceMultiQueryUserResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *UserServiceMultiQueryUserResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceMultiQueryUserResult(%+v)", *p)
+}
+
+func (p *UserServiceMultiQueryUserResult) DeepEqual(ano *UserServiceMultiQueryUserResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *UserServiceMultiQueryUserResult) Field0DeepEqual(src *DouyinMqueryUserResponse) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

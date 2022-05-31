@@ -31,7 +31,7 @@ func (s *UserLoginService) CheckUser(req *user.DouyinUserLoginRequest) (int64, e
 	passWord := fmt.Sprintf("%x", h.Sum(nil))
 
 	userName := req.Username
-	res, err := db.QueryUser(s.ctx, userName)
+	res, err := db.QueryUserByName(s.ctx, userName)
 	if err != nil {
 		return -1, err
 	}

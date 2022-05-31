@@ -22,7 +22,7 @@ func NewUserRegisterService(ctx context.Context) *UserRegisterService {
 
 // CreateUser call db to create a user
 func (s *UserRegisterService) CreateUser(req *user.DouyinUserRegisterRequest) (int64, error) {
-	users, err := db.QueryUser(s.ctx, req.Username)
+	users, err := db.QueryUserByName(s.ctx, req.Username)
 	if err != nil {
 		return -1, err
 	}
@@ -45,5 +45,5 @@ func (s *UserRegisterService) CreateUser(req *user.DouyinUserRegisterRequest) (i
 	}
 	u := res[0]
 
-	return int64(u.ID), nil
+	return u.ID, nil
 }

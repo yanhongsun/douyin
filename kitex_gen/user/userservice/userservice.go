@@ -19,10 +19,12 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*user.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"CreateUser":    kitex.NewMethodInfo(createUserHandler, newUserServiceCreateUserArgs, newUserServiceCreateUserResult, false),
-		"CheckUser":     kitex.NewMethodInfo(checkUserHandler, newUserServiceCheckUserArgs, newUserServiceCheckUserResult, false),
-		"GetUser":       kitex.NewMethodInfo(getUserHandler, newUserServiceGetUserArgs, newUserServiceGetUserResult, false),
-		"IsUserExisted": kitex.NewMethodInfo(isUserExistedHandler, newUserServiceIsUserExistedArgs, newUserServiceIsUserExistedResult, false),
+		"CreateUser":     kitex.NewMethodInfo(createUserHandler, newUserServiceCreateUserArgs, newUserServiceCreateUserResult, false),
+		"CheckUser":      kitex.NewMethodInfo(checkUserHandler, newUserServiceCheckUserArgs, newUserServiceCheckUserResult, false),
+		"QueryCurUser":   kitex.NewMethodInfo(queryCurUserHandler, newUserServiceQueryCurUserArgs, newUserServiceQueryCurUserResult, false),
+		"QueryOtherUser": kitex.NewMethodInfo(queryOtherUserHandler, newUserServiceQueryOtherUserArgs, newUserServiceQueryOtherUserResult, false),
+		"IsUserExisted":  kitex.NewMethodInfo(isUserExistedHandler, newUserServiceIsUserExistedArgs, newUserServiceIsUserExistedResult, false),
+		"MultiQueryUser": kitex.NewMethodInfo(multiQueryUserHandler, newUserServiceMultiQueryUserArgs, newUserServiceMultiQueryUserResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -74,22 +76,40 @@ func newUserServiceCheckUserResult() interface{} {
 	return user.NewUserServiceCheckUserResult()
 }
 
-func getUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*user.UserServiceGetUserArgs)
-	realResult := result.(*user.UserServiceGetUserResult)
-	success, err := handler.(user.UserService).GetUser(ctx, realArg.Req)
+func queryCurUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceQueryCurUserArgs)
+	realResult := result.(*user.UserServiceQueryCurUserResult)
+	success, err := handler.(user.UserService).QueryCurUser(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newUserServiceGetUserArgs() interface{} {
-	return user.NewUserServiceGetUserArgs()
+func newUserServiceQueryCurUserArgs() interface{} {
+	return user.NewUserServiceQueryCurUserArgs()
 }
 
-func newUserServiceGetUserResult() interface{} {
-	return user.NewUserServiceGetUserResult()
+func newUserServiceQueryCurUserResult() interface{} {
+	return user.NewUserServiceQueryCurUserResult()
+}
+
+func queryOtherUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceQueryOtherUserArgs)
+	realResult := result.(*user.UserServiceQueryOtherUserResult)
+	success, err := handler.(user.UserService).QueryOtherUser(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceQueryOtherUserArgs() interface{} {
+	return user.NewUserServiceQueryOtherUserArgs()
+}
+
+func newUserServiceQueryOtherUserResult() interface{} {
+	return user.NewUserServiceQueryOtherUserResult()
 }
 
 func isUserExistedHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -108,6 +128,24 @@ func newUserServiceIsUserExistedArgs() interface{} {
 
 func newUserServiceIsUserExistedResult() interface{} {
 	return user.NewUserServiceIsUserExistedResult()
+}
+
+func multiQueryUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceMultiQueryUserArgs)
+	realResult := result.(*user.UserServiceMultiQueryUserResult)
+	success, err := handler.(user.UserService).MultiQueryUser(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceMultiQueryUserArgs() interface{} {
+	return user.NewUserServiceMultiQueryUserArgs()
+}
+
+func newUserServiceMultiQueryUserResult() interface{} {
+	return user.NewUserServiceMultiQueryUserResult()
 }
 
 type kClient struct {
@@ -140,11 +178,21 @@ func (p *kClient) CheckUser(ctx context.Context, req *user.DouyinUserLoginReques
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetUser(ctx context.Context, req *user.DouyinUserRequest) (r *user.DouyinUserResponse, err error) {
-	var _args user.UserServiceGetUserArgs
+func (p *kClient) QueryCurUser(ctx context.Context, req *user.DouyinUserRequest) (r *user.DouyinUserResponse, err error) {
+	var _args user.UserServiceQueryCurUserArgs
 	_args.Req = req
-	var _result user.UserServiceGetUserResult
-	if err = p.c.Call(ctx, "GetUser", &_args, &_result); err != nil {
+	var _result user.UserServiceQueryCurUserResult
+	if err = p.c.Call(ctx, "QueryCurUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) QueryOtherUser(ctx context.Context, req *user.DouyinQueryUserRequest) (r *user.DouyinUserResponse, err error) {
+	var _args user.UserServiceQueryOtherUserArgs
+	_args.Req = req
+	var _result user.UserServiceQueryOtherUserResult
+	if err = p.c.Call(ctx, "QueryOtherUser", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -155,6 +203,16 @@ func (p *kClient) IsUserExisted(ctx context.Context, req *user.DouyinUserExistRe
 	_args.Req = req
 	var _result user.UserServiceIsUserExistedResult
 	if err = p.c.Call(ctx, "IsUserExisted", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) MultiQueryUser(ctx context.Context, req *user.DouyinMqueryUserRequest) (r *user.DouyinMqueryUserResponse, err error) {
+	var _args user.UserServiceMultiQueryUserArgs
+	_args.Req = req
+	var _result user.UserServiceMultiQueryUserResult
+	if err = p.c.Call(ctx, "MultiQueryUser", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

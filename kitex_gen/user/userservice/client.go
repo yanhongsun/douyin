@@ -13,8 +13,10 @@ import (
 type Client interface {
 	CreateUser(ctx context.Context, req *user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *user.DouyinUserRegisterResponse, err error)
 	CheckUser(ctx context.Context, req *user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *user.DouyinUserLoginResponse, err error)
-	GetUser(ctx context.Context, req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error)
+	QueryCurUser(ctx context.Context, req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error)
+	QueryOtherUser(ctx context.Context, req *user.DouyinQueryUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error)
 	IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest, callOptions ...callopt.Option) (r *user.DouyinUserExistResponse, err error)
+	MultiQueryUser(ctx context.Context, req *user.DouyinMqueryUserRequest, callOptions ...callopt.Option) (r *user.DouyinMqueryUserResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -56,12 +58,22 @@ func (p *kUserServiceClient) CheckUser(ctx context.Context, req *user.DouyinUser
 	return p.kClient.CheckUser(ctx, req)
 }
 
-func (p *kUserServiceClient) GetUser(ctx context.Context, req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error) {
+func (p *kUserServiceClient) QueryCurUser(ctx context.Context, req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetUser(ctx, req)
+	return p.kClient.QueryCurUser(ctx, req)
+}
+
+func (p *kUserServiceClient) QueryOtherUser(ctx context.Context, req *user.DouyinQueryUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.QueryOtherUser(ctx, req)
 }
 
 func (p *kUserServiceClient) IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest, callOptions ...callopt.Option) (r *user.DouyinUserExistResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.IsUserExisted(ctx, req)
+}
+
+func (p *kUserServiceClient) MultiQueryUser(ctx context.Context, req *user.DouyinMqueryUserRequest, callOptions ...callopt.Option) (r *user.DouyinMqueryUserResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.MultiQueryUser(ctx, req)
 }

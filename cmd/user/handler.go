@@ -60,22 +60,6 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 	return resp, nil
 }
 
-// GetUser implements the UserServiceImpl interface.
-func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
-	if req.UserId == 0 {
-		resp = pack.BuildGetUserResp(errno.ParamErr, nil)
-		return resp, nil
-	}
-
-	userInfo, err := service.NewGetUserInfoService(ctx).GetUserInfo(req)
-	if err != nil {
-		resp = pack.BuildGetUserResp(err, nil)
-		return resp, nil
-	}
-	resp = pack.BuildGetUserResp(nil, userInfo)
-	return resp, nil
-}
-
 // IsUserExisted implements the UserServiceImpl interface.
 func (s *UserServiceImpl) IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest) (resp *user.DouyinUserExistResponse, err error) {
 	if req.TargetId == 0 {
@@ -89,4 +73,40 @@ func (s *UserServiceImpl) IsUserExisted(ctx context.Context, req *user.DouyinUse
 	}
 	resp = pack.BuildUserExistResp(err, res)
 	return resp, nil
+}
+
+// QueryCurUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) QueryCurUser(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
+	if req.UserId == 0 {
+		resp = pack.BuildQueryUserResp(errno.ParamErr, nil)
+	}
+	res, err := service.NewQueryUserService(ctx).QueryCurUserByID(req)
+	if err != nil {
+		resp = pack.BuildQueryUserResp(err, nil)
+		return resp, nil
+	}
+	resp = pack.BuildQueryUserResp(nil, res)
+
+	return resp, nil
+}
+
+// QueryOtherUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) QueryOtherUser(ctx context.Context, req *user.DouyinQueryUserRequest) (resp *user.DouyinUserResponse, err error) {
+	if req.UserId == 0 || req.TargetId == 0 {
+		resp = pack.BuildQueryUserResp(errno.ParamErr, nil)
+	}
+	res, err := service.NewQueryUserService(ctx).QueryOtherUserByID(req)
+	if err != nil {
+		resp = pack.BuildQueryUserResp(err, nil)
+		return resp, nil
+	}
+	resp = pack.BuildQueryUserResp(nil, res)
+
+	return resp, nil
+}
+
+// MultiQueryUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) MultiQueryUser(ctx context.Context, req *user.DouyinMqueryUserRequest) (resp *user.DouyinMqueryUserResponse, err error) {
+	// TODO: Your code here...
+	return
 }

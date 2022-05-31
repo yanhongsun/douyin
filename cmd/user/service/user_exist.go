@@ -19,9 +19,12 @@ func NewUserExistService(ctx context.Context) *UserExistService {
 // UserExist call db to check user is valid or not
 func (s *UserExistService) UserExist(req *user.DouyinUserExistRequest) (bool, error) {
 	targetID := req.TargetId
-	res, err := db.UserExist(s.ctx, targetID)
+	res, err := db.QueryUserByID(s.ctx, targetID)
 	if err != nil {
 		return false, err
 	}
-	return res, nil
+	if len(res) == 0 {
+		return false, nil
+	}
+	return true, nil
 }

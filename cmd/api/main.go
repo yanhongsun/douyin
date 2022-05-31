@@ -29,11 +29,12 @@ func main() {
 	userGroup := douyin.Group("/user")
 	userGroup.POST("/login/", handlers.Login)
 	userGroup.POST("/register/", handlers.Register)
-	userGroup.GET("/", middleware.AuthMiddleware(), handlers.QueryUser)
+	userGroup.GET("/", middleware.AuthMiddleware(), handlers.QueryCurUser)
 	// TODO: remove the handler for checking user existence
 	userGroup.GET("/exist/", handlers.IsUserExisted)
+	userGroup.GET("/otheruser/", handlers.QueryOtherUser)
 
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	if err := http.ListenAndServe(":8090", r); err != nil {
 		klog.Fatal(err)
 	}
 }

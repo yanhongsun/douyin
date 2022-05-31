@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"douyin/kitex_gen/user"
 	"douyin/pkg/constants"
 )
 
@@ -20,26 +19,19 @@ func (u *User) TableName() string {
 	return constants.UserTableName
 }
 
-// GetUserInfo  do db operation
-func GetUserInfo(ctx context.Context, userID int64) (*user.User, error) {
-	res := make([]*User, 0)
-	if err := DB.WithContext(ctx).Where("id = ?", userID).Find(&res).Error; err != nil {
-		return nil, err
-	}
-	u := res[0]
-	var userInfo user.User
-	userInfo.SetId(u.ID)
-	userInfo.SetName(u.Username)
-	userInfo.SetFollowCount(&u.FollowCount)
-	userInfo.SetFollowerCount(&u.FollowerCount)
-	userInfo.SetIsFollow(false)
-	return &userInfo, nil
-}
-
-// QueryUser OK
-func QueryUser(ctx context.Context, username string) ([]*User, error) {
+// QueryUserByName get user information by username
+func QueryUserByName(ctx context.Context, username string) ([]*User, error) {
 	res := make([]*User, 0)
 	if err := DB.WithContext(ctx).Where("u_name = ?", username).Find(&res).Error; err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// QueryUserByID get user information by id
+func QueryUserByID(ctx context.Context, targetID int64) ([]*User, error) {
+	res := make([]*User, 0)
+	if err := DB.WithContext(ctx).Where("id = ?", targetID).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil
@@ -63,20 +55,6 @@ func CreateUser(ctx context.Context, username, password string) ([]*User, error)
 		return nil, err
 	}
 	return res, nil
-}
-
-// UserExist  do db operation
-func UserExist(ctx context.Context, targetID int64) (bool, error) {
-	res := make([]*User, 0)
-	if err := DB.WithContext(ctx).Where("id = ?", targetID).Find(&res).Error; err != nil {
-		return false, err
-	}
-	// user doesn't exist
-	if len(res) == 0 {
-		return false, nil
-	}
-	// user exists
-	return true, nil
 }
 
 func CreateSalt(ctx context.Context, username string, salt []byte) error {
