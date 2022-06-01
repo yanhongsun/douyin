@@ -4,8 +4,8 @@ CommentServer:
   CommentServHost: localhost:8888
 
 MysqlDatabase:
-  User: gorm
-  Password: gorm
+  User: root
+  Password: 111111
   Host: localhost:3306
   Name: douyin
   Charset: utf8

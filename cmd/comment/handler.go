@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"douyin/cmd/comment/pack"
+	"douyin/cmd/comment/rpc"
 	"douyin/cmd/comment/service"
 	"douyin/kitex_gen/comment"
 	"douyin/pkg/errno"
@@ -15,15 +16,15 @@ type CommentServiceImpl struct{}
 func (s *CommentServiceImpl) CreateComment(ctx context.Context, req *comment.CreateCommentRequest) (resp *comment.CreateCommentResponse, err error) {
 	resp = new(comment.CreateCommentResponse)
 
-	// exist, err := rpc.VerifyVideoId(ctx, req.VideoId, req.Token)
-	// if err != nil {
-	// 	resp.BaseResp = pack.BuildBaseResp(errno.CommentServiceErr.WithMessage(err.Error()))
-	// 	return resp, nil
-	// }
-	// if !exist {
-	// 	resp.BaseResp = pack.BuildBaseResp(errno.VideoIdErr)
-	// 	return resp, nil
-	// }
+	exist, err := rpc.VerifyVideoId(ctx, req.VideoId, "123")
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(errno.CommentServiceErr.WithMessage(err.Error()))
+		return resp, nil
+	}
+	if !exist {
+		resp.BaseResp = pack.BuildBaseResp(errno.VideoIdErr)
+		return resp, nil
+	}
 
 	if len(req.Content) == 0 && len(req.Content) <= 20000 {
 		resp.BaseResp = pack.BuildBaseResp(errno.CommentParamErr)
@@ -46,15 +47,15 @@ func (s *CommentServiceImpl) CreateComment(ctx context.Context, req *comment.Cre
 func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *comment.DeleteCommentRequest) (resp *comment.DeleteCommentResponse, err error) {
 	resp = new(comment.DeleteCommentResponse)
 
-	// exist, err := rpc.VerifyVideoId(ctx, req.VideoId, req.Token)
-	// if err != nil {
-	// 	resp.BaseResp = pack.BuildBaseResp(errno.CommentServiceErr.WithMessage(err.Error()))
-	// 	return resp, nil
-	// }
-	// if !exist {
-	// 	resp.BaseResp = pack.BuildBaseResp(errno.VideoIdErr)
-	// 	return resp, nil
-	// }
+	exist, err := rpc.VerifyVideoId(ctx, req.VideoId, "123")
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(errno.CommentServiceErr.WithMessage(err.Error()))
+		return resp, nil
+	}
+	if !exist {
+		resp.BaseResp = pack.BuildBaseResp(errno.VideoIdErr)
+		return resp, nil
+	}
 
 	err = service.NewDeleteCommentService(ctx).DeleteComment(req)
 	if err != nil {
@@ -71,15 +72,15 @@ func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *comment.Del
 func (s *CommentServiceImpl) QueryComments(ctx context.Context, req *comment.QueryCommentsRequest) (resp *comment.QueryCommentsResponse, err error) {
 	resp = new(comment.QueryCommentsResponse)
 
-	// exist, err := rpc.VerifyVideoId(ctx, req.VideoId, "123")
-	// if err != nil {
-	// 	resp.BaseResp = pack.BuildBaseResp(errno.CommentServiceErr.WithMessage(err.Error()))
-	// 	return resp, nil
-	// }
-	// if !exist {
-	// 	resp.BaseResp = pack.BuildBaseResp(errno.VideoIdErr)
-	// 	return resp, nil
-	// }
+	exist, err := rpc.VerifyVideoId(ctx, req.VideoId, "123")
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResp(errno.CommentServiceErr.WithMessage(err.Error()))
+		return resp, nil
+	}
+	if !exist {
+		resp.BaseResp = pack.BuildBaseResp(errno.VideoIdErr)
+		return resp, nil
+	}
 
 	res, err := service.NewQueryCommentsService(ctx).QueryComments(req)
 	if err != nil {

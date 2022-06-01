@@ -11,27 +11,25 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
 )
 
 var userClient userservice.Client
 
 func initUserRpc() {
-	// TODO: modify configs
 	r, err := etcd.NewEtcdResolver([]string{"127.0.0.1:2379"})
 	if err != nil {
 		panic(err)
 	}
 	c, err := userservice.NewClient(
-		"user", // TODO: modify
+		"user",
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithInstanceMW(middleware.ClientMiddleware),
 		client.WithMuxConnection(1),                       // mux
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
-		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
-		client.WithResolver(r),                            // resolver
+		//client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
+		client.WithResolver(r), // resolver
 	)
 	if err != nil {
 		panic(err)
@@ -48,10 +46,11 @@ type UserInfo struct {
 	IsFollow      bool   `json:"is_follow"`
 }
 
-func GetUserInfo(ctx context.Context, userId int64, token string) (*UserInfo, error) {
-	req := &user.DouyinUserRequest{UserId: userId, Token: token}
+func GetUserInfo(ctx context.Context, userId int64) (*UserInfo, error) {
 
-	resp, err := userClient.GetUser(ctx, req)
+	req := &user.DouyinUserRequest{UserId: userId, Token: ""}
+
+	resp, err := userClient.QueryCurUser(ctx, req)
 	if err != nil {
 		return nil, err
 	}

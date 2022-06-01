@@ -12,7 +12,6 @@ import (
 	//"github.com/cloudwego/kitex-examples/bizdemo/easy_note/pkg/middleware"
 
 	"github.com/cloudwego/kitex/client"
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 )
@@ -47,8 +46,6 @@ func VerifyVideoId(ctx context.Context, videoId int64, token string) (bool, erro
 	req := &video.VerifyVideoIdRequest{VideoId: videoId, Token: token}
 
 	resp, err := videoClient.VerifyVideoId(ctx, req)
-
-	klog.Fatal(resp)
 
 	if err != nil {
 		return false, err

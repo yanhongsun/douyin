@@ -31,16 +31,16 @@ func ChangeComment(source *mysqldb.Comment, user *rpc.UserInfo) *comment.Comment
 	}
 }
 
-func ChangeComments(ctx context.Context, source []*mysqldb.Comment, token *string) ([]*comment.Comment, error) {
+func ChangeComments(ctx context.Context, source []*mysqldb.Comment) ([]*comment.Comment, error) {
 	size := len(source)
 	res := make([]*comment.Comment, size)
 
 	for i := 0; i < size; i++ {
-		// user, err := rpc.GetUserInfo(ctx, source[i].UserID, *token)
-		// if err != nil {
-		// 	return nil, err
-		// }
-		res[i] = ChangeComment(source[i], User)
+		user, err := rpc.GetUserInfo(ctx, source[i].UserID)
+		if err != nil {
+			return nil, err
+		}
+		res[i] = ChangeComment(source[i], user)
 	}
 
 	return res, nil

@@ -4,6 +4,7 @@ import (
 	"douyin/cmd/comment/dal"
 	"douyin/cmd/comment/pack/configdata"
 	"douyin/cmd/comment/repository"
+	"douyin/cmd/comment/rpc"
 	"douyin/cmd/comment/service"
 	comment "douyin/kitex_gen/comment/commentservice"
 
@@ -25,6 +26,7 @@ func Init() {
 	}
 
 	tracer2.InitJaegers(configdata.CommentServerConfig.CommentServName)
+	rpc.InitRPC()
 	dal.Init()
 	repository.Init()
 	service.InitSnowflakeNode()

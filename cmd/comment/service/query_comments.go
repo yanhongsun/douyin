@@ -43,7 +43,7 @@ func (s *QueryCommentsService) QueryComments(req *comment.QueryCommentsRequest) 
 			return nil, err
 		}
 		resD = pack.ReverseComments(resD)
-		res, err := pack.ChangeComments(s.ctx, resD, req.Token)
+		res, err := pack.ChangeComments(s.ctx, resD)
 		if err != nil {
 			return nil, err
 		}
