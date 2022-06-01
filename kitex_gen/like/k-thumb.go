@@ -2031,7 +2031,7 @@ ReadStructEndError:
 func (p *ThumbServiceThumbListArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
-	tmp := NewThumbListResponse()
+	tmp := NewThumbListRequest()
 	if l, err := tmp.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
