@@ -2,12 +2,11 @@ package service
 
 import (
 	"context"
-	"crypto/md5"
 	"douyin/cmd/user/dal/db"
 	"douyin/kitex_gen/user"
 	"douyin/pkg/errno"
 	"fmt"
-	"io"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserRegisterService struct {
@@ -22,28 +21,34 @@ func NewUserRegisterService(ctx context.Context) *UserRegisterService {
 
 // CreateUser call db to create a user
 func (s *UserRegisterService) CreateUser(req *user.DouyinUserRegisterRequest) (int64, error) {
-	users, err := db.QueryUser(s.ctx, req.Username)
+	users, err := db.QueryUserByName(s.ctx, req.Username)
 	if err != nil {
 		return -1, err
 	}
 	if len(users) != 0 {
 		return -1, errno.UserAlreadyExistErr
 	}
+
+	pwByte := []byte(req.Password)
+	pwByte, _ = bcrypt.GenerateFromPassword(pwByte, bcrypt.DefaultCost)
+	password := string(pwByte)
+	fmt.Println(password, " ", len(password))
+
 	// crypt
-	h := md5.New()
-	if _, err = io.WriteString(h, req.Password); err != nil {
-		return -1, err
-	}
+	// h := md5.New()
+	// if _, err = io.WriteString(h, req.Password); err != nil {
+	// 	return -1, err
+	// }
 	// TODO: set nil as salt?
 	// var salt []byte
 	// err = db.CreateSalt(s.ctx, req.Username, salt)
 	// passWord := fmt.Sprintf("%x", h.Sum(salt))
-	passWord := fmt.Sprintf("%x", h.Sum(nil))
-	res, err := db.CreateUser(s.ctx, req.Username, passWord)
+	// passWord := fmt.Sprintf("%x", h.Sum(nil))
+	res, err := db.CreateUser(s.ctx, req.Username, password)
 	if err != nil {
 		return -1, err
 	}
 	u := res[0]
 
-	return int64(u.ID), nil
+	return u.ID, nil
 }

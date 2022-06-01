@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func QueryUser(c *gin.Context) {
+func QueryCurUser(c *gin.Context) {
 	var queryVar UserInfoParam
-	if err := c.ShouldBind(&queryVar); err != nil {
+	if err := c.BindQuery(&queryVar); err != nil {
 		SendUserInfoResponse(c, errno.ConvertErr(err), &UserInfo{
 			ID:            -1,
 			Name:          "",
@@ -20,8 +20,7 @@ func QueryUser(c *gin.Context) {
 		})
 		return
 	}
-
-	userInfo, err := rpc.GetUserInfo(context.Background(), &user.DouyinUserRequest{
+	userInfo, err := rpc.QueryUser(context.Background(), &user.DouyinUserRequest{
 		UserId: queryVar.UserID,
 		Token:  queryVar.Token,
 	})

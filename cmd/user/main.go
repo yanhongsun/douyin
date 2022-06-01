@@ -1,50 +1,41 @@
 package main
 
 import (
-	"douyin/cmd/user/config"
 	"douyin/cmd/user/dal"
-	"douyin/cmd/user/global"
 	user "douyin/kitex_gen/user/userservice"
 	"douyin/middleware"
 	"douyin/pkg/bound"
-	"douyin/pkg/tracer"
+	"douyin/pkg/constants"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
-	"log"
 	"net"
 )
 
 func Init() {
-	err := setupSetting()
-	if err != nil {
-		log.Println(err)
-	}
-
-	setupJWT()
-
-	tracer.InitJaeger(global.ServerSetting.UserServName)
+	// TODO
+	// tracer.InitJaeger(global.ServerSetting.UserServName)
 
 	dal.Init()
 }
 
 func main() {
 	Init()
-	r, err := etcd.NewEtcdRegistry([]string{global.ServerSetting.EtcdHost})
+	r, err := etcd.NewEtcdRegistry([]string{constants.EtcdAddress})
 	if err != nil {
 		panic(err)
 	}
-	addr, err := net.ResolveTCPAddr("tcp", global.ServerSetting.UserServHost)
+	addr, err := net.ResolveTCPAddr("tcp", constants.UserServHost)
 	if err != nil {
 		panic(err)
 	}
 
 	svr := user.NewServer(new(UserServiceImpl),
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: global.ServerSetting.UserServName}), // server name
-		server.WithMiddleware(middleware.CommonMiddleware),                                                     // middleware
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: constants.UserServiceName}), // server name
+		server.WithMiddleware(middleware.CommonMiddleware),                                             // middleware
 		server.WithMiddleware(middleware.ServerMiddleware),
 		server.WithServiceAddr(addr),                                       // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
@@ -59,38 +50,4 @@ func main() {
 	if err != nil {
 		klog.Fatal(err)
 	}
-}
-
-// init functions
-// setupSetting initialize global settings from yaml
-func setupSetting() error {
-	setting, err := config.NewSetting()
-	if err != nil {
-		return err
-	}
-
-	// load database config
-	err = setting.ReadSection("Database", &global.DatabaseSetting)
-	if err != nil {
-		return err
-	}
-
-	// load JWT config
-	err = setting.ReadSection("JWT", &global.JWTSetting)
-	if err != nil {
-		return err
-	}
-
-	// load
-	err = setting.ReadSection("Server", &global.ServerSetting)
-	if err != nil {
-		return nil
-	}
-
-	return nil
-}
-
-// setupJWT
-func setupJWT() {
-	global.Jwt = global.NewJWT()
 }

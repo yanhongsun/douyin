@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"douyin/cmd/user/global"
 	"douyin/cmd/user/pack"
 	"douyin/cmd/user/service"
 	"douyin/kitex_gen/user"
+	"douyin/middleware"
 	"douyin/pkg/errno"
 )
 
@@ -25,9 +25,12 @@ func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.DouyinUserRe
 		return resp, nil
 	}
 
-	token, _ := global.Jwt.CreateToken(global.CustomClaims{
-		Id: userID,
-	})
+	// token, _ := global.Jwt.CreateToken(userID, global.JWTSetting.AppKey, global.JWTSetting.AppSecret)
+	token, err := middleware.CreateToken(userID)
+	if err != nil {
+		resp = pack.BuildRegisterResp(err, -1, "")
+		return resp, nil
+	}
 
 	resp = pack.BuildRegisterResp(nil, userID, token)
 	return resp, nil
@@ -46,30 +49,71 @@ func (s *UserServiceImpl) CheckUser(ctx context.Context, req *user.DouyinUserLog
 		return resp, nil
 	}
 
-	token, _ := global.Jwt.CreateToken(global.CustomClaims{
-		Id: userID,
-	})
+	// token, _ := global.Jwt.CreateToken(userID, global.JWTSetting.AppKey, global.JWTSetting.AppSecret)
+	token, err := middleware.CreateToken(userID)
+	if err != nil {
+		resp = pack.BuildLoginResp(err, -1, "")
+		return resp, nil
+	}
 
 	resp = pack.BuildLoginResp(nil, userID, token)
 	return resp, nil
 }
 
-// GetUser implements the UserServiceImpl interface.
-func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
-	claim, err := global.Jwt.ParseToken(req.Token)
-	if err != nil {
-		resp = pack.BuildGetUserResp(err, nil)
+// IsUserExisted implements the UserServiceImpl interface.
+func (s *UserServiceImpl) IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest) (resp *user.DouyinUserExistResponse, err error) {
+	if req.TargetId == 0 {
+		resp = pack.BuildUserExistResp(errno.ParamErr, false)
 		return resp, nil
-	} else if claim.Id != int64(req.UserId) {
-		resp = pack.BuildGetUserResp(errno.TokenInvalidErr, nil)
+	}
+	res, err := service.NewUserExistService(ctx).UserExist(req)
+	if err != nil {
+		resp = pack.BuildUserExistResp(err, false)
+		return resp, nil
+	}
+	resp = pack.BuildUserExistResp(err, res)
+	return resp, nil
+}
+
+// QueryCurUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) QueryCurUser(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
+	if req.UserId == 0 {
+		resp = pack.BuildQueryUserResp(errno.ParamErr, nil)
+	}
+	res, err := service.NewQueryUserService(ctx).QueryCurUserByID(req)
+	if err != nil {
+		resp = pack.BuildQueryUserResp(err, nil)
+		return resp, nil
+	}
+	resp = pack.BuildQueryUserResp(nil, res)
+
+	return resp, nil
+}
+
+// QueryOtherUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) QueryOtherUser(ctx context.Context, req *user.DouyinQueryUserRequest) (resp *user.DouyinUserResponse, err error) {
+	if req.UserId == 0 || req.TargetId == 0 {
+		resp = pack.BuildQueryUserResp(errno.ParamErr, nil)
+	}
+	res, err := service.NewQueryUserService(ctx).QueryOtherUserByID(req)
+	if err != nil {
+		resp = pack.BuildQueryUserResp(err, nil)
+		return resp, nil
+	}
+	resp = pack.BuildQueryUserResp(nil, res)
+
+	return resp, nil
+}
+
+// MultiQueryUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) MultiQueryUser(ctx context.Context, req *user.DouyinMqueryUserRequest) (resp *user.DouyinMqueryUserResponse, err error) {
+	res, err := service.NewMultiQueryUserService(ctx).MultiQueryUser(req)
+	if err != nil {
+		resp = pack.BuildMultiQueryUserResp(err, nil)
 		return resp, nil
 	}
 
-	userInfo, err := service.NewGetUserInfoService(ctx).GetUserInfo(req)
-	if err != nil {
-		resp = pack.BuildGetUserResp(err, nil)
-		return resp, nil
-	}
-	resp = pack.BuildGetUserResp(nil, userInfo)
+	resp = pack.BuildMultiQueryUserResp(nil, res)
+
 	return resp, nil
 }

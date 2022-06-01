@@ -5,6 +5,7 @@ import (
 	"douyin/kitex_gen/user"
 	"douyin/kitex_gen/user/userservice"
 	"douyin/middleware"
+	"douyin/pkg/constants"
 	"douyin/pkg/errno"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
@@ -16,13 +17,12 @@ import (
 var userClient userservice.Client
 
 func initUserRpc() {
-	// TODO: modify configs
-	r, err := etcd.NewEtcdResolver([]string{"127.0.0.1:2379"})
+	r, err := etcd.NewEtcdResolver([]string{constants.EtcdAddress})
 	if err != nil {
 		panic(err)
 	}
 	c, err := userservice.NewClient(
-		"user", // TODO: modify
+		constants.UserServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithInstanceMW(middleware.ClientMiddleware),
 		client.WithMuxConnection(1),                       // mux
@@ -74,8 +74,8 @@ type UserInfo struct {
 	IsFollow      bool   `json:"is_follow"`
 }
 
-func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*UserInfo, error) {
-	resp, err := userClient.GetUser(ctx, req)
+func QueryUser(ctx context.Context, req *user.DouyinUserRequest) (*UserInfo, error) {
+	resp, err := userClient.QueryCurUser(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -90,4 +90,49 @@ func GetUserInfo(ctx context.Context, req *user.DouyinUserRequest) (*UserInfo, e
 	userInfo.FollowerCount = resp.User.GetFollowerCount()
 	userInfo.IsFollow = resp.User.IsFollow
 	return &userInfo, nil
+}
+
+// TODO: remove later
+func IsUserExisted(ctx context.Context, req *user.DouyinUserExistRequest) (bool, error) {
+	resp, err := userClient.IsUserExisted(ctx, req)
+	if err != nil {
+		return false, err
+	}
+	if resp.StatusCode != 0 {
+		return false, errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
+	}
+
+	return resp.IsExisted, nil
+}
+
+// TODO: remove later
+func QueryOtherUser(ctx context.Context, req *user.DouyinQueryUserRequest) (*UserInfo, error) {
+	resp, err := userClient.QueryOtherUser(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
+	}
+
+	var userInfo UserInfo
+	userInfo.ID = resp.User.Id
+	userInfo.Name = resp.User.Name
+	userInfo.FollowCount = resp.User.GetFollowCount()
+	userInfo.FollowerCount = resp.User.GetFollowerCount()
+	userInfo.IsFollow = resp.User.IsFollow
+	return &userInfo, nil
+}
+
+// TODO: remove later
+func MultiQueryUser(ctx context.Context, req *user.DouyinMqueryUserRequest) ([]*user.User, error) {
+	resp, err := userClient.MultiQueryUser(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, errno.NewErrNo(resp.StatusCode, *resp.StatusMsg)
+	}
+
+	return resp.Users, nil
 }

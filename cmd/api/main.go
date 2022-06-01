@@ -2,8 +2,8 @@ package main
 
 import (
 	"douyin/cmd/api/handlers"
+	"douyin/cmd/api/middleware"
 	"douyin/cmd/api/rpc"
-	"douyin/pkg/tracer"
 	"net/http"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -11,7 +11,8 @@ import (
 )
 
 func Init() {
-	tracer.InitJaeger("api")
+	// TODO
+	// tracer.InitJaeger("api")
 	rpc.InitRPC()
 }
 
@@ -34,11 +35,14 @@ func main() {
 	userGroup := douyin.Group("/user")
 	userGroup.POST("/login/", handlers.Login)
 	userGroup.POST("/register/", handlers.Register)
-	userGroup.GET("/", handlers.QueryUser)
+	userGroup.GET("/", middleware.AuthMiddleware(), handlers.QueryCurUser)
 
 	commentGroup := douyin.Group("/comment")
 	commentGroup.POST("/action/", handlers.CommentAction)
 	commentGroup.GET("/list/", handlers.CommentList)
+	// test
+	// userGroup.GET("/other/", handlers.QueryOthUser)
+	// userGroup.GET("/mother/", handlers.MQueryUser)
 
 	if err := http.ListenAndServe(":8086", r); err != nil {
 		klog.Fatal(err)

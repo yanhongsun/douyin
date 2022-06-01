@@ -248,6 +248,7 @@ func GetFans(ctx context.Context, follower1 int64) ([]UserList, error) {
 
 // 这个查询可能会慢
 func IsFollowed(ctx context.Context, userId, otherId int64) (bool, error) {
+	fmt.Println("=================relation.db.is_followed")
 	if userId == otherId {
 		return false, nil
 	}
