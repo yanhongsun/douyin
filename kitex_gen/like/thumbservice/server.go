@@ -4,7 +4,7 @@ package thumbservice
 import (
 	"code.byted.org/kite/kitex/byted"
 	"code.byted.org/kite/kitex/server"
-	"github.com/yanhongsun/douyin/kitex_gen/like"
+	"douyin/kitex_gen/like"
 )
 
 // NewServer creates a server.Server with the given handler and options.

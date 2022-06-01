@@ -17,11 +17,11 @@ package rpc
 
 import (
 	"context"
-	"github.com/yanhongsun/douyin/kitex_gen/like"
-	"github.com/yanhongsun/douyin/kitex_gen/like/thumbservice"
-	"github.com/yanhongsun/douyin/pkg/constants"
-	"github.com/yanhongsun/douyin/pkg/errno"
-	"github.com/yanhongsun/douyin/pkg/middleware"
+	"douyin/kitex_gen/like"
+	"douyin/kitex_gen/like/thumbservice"
+	"douyin/pkg/constants"
+	"douyin/pkg/errno"
+	"douyin/pkg/middleware"
 	"time"
 
 	"github.com/cloudwego/kitex/client"

@@ -7,7 +7,7 @@ import (
 	"code.byted.org/kite/kitex/client"
 	"code.byted.org/kite/kitex/client/callopt"
 	"context"
-	"github.com/yanhongsun/douyin/kitex_gen/like"
+	"douyin/kitex_gen/like"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.

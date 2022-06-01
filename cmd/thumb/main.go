@@ -1,18 +1,18 @@
 package main
 
 import (
+	"douyin/cmd/thumb/dal"
+	like "douyin/kitex_gen/like/thumbservice"
+	"douyin/pkg/bound"
+	"douyin/pkg/constants"
+	"douyin/pkg/middleware"
+	"douyin/pkg/tracer"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
-	"github.com/yanhongsun/douyin/cmd/thumb/dal"
-	like "github.com/yanhongsun/douyin/kitex_gen/like/thumbservice"
-	"github.com/yanhongsun/douyin/pkg/bound"
-	"github.com/yanhongsun/douyin/pkg/constants"
-	"github.com/yanhongsun/douyin/pkg/middleware"
-	"github.com/yanhongsun/douyin/pkg/tracer"
 	"net"
 )
 

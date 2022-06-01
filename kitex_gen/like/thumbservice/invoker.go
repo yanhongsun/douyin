@@ -5,7 +5,7 @@ package thumbservice
 import (
 	"code.byted.org/kite/kitex/byted"
 	"code.byted.org/kite/kitex/server"
-	"github.com/yanhongsun/douyin/kitex_gen/like"
+	"douyin/kitex_gen/like"
 )
 
 // NewInvoker creates a server.Invoker with the given handler and options.

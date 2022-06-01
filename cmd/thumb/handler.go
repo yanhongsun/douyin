@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"github.com/yanhongsun/douyin/cmd/thumb/pack"
-	"github.com/yanhongsun/douyin/cmd/thumb/service"
-	"github.com/yanhongsun/douyin/kitex_gen/like"
-	"github.com/yanhongsun/douyin/pkg/errno"
+	"douyin/cmd/thumb/pack"
+	"douyin/cmd/thumb/service"
+	"douyin/kitex_gen/like"
+	"douyin/pkg/errno"
 )
 
 // ThumbServiceImpl implements the last service interface defined in the IDL.

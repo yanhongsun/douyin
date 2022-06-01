@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"github.com/yanhongsun/douyin/cmd/thumb/dal/db"
-	"github.com/yanhongsun/douyin/cmd/thumb/pack"
-	"github.com/yanhongsun/douyin/kitex_gen/like"
+	"douyin/cmd/thumb/dal/db"
+	"douyin/cmd/thumb/pack"
+	"douyin/kitex_gen/like"
 )
 
 type ThumbService struct {

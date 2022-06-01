@@ -6,7 +6,7 @@ import (
 	"code.byted.org/kite/kitex/client"
 	kitex "code.byted.org/kite/kitex/pkg/serviceinfo"
 	"context"
-	"github.com/yanhongsun/douyin/kitex_gen/like"
+	"douyin/kitex_gen/like"
 )
 
 func serviceInfo() *kitex.ServiceInfo {

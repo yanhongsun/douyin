@@ -16,9 +16,9 @@
 package pack
 
 import (
+	"douyin/kitex_gen/like"
+	"douyin/pkg/errno"
 	"errors"
-	"github.com/yanhongsun/douyin/kitex_gen/like"
-	"github.com/yanhongsun/douyin/pkg/errno"
 )
 
 // BuildLikeyouResp build LikeyouResponse from error and status

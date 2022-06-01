@@ -16,8 +16,8 @@
 package pack
 
 import (
-	"github.com/yanhongsun/douyin/cmd/thumb/dal/db"
-	"github.com/yanhongsun/douyin/kitex_gen/like"
+	"douyin/cmd/thumb/dal/db"
+	"douyin/kitex_gen/like"
 )
 
 func User(u *db.User) *like.User {

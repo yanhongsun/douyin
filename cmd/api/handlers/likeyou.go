@@ -2,32 +2,27 @@ package handlers
 
 import (
 	"context"
-	"fmt"
-	jwt "github.com/appleboy/gin-jwt/v2"
+	"douyin/cmd/api/rpc"
+	"douyin/kitex_gen/like"
+	"douyin/pkg/errno"
 	"github.com/gin-gonic/gin"
-	"github.com/yanhongsun/douyin/cmd/api/rpc"
-	"github.com/yanhongsun/douyin/kitex_gen/like"
-	"github.com/yanhongsun/douyin/pkg/constants"
-	"github.com/yanhongsun/douyin/pkg/errno"
 )
 
 // Likeyou like you action
 func Likeyou(c *gin.Context) {
 	var likeVar LikeyouParam
 	if err := c.ShouldBind(&likeVar); err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseThumb(c, errno.ConvertErr(err), nil)
 		return
 	}
 
 	//如果为空则，上一步就return了？
 	if likeVar.VideoId == 0 || likeVar.ActionType == 0 {
-		SendResponse(c, errno.ParamErr, nil)
+		SendResponseThumb(c, errno.ParamErr, nil)
 		return
 	}
 
-	claims := jwt.ExtractClaims(c)
-	userID := int64(claims[constants.IdentityKey].(float64))
-	//todo: Token
+	userID := likeVar.UserId
 
 	err := rpc.Likeyou(context.Background(), &like.LikeyouRequest{
 		UserId:     userID,
@@ -36,26 +31,31 @@ func Likeyou(c *gin.Context) {
 		ActionType: likeVar.ActionType,
 	})
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseThumb(c, errno.ConvertErr(err), nil)
 		return
 	}
-	SendResponse(c, errno.Success, nil)
+	SendResponseThumb(c, errno.Success, nil)
 }
 
 func ThumbList(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	userID := int64(claims[constants.IdentityKey].(float64))
+	var queryVar struct {
+		UserId int64  `json:"user_id" form:"user_id"`
+		Token  string `json:"token" form:"token"`
+	}
 
-	fmt.Println("claims:", claims)
+	if err := c.BindQuery(&queryVar); err != nil {
+		SendResponseThumb(c, errno.ConvertErr(err), nil)
+		return
+	}
 
 	req := &like.ThumbListRequest{
-		UserId: userID,
-		Token:  "",
+		UserId: queryVar.UserId,
+		Token:  queryVar.Token,
 	}
 	videos, err := rpc.ThumbList(context.Background(), req)
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		SendResponseThumb(c, errno.ConvertErr(err), nil)
 		return
 	}
-	SendResponse(c, errno.Success, map[string]interface{}{"video_list": videos})
+	SendResponseThumb(c, errno.Success, map[string]interface{}{"video_list": videos})
 }

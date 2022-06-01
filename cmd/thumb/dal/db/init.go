@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/yanhongsun/douyin/pkg/constants"
+	"douyin/pkg/constants"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormopentracing "gorm.io/plugin/opentracing"
