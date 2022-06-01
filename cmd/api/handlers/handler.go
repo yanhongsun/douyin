@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"douyin/kitex_gen/user"
 	"douyin/pkg/errno"
 	"net/http"
 
@@ -71,10 +72,18 @@ type UserInfoResponse struct {
 	Data       UserInfo `json:"user"`
 }
 
+// TODO: remove later
 type IsUserExistedResponse struct {
-	StatusCode int32    `json:"status_code"`
-	StatusMsg  string   `json:"status_msg"`
-	IsExisted  bool     `json:"is_existed"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	IsExisted  bool   `json:"is_existed"`
+}
+
+// TODO: remove later
+type MultiUserInfoResponse struct {
+	StatusCode int32       `json:"status_code"`
+	StatusMsg  string      `json:"status_msg"`
+	Users      interface{} `json:"users"`
 }
 
 type ResponseV struct {
@@ -117,15 +126,6 @@ func SendUserInfoResponse(c *gin.Context, err error, userInfo *UserInfo) {
 	})
 }
 
-func SendIsUserExistedResponse(c *gin.Context, err error, isExisted bool) {
-	Err := errno.ConvertErr(err)
-	c.JSON(http.StatusOK, IsUserExistedResponse{
-		StatusCode: Err.ErrCode,
-		StatusMsg: Err.ErrMsg,
-		IsExisted: isExisted,
-	})
-}
-
 // SendResponse pack response
 func SendResponseFeed(c *gin.Context, err error, videolist interface{}, nexttime int64) {
 	Err := errno.ConvertErr(err)
@@ -144,5 +144,25 @@ func SendResponseV(c *gin.Context, err error, videolist interface{}) {
 		Code:    Err.ErrCode,
 		Message: Err.ErrMsg,
 		Data:    videolist,
+	})
+}
+
+// TODO: remove later
+func SendIsUserExistedResponse(c *gin.Context, err error, isExisted bool) {
+	Err := errno.ConvertErr(err)
+	c.JSON(http.StatusOK, IsUserExistedResponse{
+		StatusCode: Err.ErrCode,
+		StatusMsg:  Err.ErrMsg,
+		IsExisted:  isExisted,
+	})
+}
+
+// TODO: remove later
+func SendMultiUserResponse(c *gin.Context, err error, userInfos []*user.User) {
+	Err := errno.ConvertErr(err)
+	c.JSON(http.StatusOK, MultiUserInfoResponse{
+		StatusCode: Err.ErrCode,
+		StatusMsg:  Err.ErrMsg,
+		Users:      userInfos,
 	})
 }

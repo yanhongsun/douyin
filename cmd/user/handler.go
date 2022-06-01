@@ -107,6 +107,13 @@ func (s *UserServiceImpl) QueryOtherUser(ctx context.Context, req *user.DouyinQu
 
 // MultiQueryUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) MultiQueryUser(ctx context.Context, req *user.DouyinMqueryUserRequest) (resp *user.DouyinMqueryUserResponse, err error) {
-	// TODO: Your code here...
-	return
+	res, err := service.NewMultiQueryUserService(ctx).MultiQueryUser(req)
+	if err != nil {
+		resp = pack.BuildMultiQueryUserResp(err, nil)
+		return resp, nil
+	}
+
+	resp = pack.BuildMultiQueryUserResp(nil, res)
+
+	return resp, nil
 }

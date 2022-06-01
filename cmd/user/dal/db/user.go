@@ -22,7 +22,7 @@ func (u *User) TableName() string {
 // QueryUserByName get user information by username
 func QueryUserByName(ctx context.Context, username string) ([]*User, error) {
 	res := make([]*User, 0)
-	if err := DB.WithContext(ctx).Where("u_name = ?", username).Find(&res).Error; err != nil {
+	if err := DB.WithContext(ctx).Where("u_name = ?", username).Limit(1).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil
@@ -31,7 +31,20 @@ func QueryUserByName(ctx context.Context, username string) ([]*User, error) {
 // QueryUserByID get user information by id
 func QueryUserByID(ctx context.Context, targetID int64) ([]*User, error) {
 	res := make([]*User, 0)
-	if err := DB.WithContext(ctx).Where("id = ?", targetID).Find(&res).Error; err != nil {
+	if err := DB.WithContext(ctx).Where("id = ?", targetID).Limit(1).Find(&res).Error; err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// MultiQueryUserByID get multiple users by user id
+func MultiQueryUserByID(ctx context.Context, userIDs []int64) ([]*User, error) {
+	res := make([]*User, 0)
+	if len(userIDs) == 0 {
+		return res, nil
+	}
+
+	if err := DB.WithContext(ctx).Where("id in ?", userIDs).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil
@@ -50,7 +63,7 @@ func CreateUser(ctx context.Context, username, password string) ([]*User, error)
 		return nil, err
 	}
 	// get token and id
-	err = DB.WithContext(ctx).Where("u_name = ?", username).Find(&res).Error
+	err = DB.WithContext(ctx).Where("u_name = ?", username).Limit(1).Find(&res).Error
 	if err != nil {
 		return nil, err
 	}

@@ -3,6 +3,7 @@
 *log
 log*
 main
+test.go
 
 output
 .vscode

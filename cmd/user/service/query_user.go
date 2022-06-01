@@ -49,14 +49,6 @@ func (s *QueryUserService) QueryOtherUserByID(req *user.DouyinQueryUserRequest) 
 		return nil, errno.UserNotExistErr
 	}
 
-	// TODO: get follow info from service relation
-	var follow = false
-	/*follow, err = rpc.IsFollowed(s.ctx, &relation.IsFollowRequest{
-		UserId:   req.UserId,
-		Token:    req.Token,
-		ToUserId: req.TargetId,
-	})*/
-
 	u := userInfo[0]
 
 	return &user.User{
@@ -64,6 +56,6 @@ func (s *QueryUserService) QueryOtherUserByID(req *user.DouyinQueryUserRequest) 
 		Name:          u.Username,
 		FollowCount:   &u.FollowCount,
 		FollowerCount: &u.FollowerCount,
-		IsFollow:      follow,
+		IsFollow:      false,
 	}, nil
 }

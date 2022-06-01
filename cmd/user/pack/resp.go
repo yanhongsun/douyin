@@ -110,3 +110,27 @@ func BuildQueryUserResp(err error, userInfo *user.User) *user.DouyinUserResponse
 	})
 	return &resp
 }
+
+func BuildMultiQueryUserResp(err error, userInfos []*user.User) *user.DouyinMqueryUserResponse {
+	var resp user.DouyinMqueryUserResponse
+	if err == nil {
+		resp.SetStatusCode(errno.Success.ErrCode)
+		resp.SetStatusMsg(&errno.Success.ErrMsg)
+		resp.SetUsers(userInfos)
+		return &resp
+	}
+
+	e := errno.ErrNo{}
+	if errors.As(err, &e) {
+		resp.SetStatusCode(e.ErrCode)
+		resp.SetStatusMsg(&e.ErrMsg)
+		resp.SetUsers(make([]*user.User, 0))
+		return &resp
+	}
+
+	s := errno.ServiceErr.WithMessage(err.Error())
+	resp.SetStatusCode(s.ErrCode)
+	resp.SetStatusMsg(&s.ErrMsg)
+	resp.SetUsers(make([]*user.User, 0))
+	return &resp
+}

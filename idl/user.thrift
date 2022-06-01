@@ -63,6 +63,7 @@ struct douyin_query_user_request {
 struct douyin_mquery_user_request {
     1:required i64 user_id
     2:required list<i64> target_ids
+    3:required string token
 }
 
 struct douyin_mquery_user_response {

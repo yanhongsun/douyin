@@ -3008,6 +3008,7 @@ func (p *DouyinQueryUserRequest) Field3DeepEqual(src string) bool {
 type DouyinMqueryUserRequest struct {
 	UserId    int64   `thrift:"user_id,1,required" json:"user_id"`
 	TargetIds []int64 `thrift:"target_ids,2,required" json:"target_ids"`
+	Token     string  `thrift:"token,3,required" json:"token"`
 }
 
 func NewDouyinMqueryUserRequest() *DouyinMqueryUserRequest {
@@ -3021,16 +3022,24 @@ func (p *DouyinMqueryUserRequest) GetUserId() (v int64) {
 func (p *DouyinMqueryUserRequest) GetTargetIds() (v []int64) {
 	return p.TargetIds
 }
+
+func (p *DouyinMqueryUserRequest) GetToken() (v string) {
+	return p.Token
+}
 func (p *DouyinMqueryUserRequest) SetUserId(val int64) {
 	p.UserId = val
 }
 func (p *DouyinMqueryUserRequest) SetTargetIds(val []int64) {
 	p.TargetIds = val
 }
+func (p *DouyinMqueryUserRequest) SetToken(val string) {
+	p.Token = val
+}
 
 var fieldIDToName_DouyinMqueryUserRequest = map[int16]string{
 	1: "user_id",
 	2: "target_ids",
+	3: "token",
 }
 
 func (p *DouyinMqueryUserRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -3039,6 +3048,7 @@ func (p *DouyinMqueryUserRequest) Read(iprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	var issetUserId bool = false
 	var issetTargetIds bool = false
+	var issetToken bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -3076,6 +3086,17 @@ func (p *DouyinMqueryUserRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 3:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetToken = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -3097,6 +3118,11 @@ func (p *DouyinMqueryUserRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetTargetIds {
 		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetToken {
+		fieldId = 3
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -3148,6 +3174,15 @@ func (p *DouyinMqueryUserRequest) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *DouyinMqueryUserRequest) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Token = v
+	}
+	return nil
+}
+
 func (p *DouyinMqueryUserRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("douyin_mquery_user_request"); err != nil {
@@ -3160,6 +3195,10 @@ func (p *DouyinMqueryUserRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
 			goto WriteFieldError
 		}
 
@@ -3223,6 +3262,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
+func (p *DouyinMqueryUserRequest) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("token", thrift.STRING, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Token); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
 func (p *DouyinMqueryUserRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -3240,6 +3296,9 @@ func (p *DouyinMqueryUserRequest) DeepEqual(ano *DouyinMqueryUserRequest) bool {
 		return false
 	}
 	if !p.Field2DeepEqual(ano.TargetIds) {
+		return false
+	}
+	if !p.Field3DeepEqual(ano.Token) {
 		return false
 	}
 	return true
@@ -3262,6 +3321,13 @@ func (p *DouyinMqueryUserRequest) Field2DeepEqual(src []int64) bool {
 		if v != _src {
 			return false
 		}
+	}
+	return true
+}
+func (p *DouyinMqueryUserRequest) Field3DeepEqual(src string) bool {
+
+	if strings.Compare(p.Token, src) != 0 {
+		return false
 	}
 	return true
 }
