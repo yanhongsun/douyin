@@ -12,11 +12,10 @@ import (
 func Login(c *gin.Context) {
 	var loginVar RequestParam
 
-	if err := c.ShouldBind(&loginVar); err != nil {
+	if err := c.BindQuery(&loginVar); err != nil {
 		SendResponse(c, errno.ConvertErr(err), -1, "")
 		return
 	}
-
 	if len(loginVar.Username) == 0 || len(loginVar.Password) == 0 {
 		SendResponse(c, errno.ParamErr, -1, "")
 		return

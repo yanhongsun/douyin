@@ -6,33 +6,35 @@ import (
 	"douyin/kitex_gen/video"
 	"douyin/pkg/errno"
 	"fmt"
-	"strconv"
+	"io/ioutil"
 
 	"github.com/gin-gonic/gin"
 )
 
 func PublishVideo(c *gin.Context) {
 
+	fmt.Println("Publish Video")
 	var queryVar struct {
 		Token string `json:"token" form:"token"`
 		Data  []byte `json:"data" form:"data"`
 		Title string `json:"title" form:"title"`
 	}
+	queryVar.Token = c.PostForm("token")
+	queryVar.Title = c.PostForm("title")
+	datafile, _ := c.FormFile("data")
+	// if err := c.ShouldBind(&queryVar); err != nil {
+	// 	SendResponseV(c, errno.ConvertErr(err), nil)
+	// }
 
-	if err := c.BindQuery(&queryVar); err != nil {
-		SendResponseV(c, errno.ConvertErr(err), nil)
-	}
-	//token处理
-	userId, err := strconv.ParseInt(queryVar.Token, 10, 64)
+	data, err := datafile.Open()
 	if err != nil {
-		fmt.Println("handlers.PublishVideo()->strconv.ParseInt error")
+		c.String(400, "文件格式错误")
 		return
 	}
-	//data文件处理
-	//TODO错误处理
-	//TODO错误处理
-	if userId < 0 {
-		SendResponseV(c, errno.ParamErr, nil)
+	defer data.Close()
+	queryVar.Data, err = ioutil.ReadAll(data)
+	if err != nil {
+		c.String(400, "文件错误")
 		return
 	}
 

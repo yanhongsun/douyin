@@ -33,7 +33,7 @@ func CommentAction(c *gin.Context) {
 		return
 	}
 
-	_, err = rpc.GetUserInfo(context.Background(), &user.DouyinUserRequest{
+	_, err = rpc.QueryUser(context.Background(), &user.DouyinUserRequest{
 		UserId: userId,
 		Token:  token,
 	})
