@@ -41,7 +41,7 @@ func (v Relation) TableName() string {
 // 比自己id小的关注列表
 func GetFollows1ID(ctx context.Context, follower1 int64, str int) ([]Relation, error) {
 	var tmp []Relation
-	if err := DB.WithContext(ctx).Where("follower1 = ? and tag = ?", follower1, str).Take(&tmp).Error; err != nil {
+	if err := DB.WithContext(ctx).Where("follower1 = ? and tag = ?", follower1, str).Find(&tmp).Error; err != nil {
 		//fmt.Println(err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			//fmt.Println("没有此类数据")
@@ -55,7 +55,7 @@ func GetFollows1ID(ctx context.Context, follower1 int64, str int) ([]Relation, e
 // 比自己id大的关注列表
 func GetFollows2ID(ctx context.Context, follower1 int64, str int) ([]Relation, error) {
 	var tmp []Relation
-	if err := DB.WithContext(ctx).Where("follower2 = ? and tag = ?", follower1, str).Take(&tmp).Error; err != nil {
+	if err := DB.WithContext(ctx).Where("follower2 = ? and tag = ?", follower1, str).Find(&tmp).Error; err != nil {
 		//fmt.Println(err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			//fmt.Println("没有此类数据")
@@ -73,7 +73,7 @@ func GetFollowsInfo(ctx context.Context, res []Relation, tag int) ([]User, error
 	if tag == 1 {
 		for i := 0; i < len; i++ {
 			var user User
-			if err := DB.WithContext(ctx).Where("id=?", res[i].Follower1).Take(&user).Error; err != nil {
+			if err := DB.WithContext(ctx).Where("id=?", res[i].Follower1).Find(&user).Error; err != nil {
 				if errors.Is(err, gorm.ErrRecordNotFound) {
 					//fmt.Println("没有此类数据")
 				} else if err != nil {
@@ -86,7 +86,7 @@ func GetFollowsInfo(ctx context.Context, res []Relation, tag int) ([]User, error
 	} else if tag == 2 {
 		for i := 0; i < len; i++ {
 			var user User
-			if err := DB.WithContext(ctx).Where("id=?", res[i].Follower2).Take(&user).Error; err != nil {
+			if err := DB.WithContext(ctx).Where("id=?", res[i].Follower2).Find(&user).Error; err != nil {
 				if errors.Is(err, gorm.ErrRecordNotFound) {
 					//fmt.Println("没有此类数据")
 				} else if err != nil {
@@ -141,6 +141,8 @@ func GetOneWayFollows(ctx context.Context, follower1 int64, str1 int, str2 int) 
 	var users []User
 	// 比自己id大的关注列表
 	tmp, err := GetFollows2ID(ctx, follower1, str1)
+	fmt.Println("比自己id大的列表:")
+	fmt.Println(tmp)
 	if err != nil {
 		return nil, err
 	}
@@ -153,6 +155,8 @@ func GetOneWayFollows(ctx context.Context, follower1 int64, str1 int, str2 int) 
 
 	// 比自己id小的关注列表
 	tmp, err = GetFollows1ID(ctx, follower1, str2)
+	fmt.Println("比自己id小的列表:")
+	fmt.Println(tmp)
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +169,7 @@ func GetOneWayFollows(ctx context.Context, follower1 int64, str1 int, str2 int) 
 	}
 
 	users = append(users, users1...)
-	//fmt.Println(users1)
+
 	return users, nil
 }
 
@@ -235,11 +239,14 @@ func GetFans(ctx context.Context, follower1 int64) ([]UserList, error) {
 	}
 	//  仅仅是单向的粉丝
 	userList := ReturnFalseUserList(users)
-
+	fmt.Println("单向粉丝：")
+	fmt.Println(userList)
 	users3, err := GetTwoWayFollows(ctx, follower1)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("双向粉丝：")
+	fmt.Println(users3)
 	// 返回所有关注的用户的response
 	tmp := ReturnTureUserList(users3)
 	userList = append(userList, tmp...)
@@ -248,14 +255,14 @@ func GetFans(ctx context.Context, follower1 int64) ([]UserList, error) {
 
 // 这个查询可能会慢
 func IsFollowed(ctx context.Context, userId, otherId int64) (bool, error) {
-	fmt.Println("=================relation.db.is_followed")
+	fmt.Println(userId, otherId)
 	if userId == otherId {
 		return false, nil
 	}
 	var tmp []Relation
 	if userId < otherId {
 
-		if err := DB.WithContext(ctx).Where("follower1 = ? and follower2 = ?", userId, otherId).Take(&tmp).Error; err != nil {
+		if err := DB.WithContext(ctx).Where("follower1 = ? and follower2 = ?", userId, otherId).Find(&tmp).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				//fmt.Println("没有此类数据")
 				return false, nil
@@ -271,7 +278,7 @@ func IsFollowed(ctx context.Context, userId, otherId int64) (bool, error) {
 			return false, nil
 		}
 	} else {
-		if err := DB.WithContext(ctx).Where("follower1 = ? and follower2 = ?", otherId, userId).Take(&tmp).Error; err != nil {
+		if err := DB.WithContext(ctx).Where("follower1 = ? and follower2 = ?", otherId, userId).Find(&tmp).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				//fmt.Println("没有此类数据")
 				return false, nil
@@ -336,6 +343,7 @@ func Follow(ctx context.Context, userId, otherId int64) error {
 	if tag {
 		return nil
 	}
+	fmt.Println("没有关注唉！那就关注吧")
 
 	// 如果是枚举类型  存在问题
 	if userId < otherId {
@@ -403,7 +411,7 @@ func Unfollow(ctx context.Context, userId, otherId int64) error {
 
 		fmt.Println(relation)
 		tmp := Relation{}
-		if err := DB.WithContext(ctx).Where("follower1 = ? and follower2 = ?", userId, otherId).Take(&tmp).Error; err != nil {
+		if err := DB.WithContext(ctx).Where("follower1 = ? and follower2 = ?", userId, otherId).Find(&tmp).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				//fmt.Println("没有此类数据")
 			} else if err != nil {
@@ -423,7 +431,7 @@ func Unfollow(ctx context.Context, userId, otherId int64) error {
 			return err
 		}
 		tmp := Relation{}
-		if err := DB.WithContext(ctx).Where("follower1 = ? and follower2 = ?", otherId, userId).Take(&tmp).Error; err != nil {
+		if err := DB.WithContext(ctx).Where("follower1 = ? and follower2 = ?", otherId, userId).Find(&tmp).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				//fmt.Println("没有此类数据")
 			} else if err != nil {

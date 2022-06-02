@@ -7,6 +7,8 @@ import (
 	"douyin/pkg/errno"
 	"fmt"
 
+	"douyin/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,6 +24,19 @@ func RelationAction(c *gin.Context) {
 		SendResponseRelation(c, errno.ConvertErr(err), nil)
 		return
 	}
+
+	if queryVar.Token != "" {
+		_, claims, err := middleware.ParseToken(queryVar.Token)
+		if err != nil {
+			SendResponseRelation(c, errno.ConvertErr(err), nil)
+			return
+		}
+		queryVar.UserId = claims.UserID
+	} else {
+		SendResponseRelation(c, errno.ParamErr, nil)
+		return
+	}
+	fmt.Println(queryVar)
 	//TODO错误处理
 	if queryVar.UserId < 0 {
 		SendResponseRelation(c, errno.ParamErr, nil)
@@ -41,7 +56,7 @@ func RelationAction(c *gin.Context) {
 		ToUserId: queryVar.ToUserId,
 	}
 	tag, err := rpc.IsFollow(context.Background(), &reqIsFollow)
-	fmt.Println("handler.go   tag:")
+	fmt.Println("relation_action.go   关注了吗:")
 	fmt.Println(tag)
 	if err != nil {
 		SendBaseResponse(c, errno.ConvertErr(err))
