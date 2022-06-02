@@ -45,10 +45,7 @@ func AddCommentNumberCache(ctx context.Context, videoId, CommentNumber int64) er
 }
 
 func DeleteCommentsCache(ctx context.Context, videoId, commentId int64) error {
-	pipe := RedisClient.TxPipeline()
-
-	// comment_cache change
-	exist, tmp, err := CheckGetCommentsCache(ctx, videoId)
+	exist, tmp, err := CheckCommentsCache(ctx, videoId)
 	if err != nil {
 		return err
 	}
@@ -77,22 +74,15 @@ func DeleteCommentsCache(ctx context.Context, videoId, commentId int64) error {
 		return err
 	}
 
-	if err := pipe.Set(ctx, videoIdS, store, time.Hour*12).Err(); err != nil {
+	if err := RedisClient.Set(ctx, videoIdS, store, time.Hour*12).Err(); err != nil {
 		return nil
-	}
-
-	if _, err = pipe.Exec(ctx); err != nil {
-		return err
 	}
 
 	return nil
 }
 
 func UpdateCommentsCache(ctx context.Context, videoId int64, comment *comment.Comment) error {
-	pipe := RedisClient.TxPipeline()
-
-	// comment_cache change
-	exist, tmp, err := CheckGetCommentsCache(ctx, videoId)
+	exist, tmp, err := CheckCommentsCache(ctx, videoId)
 	if err != nil {
 		return err
 	}
@@ -115,18 +105,14 @@ func UpdateCommentsCache(ctx context.Context, videoId int64, comment *comment.Co
 		return err
 	}
 
-	if err := pipe.Set(ctx, videoIdS, store, time.Hour*12).Err(); err != nil {
+	if err := RedisClient.Set(ctx, videoIdS, store, time.Hour*12).Err(); err != nil {
 		return nil
-	}
-
-	if _, err = pipe.Exec(ctx); err != nil {
-		return err
 	}
 
 	return nil
 }
 
-func CheckGetCommentsCache(ctx context.Context, videoId int64) (bool, *Comments_cache, error) {
+func CheckCommentsCache(ctx context.Context, videoId int64) (bool, *Comments_cache, error) {
 	videoIdS := strconv.FormatInt(videoId, 10)
 	exist, err := RedisClient.Exists(ctx, videoIdS).Result()
 

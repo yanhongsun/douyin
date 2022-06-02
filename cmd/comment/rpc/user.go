@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"douyin/cmd/comment/pack/configdata"
 	"douyin/kitex_gen/user"
 	"douyin/kitex_gen/user/userservice"
 	"douyin/middleware"
@@ -11,27 +12,25 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
 )
 
 var userClient userservice.Client
 
 func initUserRpc() {
-	// TODO: modify configs
-	r, err := etcd.NewEtcdResolver([]string{"127.0.0.1:2379"})
+	r, err := etcd.NewEtcdResolver([]string{configdata.CommentServerConfig.EtcdHost})
 	if err != nil {
 		panic(err)
 	}
 	c, err := userservice.NewClient(
-		"user", // TODO: modify
+		configdata.CommentServerConfig.UserServName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithInstanceMW(middleware.ClientMiddleware),
-		client.WithMuxConnection(1),                       // mux
-		client.WithRPCTimeout(3*time.Second),              // rpc timeout
-		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
-		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
-		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
-		client.WithResolver(r),                            // resolver
+		client.WithMuxConnection(1),
+		client.WithRPCTimeout(3*time.Second),
+		client.WithConnectTimeout(50*time.Millisecond),
+		client.WithFailureRetry(retry.NewFailurePolicy()),
+		//client.WithSuite(trace.NewDefaultClientSuite()),
+		client.WithResolver(r), // resolver
 	)
 	if err != nil {
 		panic(err)
@@ -39,7 +38,6 @@ func initUserRpc() {
 	userClient = c
 }
 
-// UserInfo user info format
 type UserInfo struct {
 	ID            int64  `json:"id"`
 	Name          string `json:"name"`
@@ -48,10 +46,11 @@ type UserInfo struct {
 	IsFollow      bool   `json:"is_follow"`
 }
 
-func GetUserInfo(ctx context.Context, userId int64, token string) (*UserInfo, error) {
-	req := &user.DouyinUserRequest{UserId: userId, Token: token}
+func GetUserInfo(ctx context.Context, userId int64) (*UserInfo, error) {
 
-	resp, err := userClient.GetUser(ctx, req)
+	req := &user.DouyinUserRequest{UserId: userId, Token: ""}
+
+	resp, err := userClient.QueryCurUser(ctx, req)
 	if err != nil {
 		return nil, err
 	}

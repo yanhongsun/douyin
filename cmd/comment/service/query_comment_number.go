@@ -44,7 +44,8 @@ func (s *QueryCommentNumberService) QueryCommentNumber(req *comment.QueryComment
 		if err != nil {
 			return 0, err
 		}
-		repository.ProducerCommentsCache(s.ctx, 4, req.VideoId, nil, nil, -10001, res)
+		cacheReq := repository.NewRepositoryCache(4, req.VideoId).WithCommentNumber(res)
+		repository.ProducerCommentsCache(s.ctx, cacheReq)
 		return res, nil
 	})
 

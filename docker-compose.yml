@@ -7,9 +7,7 @@ services:
       - 3306:3306
     environment:
       - MYSQL_DATABASE=douyin
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=111111
-      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+      - MYSQL_ROOT_PASSWORD=111111
 
   redis:
     image: 'redis:latest'

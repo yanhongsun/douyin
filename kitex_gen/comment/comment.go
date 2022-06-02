@@ -1027,7 +1027,6 @@ type CreateCommentRequest struct {
 	UserId  int64  `thrift:"user_id,1" json:"user_id"`
 	VideoId int64  `thrift:"video_id,2" json:"video_id"`
 	Content string `thrift:"content,3" json:"content"`
-	Token   string `thrift:"token,4" json:"token"`
 }
 
 func NewCreateCommentRequest() *CreateCommentRequest {
@@ -1045,10 +1044,6 @@ func (p *CreateCommentRequest) GetVideoId() (v int64) {
 func (p *CreateCommentRequest) GetContent() (v string) {
 	return p.Content
 }
-
-func (p *CreateCommentRequest) GetToken() (v string) {
-	return p.Token
-}
 func (p *CreateCommentRequest) SetUserId(val int64) {
 	p.UserId = val
 }
@@ -1058,15 +1053,11 @@ func (p *CreateCommentRequest) SetVideoId(val int64) {
 func (p *CreateCommentRequest) SetContent(val string) {
 	p.Content = val
 }
-func (p *CreateCommentRequest) SetToken(val string) {
-	p.Token = val
-}
 
 var fieldIDToName_CreateCommentRequest = map[int16]string{
 	1: "user_id",
 	2: "video_id",
 	3: "content",
-	4: "token",
 }
 
 func (p *CreateCommentRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -1111,16 +1102,6 @@ func (p *CreateCommentRequest) Read(iprot thrift.TProtocol) (err error) {
 		case 3:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField3(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 4:
-			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField4(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -1185,15 +1166,6 @@ func (p *CreateCommentRequest) ReadField3(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *CreateCommentRequest) ReadField4(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
-		return err
-	} else {
-		p.Token = v
-	}
-	return nil
-}
-
 func (p *CreateCommentRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("CreateCommentRequest"); err != nil {
@@ -1210,10 +1182,6 @@ func (p *CreateCommentRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField3(oprot); err != nil {
 			fieldId = 3
-			goto WriteFieldError
-		}
-		if err = p.writeField4(oprot); err != nil {
-			fieldId = 4
 			goto WriteFieldError
 		}
 
@@ -1286,23 +1254,6 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
-func (p *CreateCommentRequest) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("token", thrift.STRING, 4); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Token); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
-}
-
 func (p *CreateCommentRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -1325,9 +1276,6 @@ func (p *CreateCommentRequest) DeepEqual(ano *CreateCommentRequest) bool {
 	if !p.Field3DeepEqual(ano.Content) {
 		return false
 	}
-	if !p.Field4DeepEqual(ano.Token) {
-		return false
-	}
 	return true
 }
 
@@ -1348,13 +1296,6 @@ func (p *CreateCommentRequest) Field2DeepEqual(src int64) bool {
 func (p *CreateCommentRequest) Field3DeepEqual(src string) bool {
 
 	if strings.Compare(p.Content, src) != 0 {
-		return false
-	}
-	return true
-}
-func (p *CreateCommentRequest) Field4DeepEqual(src string) bool {
-
-	if strings.Compare(p.Token, src) != 0 {
 		return false
 	}
 	return true
@@ -1596,10 +1537,9 @@ func (p *CreateCommentResponse) Field2DeepEqual(src *Comment) bool {
 }
 
 type DeleteCommentRequest struct {
-	UserId    int64  `thrift:"user_id,1" json:"user_id"`
-	VideoId   int64  `thrift:"video_id,2" json:"video_id"`
-	CommentId int64  `thrift:"comment_id,3" json:"comment_id"`
-	Token     string `thrift:"token,4" json:"token"`
+	UserId    int64 `thrift:"user_id,1" json:"user_id"`
+	VideoId   int64 `thrift:"video_id,2" json:"video_id"`
+	CommentId int64 `thrift:"comment_id,3" json:"comment_id"`
 }
 
 func NewDeleteCommentRequest() *DeleteCommentRequest {
@@ -1617,10 +1557,6 @@ func (p *DeleteCommentRequest) GetVideoId() (v int64) {
 func (p *DeleteCommentRequest) GetCommentId() (v int64) {
 	return p.CommentId
 }
-
-func (p *DeleteCommentRequest) GetToken() (v string) {
-	return p.Token
-}
 func (p *DeleteCommentRequest) SetUserId(val int64) {
 	p.UserId = val
 }
@@ -1630,15 +1566,11 @@ func (p *DeleteCommentRequest) SetVideoId(val int64) {
 func (p *DeleteCommentRequest) SetCommentId(val int64) {
 	p.CommentId = val
 }
-func (p *DeleteCommentRequest) SetToken(val string) {
-	p.Token = val
-}
 
 var fieldIDToName_DeleteCommentRequest = map[int16]string{
 	1: "user_id",
 	2: "video_id",
 	3: "comment_id",
-	4: "token",
 }
 
 func (p *DeleteCommentRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -1683,16 +1615,6 @@ func (p *DeleteCommentRequest) Read(iprot thrift.TProtocol) (err error) {
 		case 3:
 			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField3(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 4:
-			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField4(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -1757,15 +1679,6 @@ func (p *DeleteCommentRequest) ReadField3(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *DeleteCommentRequest) ReadField4(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
-		return err
-	} else {
-		p.Token = v
-	}
-	return nil
-}
-
 func (p *DeleteCommentRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("DeleteCommentRequest"); err != nil {
@@ -1782,10 +1695,6 @@ func (p *DeleteCommentRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField3(oprot); err != nil {
 			fieldId = 3
-			goto WriteFieldError
-		}
-		if err = p.writeField4(oprot); err != nil {
-			fieldId = 4
 			goto WriteFieldError
 		}
 
@@ -1858,23 +1767,6 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
-func (p *DeleteCommentRequest) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("token", thrift.STRING, 4); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Token); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
-}
-
 func (p *DeleteCommentRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -1897,9 +1789,6 @@ func (p *DeleteCommentRequest) DeepEqual(ano *DeleteCommentRequest) bool {
 	if !p.Field3DeepEqual(ano.CommentId) {
 		return false
 	}
-	if !p.Field4DeepEqual(ano.Token) {
-		return false
-	}
 	return true
 }
 
@@ -1920,13 +1809,6 @@ func (p *DeleteCommentRequest) Field2DeepEqual(src int64) bool {
 func (p *DeleteCommentRequest) Field3DeepEqual(src int64) bool {
 
 	if p.CommentId != src {
-		return false
-	}
-	return true
-}
-func (p *DeleteCommentRequest) Field4DeepEqual(src string) bool {
-
-	if strings.Compare(p.Token, src) != 0 {
 		return false
 	}
 	return true
