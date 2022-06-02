@@ -5,6 +5,7 @@ import (
 	"douyin/cmd/api/rpc"
 	"douyin/kitex_gen/relation"
 	"douyin/pkg/errno"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,6 +31,8 @@ func IsFollow(c *gin.Context) {
 		Token:    queryVar.Token,
 		ToUserId: queryVar.ToUserId,
 	}
+	fmt.Println("api is_follow")
+	fmt.Println(req)
 	tag, err := rpc.IsFollow(context.Background(), &req)
 	if err != nil {
 		SendResponseRelation(c, errno.ConvertErr(err), false)
