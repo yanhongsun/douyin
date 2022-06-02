@@ -9,3 +9,5 @@ output
 .vscode
 master
 slave
+*.png
+*.mp4

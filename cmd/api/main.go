@@ -41,7 +41,7 @@ func main() {
 	userGroup.GET("/", middleware.AuthMiddleware(), handlers.QueryCurUser)
 
 	commentGroup := douyin.Group("/comment")
-	commentGroup.POST("/action/", handlers.CommentAction)
+	commentGroup.POST("/action/", middleware.AuthMiddleware(), handlers.CommentAction)
 	commentGroup.GET("/list/", handlers.CommentList)
 	// test
 	// userGroup.GET("/other/", handlers.QueryOthUser)
