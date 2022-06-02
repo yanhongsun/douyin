@@ -16,5 +16,5 @@ func NewGetFollowerListService(ctx context.Context) *GetFollowerListService {
 
 func (s *GetFollowerListService) GetFollowerList(req *relation.GetFollowerListRequest) ([]db.UserList, error) {
 
-	return db.GetFollows(s.ctx, req.UserId)
+	return db.GetFans(s.ctx, req.UserId)
 }

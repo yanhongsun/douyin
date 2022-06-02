@@ -235,11 +235,14 @@ func GetFans(ctx context.Context, follower1 int64) ([]UserList, error) {
 	}
 	//  仅仅是单向的粉丝
 	userList := ReturnFalseUserList(users)
-
+	fmt.Println("单向粉丝：")
+	fmt.Println(userList)
 	users3, err := GetTwoWayFollows(ctx, follower1)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("双向粉丝：")
+	fmt.Println(users3)
 	// 返回所有关注的用户的response
 	tmp := ReturnTureUserList(users3)
 	userList = append(userList, tmp...)
