@@ -39,7 +39,7 @@ func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) 
 		return nil, err
 	}
 
-	commentModel := mysqldb.Comment{
+	commentModel := &mysqldb.Comment{
 		CommentID: commentId,
 		VideoID:   req.VideoId,
 		UserID:    req.UserId,
@@ -47,9 +47,11 @@ func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) 
 		Content:   req.Content,
 	}
 
-	if err := repository.ProducerComment(s.ctx, 1, &commentModel, -10001, -10001, user, -10001); err != nil {
+	dbReq := repository.NewRepositoryCom(1).WithComment(commentModel).WithUser(user)
+
+	if err := repository.ProducerComment(s.ctx, dbReq); err != nil {
 		return nil, err
 	}
 
-	return pack.ChangeComment(&commentModel, user), nil
+	return pack.ChangeComment(commentModel, user), nil
 }

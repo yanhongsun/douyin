@@ -41,6 +41,8 @@ type CommentServer struct {
 	EtcdHost        string
 	CommentServName string
 	CommentServHost string
+	UserServName    string
+	VideoServName   string
 }
 
 type RedisDatabase struct {

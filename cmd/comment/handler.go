@@ -16,7 +16,7 @@ type CommentServiceImpl struct{}
 func (s *CommentServiceImpl) CreateComment(ctx context.Context, req *comment.CreateCommentRequest) (resp *comment.CreateCommentResponse, err error) {
 	resp = new(comment.CreateCommentResponse)
 
-	exist, err := rpc.VerifyVideoId(ctx, req.VideoId, "123")
+	exist, err := rpc.VerifyVideoId(ctx, req.VideoId)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(errno.CommentServiceErr.WithMessage(err.Error()))
 		return resp, nil
@@ -47,7 +47,7 @@ func (s *CommentServiceImpl) CreateComment(ctx context.Context, req *comment.Cre
 func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *comment.DeleteCommentRequest) (resp *comment.DeleteCommentResponse, err error) {
 	resp = new(comment.DeleteCommentResponse)
 
-	exist, err := rpc.VerifyVideoId(ctx, req.VideoId, "123")
+	exist, err := rpc.VerifyVideoId(ctx, req.VideoId)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(errno.CommentServiceErr.WithMessage(err.Error()))
 		return resp, nil
@@ -72,7 +72,7 @@ func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *comment.Del
 func (s *CommentServiceImpl) QueryComments(ctx context.Context, req *comment.QueryCommentsRequest) (resp *comment.QueryCommentsResponse, err error) {
 	resp = new(comment.QueryCommentsResponse)
 
-	exist, err := rpc.VerifyVideoId(ctx, req.VideoId, "123")
+	exist, err := rpc.VerifyVideoId(ctx, req.VideoId)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(errno.CommentServiceErr.WithMessage(err.Error()))
 		return resp, nil

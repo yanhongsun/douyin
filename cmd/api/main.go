@@ -4,6 +4,7 @@ import (
 	"douyin/cmd/api/handlers"
 	"douyin/cmd/api/middleware"
 	"douyin/cmd/api/rpc"
+	"douyin/pkg/tracer"
 	"net/http"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -12,13 +13,15 @@ import (
 
 func Init() {
 	// TODO
-	// tracer.InitJaeger("api")
+	tracer.InitJaeger("api")
 	rpc.InitRPC()
 }
 
 func main() {
 	Init()
 	r := gin.New()
+	r.Use(middleware.OpenTracing())
+
 	douyin := r.Group("/douyin")
 	relationGroup := douyin.Group("/relation")
 	relationGroup.GET("/follower/list/", handlers.GetFollowerList)

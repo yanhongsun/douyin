@@ -19,13 +19,37 @@ type repositoryCache struct {
 	VideoId int64 `json:"video_id"`
 
 	// can choose
-	Comments      []*comment.Comment `json:"comments"`
-	Comment       *comment.Comment   `json:"comment"`
-	CommentId     int64              `json:"comment_id"`
-	CommentNumber int64              `json:"comment_number"`
+	Comments      []*comment.Comment `json:"comments,omitempty"`
+	Comment       *comment.Comment   `json:"comment,omitempty"`
+	CommentId     int64              `json:"comment_id,omitempty"`
+	CommentNumber int64              `json:"comment_number,omitempty"`
 }
 
-func ProducerCommentsCache(ctx context.Context, types, videoId int64, comments []*comment.Comment, comment *comment.Comment, commentId, commentNumber int64) error {
+func NewRepositoryCache(types int64, videoId int64) *repositoryCache {
+	return &repositoryCache{Type: types, VideoId: videoId}
+}
+
+func (c *repositoryCache) WithComments(comments []*comment.Comment) *repositoryCache {
+	c.Comments = comments
+	return c
+}
+
+func (c *repositoryCache) WithComment(comment *comment.Comment) *repositoryCache {
+	c.Comment = comment
+	return c
+}
+
+func (c *repositoryCache) WithCommentId(commentId int64) *repositoryCache {
+	c.CommentId = commentId
+	return c
+}
+
+func (c *repositoryCache) WithCommentNumber(commentNumber int64) *repositoryCache {
+	c.CommentNumber = commentNumber
+	return c
+}
+
+func ProducerCommentsCache(ctx context.Context, rerepositoryCache *repositoryCache) error {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
@@ -33,15 +57,7 @@ func ProducerCommentsCache(ctx context.Context, types, videoId int64, comments [
 
 	msg := &sarama.ProducerMessage{}
 	msg.Topic = configdata.KafkaConfig.TopicCommentNumber
-	dataRepository := repositoryCache{
-		Type:          types,
-		VideoId:       videoId,
-		Comments:      comments,
-		Comment:       comment,
-		CommentId:     commentId,
-		CommentNumber: commentNumber,
-	}
-	data, err := json.Marshal(dataRepository)
+	data, err := json.Marshal(rerepositoryCache)
 	if err != nil {
 		klog.Fatal(err)
 		return err
@@ -61,8 +77,6 @@ func ProducerCommentsCache(ctx context.Context, types, videoId int64, comments [
 	}
 
 	return nil
-
-	// context.WithValue()
 }
 
 func ConsumeCommentsCache(ctx context.Context) {

@@ -24,7 +24,7 @@ func NewQueryCommentsService(ctx context.Context) *QueryCommentsService {
 }
 
 func (s *QueryCommentsService) QueryComments(req *comment.QueryCommentsRequest) ([]*comment.Comment, error) {
-	status, res, err := redisdb.CheckGetCommentsCache(s.ctx, req.VideoId)
+	status, res, err := redisdb.CheckCommentsCache(s.ctx, req.VideoId)
 
 	if err != nil {
 		//TODO:log
@@ -42,12 +42,12 @@ func (s *QueryCommentsService) QueryComments(req *comment.QueryCommentsRequest) 
 		if err != nil {
 			return nil, err
 		}
-		resD = pack.ReverseComments(resD)
 		res, err := pack.ChangeComments(s.ctx, resD)
 		if err != nil {
 			return nil, err
 		}
-		repository.ProducerCommentsCache(s.ctx, 1, req.VideoId, res, nil, -10001, -10001)
+		cacheReq := repository.NewRepositoryCache(1, req.VideoId).WithComments(res)
+		repository.ProducerCommentsCache(s.ctx, cacheReq)
 		return res, nil
 	})
 

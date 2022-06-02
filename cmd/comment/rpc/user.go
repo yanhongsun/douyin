@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"douyin/cmd/comment/pack/configdata"
 	"douyin/kitex_gen/user"
 	"douyin/kitex_gen/user/userservice"
 	"douyin/middleware"
@@ -16,19 +17,19 @@ import (
 var userClient userservice.Client
 
 func initUserRpc() {
-	r, err := etcd.NewEtcdResolver([]string{"127.0.0.1:2379"})
+	r, err := etcd.NewEtcdResolver([]string{configdata.CommentServerConfig.EtcdHost})
 	if err != nil {
 		panic(err)
 	}
 	c, err := userservice.NewClient(
-		"user",
+		configdata.CommentServerConfig.UserServName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithInstanceMW(middleware.ClientMiddleware),
-		client.WithMuxConnection(1),                       // mux
-		client.WithRPCTimeout(3*time.Second),              // rpc timeout
-		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
-		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
-		//client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
+		client.WithMuxConnection(1),
+		client.WithRPCTimeout(3*time.Second),
+		client.WithConnectTimeout(50*time.Millisecond),
+		client.WithFailureRetry(retry.NewFailurePolicy()),
+		//client.WithSuite(trace.NewDefaultClientSuite()),
 		client.WithResolver(r), // resolver
 	)
 	if err != nil {
@@ -37,7 +38,6 @@ func initUserRpc() {
 	userClient = c
 }
 
-// UserInfo user info format
 type UserInfo struct {
 	ID            int64  `json:"id"`
 	Name          string `json:"name"`

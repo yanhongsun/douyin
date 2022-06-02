@@ -2,6 +2,8 @@ CommentServer:
   EtcdHost: localhost:2379
   CommentServName: comment
   CommentServHost: localhost:8888
+  UserServName: user
+  VideoServName: video
 
 MysqlDatabase:
   User: root
@@ -24,3 +26,4 @@ TencentCloud:
   TextModeration: false
   SecretId: AKIDNaOxHMBlBMHwMXS8YjhQu98sMbbLp32m
   SecretKey: XpreBTWJr9ByVnpcASWMwHNDn8D2bvzn
+
