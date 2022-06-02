@@ -22,7 +22,6 @@ func GetFeed(c *gin.Context) {
 		SendResponseFeed(c, errno.ConvertErr(err), nil, 0)
 	}
 
-	//token处理
 	if queryVar.LatestTime <= 0 {
 		queryVar.LatestTime = 0
 	}
