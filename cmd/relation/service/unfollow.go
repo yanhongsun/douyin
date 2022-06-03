@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"douyin/cmd/relation/dal/db"
+	"douyin/cmd/relation/dal/redisCache"
 	"douyin/kitex_gen/relation"
 )
 
@@ -16,5 +16,5 @@ func NewUnFollowService(ctx context.Context) *UnFollowService {
 
 func (s *UnFollowService) UnFollow(req *relation.RelationActionRequest) error {
 
-	return db.Unfollow(s.ctx, req.UserId, req.ToUserId)
+	return redisCache.UnFollow(s.ctx, req.UserId, req.ToUserId)
 }

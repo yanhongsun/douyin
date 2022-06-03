@@ -3,13 +3,13 @@ package main
 import (
 	"douyin/cmd/comment/dal"
 	"douyin/cmd/comment/pack/configdata"
+	"douyin/cmd/comment/pack/zapcomment"
 	"douyin/cmd/comment/repository"
 	"douyin/cmd/comment/rpc"
 	"douyin/cmd/comment/service"
 	comment "douyin/kitex_gen/comment/commentservice"
 
 	tracer2 "douyin/pkg/tracer"
-	"log"
 	"net"
 
 	"github.com/cloudwego/kitex/pkg/limit"
@@ -20,9 +20,10 @@ import (
 )
 
 func Init() {
+	zapcomment.Init()
 	err := configdata.SetupSetting()
 	if err != nil {
-		panic("config is wrong")
+		zapcomment.Logger.Panic("configuration initialization failed")
 	}
 
 	tracer2.InitJaegers(configdata.CommentServerConfig.CommentServName)
@@ -38,13 +39,13 @@ func main() {
 	r, err := etcd.NewEtcdRegistry([]string{configdata.CommentServerConfig.EtcdHost})
 
 	if err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("etcd initialization err: " + err.Error())
 	}
 
 	addr, err := net.ResolveTCPAddr("tcp", configdata.CommentServerConfig.CommentServHost)
 
 	if err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("tcp address initialization err: " + err.Error())
 	}
 
 	svr := comment.NewServer(new(CommentServiceImpl),
@@ -59,6 +60,6 @@ func main() {
 	err = svr.Run()
 
 	if err != nil {
-		log.Println(err.Error())
+		zapcomment.Logger.Panic("comment service initialization err: " + err.Error())
 	}
 }

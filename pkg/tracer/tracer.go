@@ -1,6 +1,7 @@
 package tracer
 
 import (
+	"douyin/cmd/comment/pack/zapcomment"
 	"fmt"
 
 	"github.com/opentracing/opentracing-go"
@@ -33,11 +34,11 @@ func InitJaegers(service string) {
 
 	cfg.ServiceName = service
 	tracer, _, err := cfg.NewTracer(
-		jaegercfg.Logger(jaeger.StdLogger),
 		jaegercfg.ZipkinSharedRPCSpan(true),
 	)
 	if err != nil {
-		panic(fmt.Sprintf("ERROR: cannot init Jaeger: %v\n", err))
+		zapcomment.Logger.Panic(fmt.Sprintf("ERROR: cannot init Jaeger: %v\n", err))
 	}
 	opentracing.SetGlobalTracer(tracer)
+	zapcomment.Logger.Info("opentracing initialization succeeded")
 }

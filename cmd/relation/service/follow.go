@@ -2,9 +2,8 @@ package service
 
 import (
 	"context"
-	"douyin/cmd/relation/dal/db"
+	"douyin/cmd/relation/dal/redisCache"
 	"douyin/kitex_gen/relation"
-	"fmt"
 )
 
 type FollowService struct {
@@ -16,6 +15,5 @@ func NewFollowService(ctx context.Context) *FollowService {
 }
 
 func (s *FollowService) Follow(req *relation.RelationActionRequest) error {
-	fmt.Println("进入数据库，开始关注")
-	return db.Follow(s.ctx, req.UserId, req.ToUserId)
+	return redisCache.Follow(s.ctx, req.UserId, req.ToUserId)
 }

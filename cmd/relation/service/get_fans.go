@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"douyin/cmd/relation/dal/db"
+	"douyin/cmd/relation/dal/redisCache"
 	"douyin/kitex_gen/relation"
 )
 
@@ -16,5 +17,5 @@ func NewGetFollowerListService(ctx context.Context) *GetFollowerListService {
 
 func (s *GetFollowerListService) GetFollowerList(req *relation.GetFollowerListRequest) ([]db.UserList, error) {
 
-	return db.GetFans(s.ctx, req.UserId)
+	return redisCache.GetFans(s.ctx, req.UserId)
 }

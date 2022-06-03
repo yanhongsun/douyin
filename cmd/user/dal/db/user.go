@@ -9,7 +9,7 @@ import (
 type User struct {
 	ID       int64  `gorm:"column:id;primaryKey;not null"`
 	Username string `gorm:"column:u_name;unique;type:varchar(30);not null"`
-	Password string `gorm:"column:passwd;type:varchar(32);not null"`
+	Password string `gorm:"column:passwd;type:varchar(60);not null"`
 	// Nickname    string `json:"nickname"`
 	FollowCount   int64 `gorm:"column:follow_count;default:0"`
 	FollowerCount int64 `gorm:"column:fans_count;default:0"`

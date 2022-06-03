@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/pack"
+	"douyin/cmd/comment/pack/zapcomment"
 	"douyin/cmd/comment/rpc"
 	"douyin/kitex_gen/comment"
 
@@ -17,9 +18,10 @@ var snowflakeNode *snowflake.Node
 func InitSnowflakeNode() {
 	tmpNode, err := snowflake.NewNode(1)
 	if err != nil {
-		panic("snowflake error")
+		zapcomment.Logger.Panic("snowflake error: " + err.Error())
 	}
 	snowflakeNode = tmpNode
+	zapcomment.Logger.Info("snowflake initialization succeeded")
 }
 
 type CreateCommentService struct {
