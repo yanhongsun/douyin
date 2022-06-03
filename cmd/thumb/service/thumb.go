@@ -5,6 +5,7 @@ import (
 	"douyin/cmd/thumb/dal/db"
 	"douyin/cmd/thumb/pack"
 	"douyin/kitex_gen/like"
+	"fmt"
 )
 
 type ThumbService struct {
@@ -25,6 +26,7 @@ func NewThumbService(ctx context.Context) *ThumbService {
 // 点赞操作
 
 func (t ThumbService) ThumbList(req *like.ThumbListRequest) ([]*like.Video, error) {
+	fmt.Println("来到了service ThumbList中，req=", req)
 	videos, err := db.ListVideo(t.ctx, req.UserId)
 	userInfo, err := db.GetUserInfo(t.ctx, req.UserId)
 	if err != nil {

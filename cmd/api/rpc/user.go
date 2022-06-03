@@ -6,6 +6,7 @@ import (
 	"douyin/kitex_gen/user/userservice"
 	"douyin/middleware"
 	"douyin/pkg/errno"
+	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -39,6 +40,7 @@ func initUserRpc() {
 }
 
 func CreateUser(ctx context.Context, req *user.DouyinUserRegisterRequest) (int64, string, error) {
+	fmt.Println("即将进入userClient.CreateUser")
 	resp, err := userClient.CreateUser(ctx, req)
 	if err != nil {
 		return -1, "", err

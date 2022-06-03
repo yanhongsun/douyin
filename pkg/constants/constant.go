@@ -13,7 +13,7 @@ const (
 	UserTableName               = "users"
 	VideoTableName              = "videos"
 	VideoServiceName            = "video"
-	MySQLDefaultDSN             = "root:@tcp(localhost:3306)/douyin?charset=utf8&parseTime=True&loc=Local"
+	MySQLDefaultDSN             = "root:111111@tcp(localhost:3306)/douyin?charset=utf8&parseTime=True&loc=Local"
 	EtcdAddress                 = "127.0.0.1:2379"
 	CPURateLimit        float64 = 80.0
 	DefaultLimit                = 10

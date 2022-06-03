@@ -6,6 +6,7 @@ import (
 	"douyin/cmd/thumb/service"
 	"douyin/kitex_gen/like"
 	"douyin/pkg/errno"
+	"fmt"
 )
 
 // ThumbServiceImpl implements the last service interface defined in the IDL.
@@ -24,6 +25,7 @@ func (s *ThumbServiceImpl) Likeyou(ctx context.Context, request *like.LikeyouReq
 
 // ThumbList implements the ThumbServiceImpl interface.
 func (s *ThumbServiceImpl) ThumbList(ctx context.Context, request *like.ThumbListRequest) (resp *like.ThumbListResponse, err error) {
+	fmt.Println("到这了emmm")
 	if request.UserId == 0 {
 		return pack.BuildThumblistResp(nil, errno.ParamErr), err
 	}

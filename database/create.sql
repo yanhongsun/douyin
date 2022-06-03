@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 use douyin;
 
 CREATE TABLE users
@@ -12,7 +12,7 @@ CREATE TABLE users
   index index_name(u_name(11))
 ) ENGINE=InnoDB;
 
-CREATE TABLE vedios
+CREATE TABLE videos
 (
   id              BIGINT        NOT NULL  AUTO_INCREMENT  ,
   u_id            BIGINT        NOT NULL  COMMENT '用户ID',
@@ -56,8 +56,6 @@ CREATE TABLE favorite
 ) ENGINE=InnoDB;
 
 
-=======
-<<<<<<< HEAD use douyin;
 
 CREATE TABLE users (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '用户ID',

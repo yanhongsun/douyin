@@ -5,6 +5,7 @@ import (
 	"douyin/cmd/api/rpc"
 	"douyin/kitex_gen/like"
 	"douyin/pkg/errno"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -52,6 +53,7 @@ func ThumbList(c *gin.Context) {
 		UserId: queryVar.UserId,
 		Token:  queryVar.Token,
 	}
+	fmt.Println("即将开始调用rpc.ThumbList")
 	videos, err := rpc.ThumbList(context.Background(), req)
 	if err != nil {
 		SendResponseThumb(c, errno.ConvertErr(err), nil)

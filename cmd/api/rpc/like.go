@@ -22,6 +22,7 @@ import (
 	"douyin/pkg/constants"
 	"douyin/pkg/errno"
 	"douyin/pkg/middleware"
+	"fmt"
 	"time"
 
 	"github.com/cloudwego/kitex/client"
@@ -70,7 +71,9 @@ func Likeyou(ctx context.Context, req *like.LikeyouRequest) error {
 
 // ThumbList query list of video
 func ThumbList(ctx context.Context, req *like.ThumbListRequest) ([]*like.Video, error) {
+	fmt.Println("发起请求：req=", req)
 	resp, err := likeClient.ThumbList(ctx, req)
+	fmt.Println("客户端返回:ThumbList:", resp)
 	if err != nil {
 		return nil, err
 	}
