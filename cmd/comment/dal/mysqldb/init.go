@@ -2,6 +2,7 @@ package mysqldb
 
 import (
 	"douyin/cmd/comment/pack/configdata"
+	"douyin/cmd/comment/pack/zapcomment"
 	"fmt"
 
 	"gorm.io/driver/mysql"
@@ -28,18 +29,19 @@ func Init() {
 		})
 
 	if err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("mysql initialization err: " + err.Error())
 	}
 
 	if err = DB.Use(gormopentracing.New()); err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("gorm opentracing initialization err: " + err.Error())
 	}
 
 	if err = DB.AutoMigrate(&Comment{}); err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("gorm comments initialization err: " + err.Error())
 	}
 
 	if err = DB.AutoMigrate(&CommentIndex{}); err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("gorm commentindeies initialization err: " + err.Error())
 	}
+	zapcomment.Logger.Info("mysql initialization succeeded")
 }

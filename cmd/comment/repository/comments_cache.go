@@ -4,13 +4,12 @@ import (
 	"context"
 	"douyin/cmd/comment/dal/redisdb"
 	"douyin/cmd/comment/pack/configdata"
+	"douyin/cmd/comment/pack/zapcomment"
 	"douyin/kitex_gen/comment"
 	"douyin/pkg/tracer"
 	"encoding/json"
-	"log"
 
 	"github.com/Shopify/sarama"
-	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 type repositoryCache struct {
@@ -59,7 +58,7 @@ func ProducerCommentsCache(ctx context.Context, rerepositoryCache *repositoryCac
 	msg.Topic = configdata.KafkaConfig.TopicCommentNumber
 	data, err := json.Marshal(rerepositoryCache)
 	if err != nil {
-		klog.Fatal(err)
+		zapcomment.Logger.Error("json Unmarshal err: " + err.Error())
 		return err
 	}
 	msg.Value = sarama.StringEncoder(string(data))
@@ -68,13 +67,17 @@ func ProducerCommentsCache(ctx context.Context, rerepositoryCache *repositoryCac
 	client := tracer.NewSyncProducerFromClient(clients)
 	client = client.WithContext(ctx)
 	if err != nil {
+		zapcomment.Logger.Error("kafka client err: " + err.Error())
 		return err
 	}
 	defer client.Close()
 
 	if _, _, err := client.SendMessage(msg); err != nil {
+		zapcomment.Logger.Error("kafka send redis message err: " + err.Error())
 		return err
 	}
+
+	zapcomment.Logger.Info("kafka send redis message succeeded")
 
 	return nil
 }
@@ -83,42 +86,53 @@ func ConsumeCommentsCache(ctx context.Context) {
 	config := sarama.NewConfig()
 	consumer, err := sarama.NewConsumer([]string{configdata.KafkaConfig.Host}, config)
 	if err != nil {
-		// TODO: log
-		log.Fatal("NewConsumer err: ", err)
+		zapcomment.Logger.Panic("NewConsumer err: " + err.Error())
 		return
 	}
 	defer consumer.Close()
 
 	partitionConsumer, err := consumer.ConsumePartition(configdata.KafkaConfig.TopicCommentNumber, 0, sarama.OffsetNewest)
 	if err != nil {
-		// TODO: log
-		log.Fatal("ConsumePartition err: ", err)
+		zapcomment.Logger.Panic("ConsumePartition err: " + err.Error())
 		return
 	}
 	defer partitionConsumer.Close()
+
+	zapcomment.Logger.Info("kafka in redis initialization succeeded")
 
 	for message := range partitionConsumer.Messages() {
 		res := message.Value
 		var data repositoryCache
 		err := json.Unmarshal([]byte(res), &data)
 		if err != nil {
-			// TODO: log
-			log.Fatal("Json Unmarshal err: ", err)
+			zapcomment.Logger.Error("Json Unmarshal err: " + err.Error())
 			continue
 		}
 		if data.Type == 1 {
-			redisdb.AddCommentsCache(ctx, data.VideoId, data.Comments)
+			err := redisdb.AddCommentsCache(ctx, data.VideoId, data.Comments)
+			if err == nil {
+				zapcomment.Logger.Info("redis add cache succeeded")
+			}
 			continue
 		} else if data.Type == 2 {
 			redisdb.UpdateCommentsCache(ctx, data.VideoId, data.Comment)
+			if err == nil {
+				zapcomment.Logger.Info("redis update cache succeeded")
+			}
 			continue
 		} else if data.Type == 3 {
 			redisdb.DeleteCommentsCache(ctx, data.VideoId, data.CommentId)
+			if err == nil {
+				zapcomment.Logger.Info("redis delete some cache succeeded")
+			}
 			continue
 		} else if data.Type == 4 {
 			redisdb.AddCommentNumberCache(ctx, data.VideoId, data.CommentNumber)
+			if err == nil {
+				zapcomment.Logger.Info("redis add number cache succeeded")
+			}
 			continue
 		}
-		log.Fatal("type is wrong")
+		zapcomment.Logger.Error("cache type is wrong")
 	}
 }

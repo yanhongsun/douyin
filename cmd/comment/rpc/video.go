@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"douyin/cmd/comment/pack/configdata"
+	"douyin/cmd/comment/pack/zapcomment"
 	"douyin/kitex_gen/video"
 	"douyin/kitex_gen/video/videoservice"
 
@@ -21,7 +22,7 @@ var videoClient videoservice.Client
 func initVideoRpc() {
 	r, err := etcd.NewEtcdResolver([]string{configdata.CommentServerConfig.EtcdHost})
 	if err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("etcd initialization err: " + err.Error())
 	}
 
 	c, err := videoservice.NewClient(
@@ -36,9 +37,10 @@ func initVideoRpc() {
 		client.WithResolver(r), // resolver
 	)
 	if err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("videoService initialization err: " + err.Error())
 	}
 	videoClient = c
+	zapcomment.Logger.Info("videoService initialization succeeded")
 }
 
 func VerifyVideoId(ctx context.Context, videoId int64) (bool, error) {

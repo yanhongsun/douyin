@@ -3,6 +3,7 @@ package redisdb
 import (
 	"context"
 	"douyin/cmd/comment/pack/configdata"
+	"douyin/cmd/comment/pack/zapcomment"
 
 	"github.com/go-redis/redis/v8"
 	hook "github.com/imcvampire/opentracing-goredisv8"
@@ -22,7 +23,8 @@ func Init() {
 
 	_, err := client.Ping(context.Background()).Result()
 	if err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("redis initialization err: " + err.Error())
 	}
 	RedisClient = client
+	zapcomment.Logger.Info("redis initialization succeeded")
 }

@@ -5,10 +5,10 @@ import (
 	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/pack"
 	"douyin/cmd/comment/pack/configdata"
+	"douyin/cmd/comment/pack/zapcomment"
 	"douyin/cmd/comment/rpc"
 	"douyin/pkg/tracer"
 	"encoding/json"
-	"log"
 	"strconv"
 
 	"github.com/Shopify/sarama"
@@ -67,6 +67,7 @@ func ProducerComment(ctx context.Context, repositoryCom *repositoryCom) error {
 	data, err := json.Marshal(repositoryCom)
 
 	if err != nil {
+		zapcomment.Logger.Error("json Unmarshal err: " + err.Error())
 		return err
 	}
 	msg.Value = sarama.StringEncoder(string(data))
@@ -76,13 +77,17 @@ func ProducerComment(ctx context.Context, repositoryCom *repositoryCom) error {
 	client = client.WithContext(ctx)
 
 	if err != nil {
+		zapcomment.Logger.Error("kafka client err: " + err.Error())
 		return err
 	}
 	defer client.Close()
 
 	if _, _, err := client.SendMessage(msg); err != nil {
+		zapcomment.Logger.Error("kafka send mysql message err: " + err.Error())
 		return err
 	}
+
+	zapcomment.Logger.Error("kafka send mysql message succeeded")
 
 	return nil
 }
@@ -91,40 +96,39 @@ func ConsumeComments(ctx context.Context) {
 	config := sarama.NewConfig()
 	consumer, err := sarama.NewConsumer([]string{configdata.KafkaConfig.Host}, config)
 	if err != nil {
-		// TODO: log
-		log.Fatal("NewConsumer err: ", err)
+		zapcomment.Logger.Panic("NewConsumer err: " + err.Error())
 		return
 	}
 	defer consumer.Close()
 
 	partitionConsumer, err := consumer.ConsumePartition(configdata.KafkaConfig.TopicComments, 0, sarama.OffsetNewest)
 	if err != nil {
-		// TODO: log
-		log.Fatal("ConsumePartition err: ", err)
+		zapcomment.Logger.Panic("ConsumePartition err: " + err.Error())
 		return
 	}
 	defer partitionConsumer.Close()
+	zapcomment.Logger.Info("kafka in mysql initialization succeeded")
 
 	for message := range partitionConsumer.Messages() {
 		res := message.Value
 		var data repositoryCom
 		err := json.Unmarshal([]byte(res), &data)
 		if err != nil {
-			// TODO: log
-			log.Fatal("Json Unmarshal err: ", err)
+			zapcomment.Logger.Error("json Unmarshal err: " + err.Error())
 			continue
 		}
 		if data.Type == 1 {
 			textModeration, err := strconv.ParseBool(configdata.TencentCloudConfig.TextModeration)
 			if err != nil {
-				//log
+				zapcomment.Logger.Error("strcov error in : " + err.Error() + " : string - " + configdata.TencentCloudConfig.TextModeration)
 				continue
 			}
 			moderationRes := "Pass"
 			if textModeration {
 				moderationRes, err = pack.CommentModeration(data.Comment.Content)
 				if err != nil {
-					log.Fatal("API err: ", err)
+					zapcomment.Logger.Error("Tencent API err" + err.Error())
+					moderationRes = "Review"
 				}
 			}
 			if moderationRes == "Review" {
@@ -134,22 +138,27 @@ func ConsumeComments(ctx context.Context) {
 			}
 			err = mysqldb.CreateComment(ctx, data.Comment)
 			if err != nil {
-				// log
-				continue
+				zapcomment.Logger.Error("mysql commentId " + strconv.Itoa(int(data.CommentId)) + " create err" + err.Error())
 			}
 
 			cacheReq := NewRepositoryCache(2, data.Comment.VideoID).WithComment(pack.ChangeComment(data.Comment, data.User))
 			ProducerCommentsCache(ctx, cacheReq)
+			if err == nil {
+				zapcomment.Logger.Error("mysql commentId " + strconv.Itoa(int(data.CommentId)) + " create succeeded")
+			}
 			continue
 		} else if data.Type == 2 {
 			err = mysqldb.DeleteComment(ctx, data.CommentId, data.VideoId, data.UserId)
 			if err != nil {
-				continue
+				zapcomment.Logger.Error("mysql commentId " + strconv.Itoa(int(data.CommentId)) + " delete err" + err.Error())
 			}
 			cacheReq := NewRepositoryCache(3, data.VideoId).WithCommentId(data.CommentId)
-			ProducerCommentsCache(ctx, cacheReq)
+			err := ProducerCommentsCache(ctx, cacheReq)
+			if err == nil {
+				zapcomment.Logger.Error("mysql commentId " + strconv.Itoa(int(data.CommentId)) + " delete succeeded")
+			}
 			continue
 		}
-		log.Fatal("type is wrong")
+		zapcomment.Logger.Panic("mysql type is wrong")
 	}
 }

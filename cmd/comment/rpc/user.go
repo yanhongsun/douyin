@@ -3,6 +3,7 @@ package rpc
 import (
 	"context"
 	"douyin/cmd/comment/pack/configdata"
+	"douyin/cmd/comment/pack/zapcomment"
 	"douyin/kitex_gen/user"
 	"douyin/kitex_gen/user/userservice"
 	"douyin/middleware"
@@ -19,7 +20,7 @@ var userClient userservice.Client
 func initUserRpc() {
 	r, err := etcd.NewEtcdResolver([]string{configdata.CommentServerConfig.EtcdHost})
 	if err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("etcd initialization err: " + err.Error())
 	}
 	c, err := userservice.NewClient(
 		configdata.CommentServerConfig.UserServName,
@@ -33,9 +34,10 @@ func initUserRpc() {
 		client.WithResolver(r), // resolver
 	)
 	if err != nil {
-		panic(err)
+		zapcomment.Logger.Panic("userService initialization err: " + err.Error())
 	}
 	userClient = c
+	zapcomment.Logger.Info("userService initialization succeeded")
 }
 
 type UserInfo struct {
