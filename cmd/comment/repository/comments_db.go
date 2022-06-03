@@ -16,17 +16,46 @@ import (
 
 type repositoryCom struct {
 	// Type:1-create,2-delete
-	Type      int64            `json:"type"`
-	Comment   *mysqldb.Comment `json:"comment"`
-	CommentId int64            `json:"comment_id"`
+	Type int64 `json:"type"`
 
 	// can choose
-	VideoId int64         `json:"video_id"`
-	User    *rpc.UserInfo `json:"user"`
-	UserId  int64         `json:user_id`
+	Comment   *mysqldb.Comment `json:"comment,omitempty"`
+	User      *rpc.UserInfo    `json:"user,omitempty"`
+	UserId    int64            `json:"user_id,omitempty"`
+	VideoId   int64            `json:"video_id,omitempty"`
+	CommentId int64            `json:"comment_id,omitempty"`
 }
 
-func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment, commentId, videoId int64, user *rpc.UserInfo, userId int64) error {
+func NewRepositoryCom(types int64) *repositoryCom {
+	return &repositoryCom{Type: types}
+}
+
+func (db *repositoryCom) WithComment(comment *mysqldb.Comment) *repositoryCom {
+	db.Comment = comment
+	return db
+}
+
+func (db *repositoryCom) WithUser(user *rpc.UserInfo) *repositoryCom {
+	db.User = user
+	return db
+}
+
+func (db *repositoryCom) WithVideoId(videoId int64) *repositoryCom {
+	db.VideoId = videoId
+	return db
+}
+
+func (db *repositoryCom) WithUserId(userId int64) *repositoryCom {
+	db.UserId = userId
+	return db
+}
+
+func (db *repositoryCom) WithCommentId(commentId int64) *repositoryCom {
+	db.CommentId = commentId
+	return db
+}
+
+func ProducerComment(ctx context.Context, repositoryCom *repositoryCom) error {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
@@ -35,16 +64,7 @@ func ProducerComment(ctx context.Context, types int64, comment *mysqldb.Comment,
 	msg := &sarama.ProducerMessage{}
 	msg.Topic = configdata.KafkaConfig.TopicComments
 
-	dataRepository := repositoryCom{
-		Type:      types,
-		Comment:   comment,
-		CommentId: commentId,
-		VideoId:   videoId,
-		User:      user,
-		UserId:    userId,
-	}
-
-	data, err := json.Marshal(dataRepository)
+	data, err := json.Marshal(repositoryCom)
 
 	if err != nil {
 		return err
@@ -117,14 +137,17 @@ func ConsumeComments(ctx context.Context) {
 				// log
 				continue
 			}
-			ProducerCommentsCache(ctx, 2, data.Comment.VideoID, nil, pack.ChangeComment(data.Comment, data.User), -10001, -10001)
+
+			cacheReq := NewRepositoryCache(2, data.Comment.VideoID).WithComment(pack.ChangeComment(data.Comment, data.User))
+			ProducerCommentsCache(ctx, cacheReq)
 			continue
 		} else if data.Type == 2 {
 			err = mysqldb.DeleteComment(ctx, data.CommentId, data.VideoId, data.UserId)
 			if err != nil {
 				continue
 			}
-			ProducerCommentsCache(ctx, 3, data.VideoId, nil, nil, data.CommentId, -10001)
+			cacheReq := NewRepositoryCache(3, data.VideoId).WithCommentId(data.CommentId)
+			ProducerCommentsCache(ctx, cacheReq)
 			continue
 		}
 		log.Fatal("type is wrong")

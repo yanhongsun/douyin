@@ -24,7 +24,6 @@ struct CreateCommentRequest {
     1:i64 user_id
     2:i64 video_id
     3:string content
-    4:string token
 }
 
 struct CreateCommentResponse {
@@ -36,7 +35,6 @@ struct DeleteCommentRequest {
     1:i64 user_id
     2:i64 video_id
     3:i64 comment_id
-    4:string token
 }
 
 struct DeleteCommentResponse {

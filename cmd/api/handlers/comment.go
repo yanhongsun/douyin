@@ -5,7 +5,9 @@ import (
 	"douyin/cmd/api/rpc"
 	"douyin/kitex_gen/comment"
 	"douyin/kitex_gen/user"
+	"douyin/middleware"
 	"douyin/pkg/errno"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -26,18 +28,18 @@ type CommentActionResponse struct {
 func CommentAction(c *gin.Context) {
 	token := c.Query("token")
 	actionType := c.Query("action_type")
-	userIdS := c.Query("user_id")
-	userId, err := strconv.ParseInt(userIdS, 10, 64)
+
+	_, claims, err := middleware.ParseToken(token)
 	if err != nil {
-		c.JSON(http.StatusOK, &rpc.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
+		c.JSON(http.StatusOK, &rpc.Response{StatusCode: errno.CommentServiceErrCode, StatusMsg: err.Error()})
 		return
 	}
+	userId := claims.UserID
 
 	_, err = rpc.QueryUser(context.Background(), &user.DouyinUserRequest{
 		UserId: userId,
 		Token:  token,
 	})
-
 	if err != nil {
 		c.JSON(http.StatusOK, rpc.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
@@ -48,6 +50,8 @@ func CommentAction(c *gin.Context) {
 		videoIdS := c.Query("video_id")
 		videoId, err := strconv.ParseInt(videoIdS, 10, 64)
 
+		fmt.Println(videoIdS)
+
 		if err != nil {
 			c.JSON(http.StatusOK, &rpc.Response{StatusCode: errno.ServiceErrCode, StatusMsg: err.Error()})
 			return
@@ -57,7 +61,6 @@ func CommentAction(c *gin.Context) {
 			UserId:  userId,
 			VideoId: videoId,
 			Content: text,
-			Token:   token,
 		})
 		if response.StatusCode != 0 {
 			c.JSON(http.StatusOK, response)
@@ -87,7 +90,6 @@ func CommentAction(c *gin.Context) {
 			UserId:    userId,
 			VideoId:   videoId,
 			CommentId: commentId,
-			Token:     token,
 		})
 
 		c.JSON(http.StatusOK, response)
