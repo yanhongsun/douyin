@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"douyin/cmd/user/dal/db"
+	"douyin/cmd/user/rpc"
 	"douyin/kitex_gen/user"
 	"douyin/pkg/errno"
 )
@@ -50,6 +51,8 @@ func (s *QueryUserService) QueryOtherUserByID(req *user.DouyinQueryUserRequest) 
 	}
 
 	u := userInfo[0]
+
+	follow, err := rpc.IsFollow()
 
 	return &user.User{
 		Id:            u.ID,
