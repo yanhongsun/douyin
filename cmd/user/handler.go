@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"douyin/cmd/user/pack"
+	"douyin/cmd/user/rpc"
 	"douyin/cmd/user/service"
+	"douyin/kitex_gen/relation"
 	"douyin/kitex_gen/user"
 	"douyin/middleware"
 	"douyin/pkg/errno"
@@ -100,6 +102,18 @@ func (s *UserServiceImpl) QueryOtherUser(ctx context.Context, req *user.DouyinQu
 		resp = pack.BuildQueryUserResp(err, nil)
 		return resp, nil
 	}
+
+	follow, err := rpc.IsFollow(ctx, &relation.IsFollowRequest{
+		UserId:   req.UserId,
+		ToUserId: req.TargetId,
+		Token:    req.Token,
+	})
+	if err != nil {
+		resp = pack.BuildQueryUserResp(err, nil)
+		return resp, nil
+	}
+
+	res.SetIsFollow(follow)
 	resp = pack.BuildQueryUserResp(nil, res)
 
 	return resp, nil
@@ -111,6 +125,19 @@ func (s *UserServiceImpl) MultiQueryUser(ctx context.Context, req *user.DouyinMq
 	if err != nil {
 		resp = pack.BuildMultiQueryUserResp(err, nil)
 		return resp, nil
+	}
+
+	for i, u := range res {
+		follow, err := rpc.IsFollow(ctx, &relation.IsFollowRequest{
+			UserId:   req.UserId,
+			ToUserId: u.Id,
+			Token:    req.Token,
+		})
+		if err != nil {
+			resp = pack.BuildMultiQueryUserResp(err, nil)
+			return resp, nil
+		}
+		res[i].SetIsFollow(follow)
 	}
 
 	resp = pack.BuildMultiQueryUserResp(nil, res)
