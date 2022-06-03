@@ -6,7 +6,6 @@ import (
 	"douyin/cmd/relation/service"
 	"douyin/kitex_gen/relation"
 	"douyin/pkg/errno"
-	"fmt"
 )
 
 // RelationServiceImpl implements the last service interface defined in the IDL.
@@ -42,7 +41,7 @@ func (s *RelationServiceImpl) RelationAction(ctx context.Context, req *relation.
 		}
 
 	} else if req.ActionType == 2 {
-		fmt.Println("取消关注服务 handler.go")
+		//fmt.Println("取消关注服务 handler.go")
 		err = service.NewUnFollowService(ctx).UnFollow(req)
 		if err != nil {
 			resp.BaseResp = pack.BuildBaseResp(err)
@@ -65,8 +64,8 @@ func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *relation.G
 	resp = new(relation.GetFollowListResponse)
 
 	user_list, err := service.NewGetFollowListService(ctx).GetFollowList(req)
-	fmt.Println("handler.go")
-	fmt.Println(user_list)
+	// fmt.Println("handler.go")
+	// fmt.Println(user_list)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResp(err)
 		resp.UserList = nil
@@ -74,26 +73,9 @@ func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *relation.G
 	}
 
 	resp.BaseResp = pack.BuildBaseResp(errno.Success)
-	fmt.Println(resp.BaseResp)
-	/*
-			Id            int64  `thrift:"id,1,required" json:"id"`
-		    Name          string `thrift:"name,2,required" json:"name"`
-		    FollowCount   *int64 `thrift:"follow_count,3" json:"follow_count,omitempty"`
-		    FollowerCount *int64 `thrift:"follower_count,4" json:"follower_count,omitempty"`
-		    IsFollow      bool   `thrift:"is_follow,5,required" json:"is_follow"
-	*/
-	/*
-			type UserList struct {
-			ID             int64
-			Name           string
-			Follow_count   int64
-			Follower_count int64
-			Is_follow      bool
-		}
-	*/
-	fmt.Println(len(user_list))
-	//relation.User     	[]db.UserList) as []*
-	//resp.UserList = user_list
+	// fmt.Println(resp.BaseResp)
+
+	// fmt.Println(len(user_list))
 	for _, v := range user_list {
 		var tmp relation.User
 		tmp.Id = v.ID
@@ -103,7 +85,7 @@ func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *relation.G
 		tmp.IsFollow = v.Is_follow
 		resp.UserList = append(resp.UserList, &tmp)
 	}
-	fmt.Println(resp)
+	// fmt.Println(resp)
 	return resp, nil
 }
 
