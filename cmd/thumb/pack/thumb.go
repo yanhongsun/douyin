@@ -22,7 +22,7 @@ import (
 )
 
 func User(u *db.User) *like.User {
-	if u != nil {
+	if u == nil {
 		return nil
 	}
 	return &like.User{
@@ -37,7 +37,7 @@ func User(u *db.User) *like.User {
 //把db层的video转换成service层的
 //为什么都是指针？
 func Video(v *db.Video, u *db.User) *like.Video {
-	if v != nil {
+	if v == nil {
 		return nil
 	}
 	return &like.Video{

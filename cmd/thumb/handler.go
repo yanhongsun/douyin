@@ -6,7 +6,6 @@ import (
 	"douyin/cmd/thumb/service"
 	"douyin/kitex_gen/like"
 	"douyin/pkg/errno"
-	"fmt"
 )
 
 // ThumbServiceImpl implements the last service interface defined in the IDL.
