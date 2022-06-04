@@ -5,4 +5,5 @@ func InitRPC() {
 	initVideoRpc()
 	initUserRpc()
 	initCommentRpc()
+	initThumbRpc()
 }

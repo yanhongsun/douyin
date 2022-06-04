@@ -7,7 +7,6 @@ import (
 	"douyin/middleware"
 	"douyin/pkg/constants"
 	"douyin/pkg/errno"
-
 	"time"
 
 	"github.com/cloudwego/kitex/client"

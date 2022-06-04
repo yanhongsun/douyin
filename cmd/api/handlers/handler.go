@@ -166,3 +166,24 @@ func SendMultiUserResponse(c *gin.Context, err error, userInfos []*user.User) {
 		Users:      userInfos,
 	})
 }
+
+type LikeyouParam struct {
+	UserId     int64 `json:"user_id"`
+	VideoId    int64 `json:"video_id"`
+	ActionType int64 `json:"action_type"`
+}
+type ResponseThumb struct {
+	Code    int32       `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+// SendResponse pack response
+func SendResponseThumb(c *gin.Context, err error, data interface{}) {
+	Err := errno.ConvertErr(err)
+	c.JSON(http.StatusOK, ResponseThumb{
+		Code:    Err.ErrCode,
+		Message: Err.ErrMsg,
+		Data:    data,
+	})
+}

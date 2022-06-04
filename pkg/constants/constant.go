@@ -1,6 +1,7 @@
 package constants
 
 const (
+	ThumbServiceName            = "like"
 	EmptyUserId                 = -1
 	MaxTime                     = 9223372036854775807
 	VideoResourceIpPort         = "http://219.216.86.30:8086"

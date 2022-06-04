@@ -47,6 +47,10 @@ func main() {
 	// userGroup.GET("/other/", handlers.QueryOthUser)
 	// userGroup.GET("/mother/", handlers.MQueryUser)
 
+	favoriteGroup := douyin.Group("/favorite")
+	favoriteGroup.GET("/list", handlers.ThumbList)
+	favoriteGroup.POST("/action", handlers.Likeyou)
+
 	if err := http.ListenAndServe(":8086", r); err != nil {
 		klog.Fatal(err)
 	}
