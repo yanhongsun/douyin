@@ -2,7 +2,7 @@ package redisdb
 
 import (
 	"context"
-	"douyin/kitex_gen/comment"
+	"douyin/cmd/comment/dal/mysqldb"
 	"encoding/json"
 	"errors"
 	"strconv"
@@ -11,10 +11,10 @@ import (
 
 type Comments_cache struct {
 	CommentNumber int64              `json:"comment_number"`
-	Comments      []*comment.Comment `json:"comments,omitempty"`
+	Comments      []*mysqldb.Comment `json:"comments,omitempty"`
 }
 
-func AddCommentsCache(ctx context.Context, videoId int64, comments []*comment.Comment) error {
+func AddCommentsCache(ctx context.Context, videoId int64, comments []*mysqldb.Comment) error {
 	videoIdS := strconv.FormatInt(videoId, 10)
 
 	comments_cache := Comments_cache{
@@ -59,7 +59,7 @@ func DeleteCommentsCache(ctx context.Context, videoId, commentId int64) error {
 
 	index := 0
 	for k, value := range tmp.Comments {
-		if value.CommentId == commentId {
+		if value.CommentID == commentId {
 			index = k
 			break
 		}
@@ -81,7 +81,7 @@ func DeleteCommentsCache(ctx context.Context, videoId, commentId int64) error {
 	return nil
 }
 
-func UpdateCommentsCache(ctx context.Context, videoId int64, comment *comment.Comment) error {
+func UpdateCommentsCache(ctx context.Context, videoId int64, comment *mysqldb.Comment) error {
 	exist, tmp, err := CheckCommentsCache(ctx, videoId)
 	if err != nil {
 		return err

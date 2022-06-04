@@ -12,6 +12,7 @@ require (
 	github.com/imcvampire/opentracing-goredisv8 v0.2.0
 	github.com/kitex-contrib/registry-etcd v0.0.0-20220110034026-b1c94979cea3
 	github.com/kitex-contrib/tracer-opentracing v0.0.2
+	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/viper v1.7.0
@@ -19,7 +20,9 @@ require (
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tms v1.0.411
 	github.com/topfreegames/go-extensions-tracing v1.1.0
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
+	go.uber.org/zap v1.21.0
 	gocv.io/x/gocv v0.30.0
+	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/gorm v1.23.5
@@ -92,8 +95,6 @@ require (
 	go.etcd.io/etcd/client/v3 v3.5.4 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	go.uber.org/zap v1.21.0 // indirect
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
 	golang.org/x/net v0.0.0-20220526153639-5463443f8c37 // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	golang.org/x/text v0.3.7 // indirect
