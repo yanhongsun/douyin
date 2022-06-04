@@ -31,7 +31,7 @@ func BuildLikeyouResp(err error) *like.LikeyouResponse {
 	}
 
 	e := errno.ErrNo{}
-	if errors.As(err, e) {
+	if errors.As(err, &e) {
 		// 不能：msg := err.(e).ErrMsg，因为e这里必须是个类型
 		//todo:为啥不能直接取地址？ 应该是因为断言返回的是两个值，没有捕获这个err所以没法取地址
 		msg := err.(errno.ErrNo).ErrMsg
@@ -57,7 +57,8 @@ func BuildThumblistResp(videoList []*like.Video, err error) *like.ThumbListRespo
 		}
 	}
 	//不能带&！！
-	if errors.As(err, errno.ErrNo{}) {
+	e := errno.ErrNo{}
+	if errors.As(err, &e) {
 		msg := err.(errno.ErrNo).ErrMsg
 		return &like.ThumbListResponse{
 			StatusCode: errno.ServiceErrCode,

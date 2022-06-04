@@ -28,7 +28,12 @@ func NewThumbService(ctx context.Context) *ThumbService {
 func (t ThumbService) ThumbList(req *like.ThumbListRequest) ([]*like.Video, error) {
 	fmt.Println("来到了service ThumbList中，req=", req)
 	videos, err := db.ListVideo(t.ctx, req.UserId)
+	fmt.Println("来到了service ThumbList中，videos:")
+	for i, video := range videos {
+		fmt.Println(i,video )
+	}
 	userInfo, err := db.GetUserInfo(t.ctx, req.UserId)
+	fmt.Printf("userInfo:\n %v", userInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -38,6 +43,7 @@ func (t ThumbService) ThumbList(req *like.ThumbListRequest) ([]*like.Video, erro
 
 //看笔记服务CreateNode怎么写的。。
 func (t ThumbService) Likeyou(req *like.LikeyouRequest) error {
+	fmt.Println("来到了service Likeyou中，req=", req)
 	err := db.UpdatdeVideo(t.ctx, req.UserId, req.VideoId, req.ActionType)
 	if err != nil {
 		return err

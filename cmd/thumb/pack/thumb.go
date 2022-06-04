@@ -18,6 +18,7 @@ package pack
 import (
 	"douyin/cmd/thumb/dal/db"
 	"douyin/kitex_gen/like"
+	"fmt"
 )
 
 func User(u *db.User) *like.User {
@@ -54,6 +55,8 @@ func Video(v *db.Video, u *db.User) *like.Video {
 func Videos(v []*db.Video, u *db.User) []*like.Video {
 	res := []*like.Video{}
 	for _, video := range v {
+		fmt.Printf("打包中,video:%v", video)
+		fmt.Printf("打包后预览,video:%v", Video(video, u))
 		res = append(res, Video(video, u))
 	}
 	return res

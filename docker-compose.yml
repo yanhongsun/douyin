@@ -10,12 +10,12 @@ services:
 ##      - MYSQL_USER=root
 #      - MYSQL_ROOT_PASSWORD=111111
 #      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
-  Etcd:
-    image: 'bitnami/etcd:latest'
-    environment:
-      - ALLOW_NONE_AUTHENTICATION=yes
-    ports:
-      - 2379:2379
+  # Etcd:
+  #   image: 'bitnami/etcd:latest'
+  #   environment:
+  #     - ALLOW_NONE_AUTHENTICATION=yes
+  #   ports:
+  #     - 2379:2379
   jaeger:
     image: jaegertracing/all-in-one:latest
     ports:
