@@ -87,7 +87,7 @@ func ProducerComment(ctx context.Context, repositoryCom *repositoryCom) error {
 		return err
 	}
 
-	zapcomment.Logger.Error("kafka send mysql message succeeded")
+	zapcomment.Logger.Info("kafka send mysql message succeeded")
 
 	return nil
 }
@@ -141,10 +141,10 @@ func ConsumeComments(ctx context.Context) {
 				zapcomment.Logger.Error("mysql commentId " + strconv.Itoa(int(data.CommentId)) + " create err" + err.Error())
 			}
 
-			cacheReq := NewRepositoryCache(2, data.Comment.VideoID).WithComment(pack.ChangeComment(data.Comment, data.User))
+			cacheReq := NewRepositoryCache(2, data.Comment.VideoID).WithComment(data.Comment)
 			ProducerCommentsCache(ctx, cacheReq)
 			if err == nil {
-				zapcomment.Logger.Error("mysql commentId " + strconv.Itoa(int(data.CommentId)) + " create succeeded")
+				zapcomment.Logger.Info("mysql commentId " + strconv.Itoa(int(data.CommentId)) + " create succeeded")
 			}
 			continue
 		} else if data.Type == 2 {
@@ -155,7 +155,7 @@ func ConsumeComments(ctx context.Context) {
 			cacheReq := NewRepositoryCache(3, data.VideoId).WithCommentId(data.CommentId)
 			err := ProducerCommentsCache(ctx, cacheReq)
 			if err == nil {
-				zapcomment.Logger.Error("mysql commentId " + strconv.Itoa(int(data.CommentId)) + " delete succeeded")
+				zapcomment.Logger.Info("mysql commentId " + strconv.Itoa(int(data.CommentId)) + " delete succeeded")
 			}
 			continue
 		}

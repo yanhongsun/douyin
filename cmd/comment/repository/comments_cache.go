@@ -2,10 +2,10 @@ package repository
 
 import (
 	"context"
+	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/dal/redisdb"
 	"douyin/cmd/comment/pack/configdata"
 	"douyin/cmd/comment/pack/zapcomment"
-	"douyin/kitex_gen/comment"
 	"douyin/pkg/tracer"
 	"encoding/json"
 
@@ -18,8 +18,8 @@ type repositoryCache struct {
 	VideoId int64 `json:"video_id"`
 
 	// can choose
-	Comments      []*comment.Comment `json:"comments,omitempty"`
-	Comment       *comment.Comment   `json:"comment,omitempty"`
+	Comments      []*mysqldb.Comment `json:"comments,omitempty"`
+	Comment       *mysqldb.Comment   `json:"comment,omitempty"`
 	CommentId     int64              `json:"comment_id,omitempty"`
 	CommentNumber int64              `json:"comment_number,omitempty"`
 }
@@ -28,12 +28,12 @@ func NewRepositoryCache(types int64, videoId int64) *repositoryCache {
 	return &repositoryCache{Type: types, VideoId: videoId}
 }
 
-func (c *repositoryCache) WithComments(comments []*comment.Comment) *repositoryCache {
+func (c *repositoryCache) WithComments(comments []*mysqldb.Comment) *repositoryCache {
 	c.Comments = comments
 	return c
 }
 
-func (c *repositoryCache) WithComment(comment *comment.Comment) *repositoryCache {
+func (c *repositoryCache) WithComment(comment *mysqldb.Comment) *repositoryCache {
 	c.Comment = comment
 	return c
 }
