@@ -34,16 +34,6 @@ func (s *UserRegisterService) CreateUser(req *user.DouyinUserRegisterRequest) (i
 	password := string(pwByte)
 	fmt.Println(password, " ", len(password))
 
-	// crypt
-	// h := md5.New()
-	// if _, err = io.WriteString(h, req.Password); err != nil {
-	// 	return -1, err
-	// }
-	// TODO: set nil as salt?
-	// var salt []byte
-	// err = db.CreateSalt(s.ctx, req.Username, salt)
-	// passWord := fmt.Sprintf("%x", h.Sum(salt))
-	// passWord := fmt.Sprintf("%x", h.Sum(nil))
 	res, err := db.CreateUser(s.ctx, req.Username, password)
 	if err != nil {
 		return -1, err
