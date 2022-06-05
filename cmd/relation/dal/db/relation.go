@@ -39,7 +39,7 @@ func (v Relation) TableName() string {
 
 // 比自己id小的关注列表
 func GetFollows1ID(ctx context.Context, follower1 int64, str int) ([]Relation, error) {
-	var tmp []Relation
+	tmp := make([]Relation, 0, 30)
 	if err := DB.WithContext(ctx).Where("follower1 = ? and tag = ?", follower1, str).Find(&tmp).Error; err != nil {
 		//fmt.Println(err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -53,7 +53,7 @@ func GetFollows1ID(ctx context.Context, follower1 int64, str int) ([]Relation, e
 
 // 比自己id大的关注列表
 func GetFollows2ID(ctx context.Context, follower1 int64, str int) ([]Relation, error) {
-	var tmp []Relation
+	tmp := make([]Relation, 0, 30)
 	if err := DB.WithContext(ctx).Where("follower2 = ? and tag = ?", follower1, str).Find(&tmp).Error; err != nil {
 		//fmt.Println(err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -68,7 +68,7 @@ func GetFollows2ID(ctx context.Context, follower1 int64, str int) ([]Relation, e
 // 根据单向关注的用户id查询出关注的具体信息
 func GetFollowsInfo(ctx context.Context, res []Relation, tag int) ([]User, error) {
 	len := len(res)
-	var users []User
+	users := make([]User, 0, 30)
 	if tag == 1 {
 		for i := 0; i < len; i++ {
 			var user User
@@ -102,7 +102,7 @@ func GetFollowsInfo(ctx context.Context, res []Relation, tag int) ([]User, error
 
 // 返回单向关注的respone
 func ReturnFalseUserList(users []User) []UserList {
-	var ans []UserList
+	ans := make([]UserList, 0, 30)
 	for _, v := range users {
 		//TODO
 		ans = append(ans, UserList{
@@ -118,7 +118,7 @@ func ReturnFalseUserList(users []User) []UserList {
 
 // 返回双向关注的respone
 func ReturnTureUserList(users []User) []UserList {
-	var ans []UserList
+	ans := make([]UserList, 0, 30)
 	for _, v := range users {
 		//TODO
 		ans = append(ans, UserList{
@@ -135,9 +135,11 @@ func ReturnTureUserList(users []User) []UserList {
 //查询单向关注列表
 func GetOneWayFollows(ctx context.Context, follower1 int64, str1 int, str2 int) ([]User, error) {
 	// 中间变量  存储单向关系的relation表
+	// tmp := make([]Relation, 0, 30)
 	var tmp []Relation
 	//根据单向关注的用户id查询出关注的具体信息
-	var users []User
+	// var users []User
+	users := make([]User, 0, 30)
 	// 比自己id大的关注列表
 	tmp, err := GetFollows2ID(ctx, follower1, str1)
 	if err != nil {

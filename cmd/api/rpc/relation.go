@@ -6,6 +6,7 @@ import (
 	"douyin/kitex_gen/relation/relationservice"
 	"douyin/pkg/constants"
 	"douyin/pkg/errno"
+	"fmt"
 	"time"
 
 	"github.com/cloudwego/kitex/client"
@@ -72,8 +73,8 @@ func GetFollowerList(ctx context.Context, req *relation.GetFollowerListRequest) 
 }
 
 func IsFollow(ctx context.Context, req *relation.IsFollowRequest) (bool, error) {
-	// fmt.Println("rpc relation.go")
-	// fmt.Println(req)
+	fmt.Println("rpc relation.go")
+	fmt.Println(req)
 	resp, err := relationClient.IsFollow(ctx, req)
 	if err != nil {
 		return false, err
