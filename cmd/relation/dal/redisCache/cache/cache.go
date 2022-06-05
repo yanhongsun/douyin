@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin/cmd/relation/dal/db"
 	"errors"
+	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
@@ -130,8 +131,8 @@ func (c *Cache) groupOf(key interface{ ToString(str string) string }, strstr str
 func (c *Cache) Get(key interface{ ToString(str string) string }, strstr string, opts ...OpOption) (interface{}, error, bool) {
 	v, ok := c.segmentOf(key, strstr).get(key, strstr)
 	if ok {
-		// fmt.Println("找到cache:")
-		// fmt.Println(v)
+		fmt.Println("找到cache:")
+		fmt.Println(v)
 		return v, nil, ok
 	}
 

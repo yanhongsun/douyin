@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 )
@@ -64,7 +65,7 @@ func (s *segment) delete(ctx context.Context, key string) {
 	// 1. 删除 isfollowed
 	// 2. 删除 follow1的关注列表
 	// 3. 删除 follow2的粉丝列表
-	// fmt.Println("删除内存中的key:", key)
+	fmt.Println("删除内存中的key:", key)
 	delete(s.data, key)
 }
 
