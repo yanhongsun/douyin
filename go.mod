@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/Shopify/sarama v1.34.0
 	github.com/apache/thrift v0.13.0
+	github.com/cespare/xxhash/v2 v2.1.2
 	github.com/cloudwego/kitex v0.3.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.8.0
@@ -16,6 +17,7 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/viper v1.7.0
+	github.com/stretchr/testify v1.7.1
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.411
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tms v1.0.411
 	github.com/topfreegames/go-extensions-tracing v1.1.0
@@ -31,7 +33,6 @@ require (
 
 require (
 	github.com/bytedance/gopkg v0.0.0-20220519031347-b9c1c36b51a6 // indirect
-	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/choleraehyq/pid v0.0.13 // indirect
 	github.com/cloudwego/netpoll v0.2.4 // indirect
 	github.com/cloudwego/thriftgo v0.1.7 // indirect
@@ -76,6 +77,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.14 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/spf13/afero v1.1.2 // indirect
 	github.com/spf13/cast v1.3.0 // indirect
