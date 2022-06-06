@@ -24,6 +24,6 @@ Kafka:
 
 TencentCloud:
   TextModeration: false
-  SecretId: AKIDNaOxHMBlBMHwMXS8YjhQu98sMbbLp32m
-  SecretKey: XpreBTWJr9ByVnpcASWMwHNDn8D2bvzn
+  SecretId:
+  SecretKey:
 
