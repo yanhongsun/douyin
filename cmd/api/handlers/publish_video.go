@@ -13,6 +13,7 @@ import (
 
 func PublishVideo(c *gin.Context) {
 
+	fmt.Println("api_PublishVideo")
 	fmt.Println("Publish Video")
 	var queryVar struct {
 		Token string `json:"token" form:"token"`

@@ -1,12 +1,12 @@
 package dal
 
 import (
-	"douyin/cmd/video/dal/cache"
 	"douyin/cmd/video/dal/db"
+	"douyin/cmd/video/dal/minicache"
 )
 
 func Init() {
 
 	db.Init()
-	cache.Init()
+	minicache.Init()
 }

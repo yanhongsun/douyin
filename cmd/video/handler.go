@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin/cmd/video/assist"
 	"douyin/cmd/video/dal/db"
+	"douyin/cmd/video/dal/minicache"
 	"douyin/kitex_gen/video"
 	"douyin/middleware"
 	"douyin/pkg/constants"
@@ -20,6 +21,7 @@ type VideoServiceImpl struct{}
 func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *video.PublishVideoRequest) (resp *video.PublishVideoResponse, err error) {
 	//TODO从token解析用户ID
 	//TODO异常处理
+	fmt.Println("Publish Video")
 	var userId int64
 	//req.Token
 	//验证userId是否存在
@@ -58,7 +60,7 @@ func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *video.PublishV
 	//为db.Video类型变量写进数据库
 	video := assist.InitDBVideo(userId, playUrl, coverUrl, req.Title)
 
-	if err = db.PublishVideo(ctx, video); err == nil {
+	if err = minicache.PublishVideo(ctx, video); err == nil {
 		//fmt.Println(errno.Success.ErrCode)
 		bresp := assist.GetBaseResp(errno.Success.ErrCode, errno.Success.ErrMsg)
 		resp.BaseResp = &bresp
@@ -78,7 +80,7 @@ func (s *VideoServiceImpl) GetPublishList(ctx context.Context, req *video.GetPub
 	//TODO异常处理.
 	//TODO验证token
 	userId := req.UserId
-	videos, err := db.GetPublishList(ctx, userId)
+	videos, err := minicache.GetPublishList(ctx, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +119,7 @@ func (s *VideoServiceImpl) GetFeed(ctx context.Context, req *video.GetFeedReques
 		userId = constants.EmptyUserId
 	}
 
-	videos, err := db.GetFeed(ctx, *(req.LatestTime), constants.VideoLimitNum)
+	videos, err := minicache.GetFeed(ctx, *(req.LatestTime), constants.VideoLimitNum)
 	//为返回值赋值
 	if err != nil {
 		return nil, err

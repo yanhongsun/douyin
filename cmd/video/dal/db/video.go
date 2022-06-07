@@ -72,3 +72,52 @@ func VerifyVideoId(ctx context.Context, videoId int64) (bool, error) {
 	}
 	return false, err
 }
+
+type VID struct {
+	Id int64 `gorm:"column:id"`
+}
+
+func (v VID) TableName() string {
+	return constants.VideoTableName
+}
+func GetPublishListVideoId(ctx context.Context, userId int64) ([]int64, error) {
+	//db.Select("id,title").Where("id = ?", 1).Take(&food)
+	vid := make([]VID, 0, 30)
+	id := make([]int64, 0, 30)
+	err := DB.WithContext(ctx).Select("id").Where("u_id=?", userId).Find(&vid).Error
+	if err == nil {
+		for _, i := range vid {
+			id = append(id, i.Id)
+		}
+		return id, nil
+	} else if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+	return nil, err
+}
+
+func GetFeedVideoId(ctx context.Context, lastTime int64, limit int) ([]int64, error) {
+	vid := make([]VID, 0, 30)
+	id := make([]int64, 0, 30)
+	if lastTime == 0 {
+		lastTime = constants.MaxTime
+	}
+	err := DB.WithContext(ctx).Select("id").Where("create_time <= ?", lastTime).Order("create_time desc").Limit(limit).Find(&vid).Error
+	if err == nil {
+		for _, i := range vid {
+			id = append(id, i.Id)
+		}
+		return id, nil
+	} else if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+	return nil, err
+}
+func GetVideo(ctx context.Context, videoId int64) (Video, error) {
+	var vid Video
+	err := DB.WithContext(ctx).Where("id=?", videoId).Find(&vid).Error
+	if err == nil {
+		return vid, nil
+	}
+	return vid, err
+}
