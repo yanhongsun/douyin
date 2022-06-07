@@ -4,8 +4,8 @@ const (
 	EmptyUserId                 = -1
 	MaxTime                     = 9223372036854775807
 	VideoResourceIpPort         = "http://219.216.86.30:8086"
-	VideoSavePath               = "/home/sun/Linux/sunyanhong/douyin/cmd/api/resource/videos"
-	VideoCoverSavePath          = "/home/sun/Linux/sunyanhong/douyin/cmd/api/resource/cover"
+	VideoSavePath               = "../../cmd/api/resource/videos"
+	VideoCoverSavePath          = "../..//cmd/api/resource/cover"
 	VideoUrlPath                = "resource/videos"
 	VideoCoverUrlPath           = "resource/cover"
 	FavoriteTableName           = "favorite"

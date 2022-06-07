@@ -45,7 +45,7 @@ func AddCommentNumberCache(ctx context.Context, videoId, CommentNumber int64) er
 }
 
 func DeleteCommentsCache(ctx context.Context, videoId, commentId int64) error {
-	pipe := RedisClient.TxPipeline()
+	pipe := .TxPipeline()
 
 	// comment_cache change
 	exist, tmp, err := CheckGetCommentsCache(ctx, videoId)
@@ -128,7 +128,7 @@ func UpdateCommentsCache(ctx context.Context, videoId int64, comment *comment.Co
 
 func CheckGetCommentsCache(ctx context.Context, videoId int64) (bool, *Comments_cache, error) {
 	videoIdS := strconv.FormatInt(videoId, 10)
-	exist, err := RedisClient.Exists(ctx, videoIdS).Result()
+	exist, err := .Exists(ctx, videoIdS).Result()
 
 	if err != nil {
 		return false, nil, err
@@ -156,7 +156,7 @@ func CheckGetCommentsCache(ctx context.Context, videoId int64) (bool, *Comments_
 
 func CheckCommentNumberCache(ctx context.Context, videoId int64) (bool, error) {
 	videoIdS := strconv.FormatInt(videoId, 10)
-	exist, err := RedisClient.Exists(ctx, videoIdS).Result()
+	exist, err := .Exists(ctx, videoIdS).Result()
 
 	if err != nil {
 		return false, err

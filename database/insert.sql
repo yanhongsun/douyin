@@ -17,7 +17,7 @@ INSERT INTO relation(
   follower1 ,
   follower2,
   tag
-) VALUES(1,2,1);
+) VALUES(6,20,2);
 insert into videos(
   u_id           ,
   play_url        , 
