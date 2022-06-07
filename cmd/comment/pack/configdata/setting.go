@@ -1,6 +1,8 @@
 package configdata
 
 import (
+	"douyin/cmd/comment/pack/zapcomment"
+
 	"github.com/spf13/viper"
 )
 
@@ -41,6 +43,8 @@ type CommentServer struct {
 	EtcdHost        string
 	CommentServName string
 	CommentServHost string
+	UserServName    string
+	VideoServName   string
 }
 
 type RedisDatabase struct {
@@ -71,33 +75,40 @@ var (
 func SetupSetting() error {
 	setting, err := NewSetting()
 	if err != nil {
+		zapcomment.Logger.Error("reading config err: " + err.Error())
 		return err
 	}
 
 	err = setting.ReadSection("MysqlDatabase", &MysqlDatabaseConfig)
 	if err != nil {
+		zapcomment.Logger.Error("reading mysqlConfig err: " + err.Error())
 		return err
 	}
 
 	err = setting.ReadSection("CommentServer", &CommentServerConfig)
 	if err != nil {
+		zapcomment.Logger.Error("reading commentServerConfig err: " + err.Error())
 		return err
 	}
 
 	err = setting.ReadSection("RedisDatabase", &RedisDatabaseConfig)
 	if err != nil {
+		zapcomment.Logger.Error("reading redisConfig err: " + err.Error())
 		return err
 	}
 
 	err = setting.ReadSection("Kafka", &KafkaConfig)
 	if err != nil {
+		zapcomment.Logger.Error("reading kafkaConfig err: " + err.Error())
 		return err
 	}
 
 	err = setting.ReadSection("TencentCloud", &TencentCloudConfig)
 	if err != nil {
+		zapcomment.Logger.Error("reading tencentConfig err: " + err.Error())
 		return err
 	}
 
-	return err
+	zapcomment.Logger.Info("configuration initialization succeeded")
+	return nil
 }

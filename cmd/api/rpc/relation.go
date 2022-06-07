@@ -49,9 +49,9 @@ func RelationAction(ctx context.Context, req *relation.RelationActionRequest) er
 func GetFollowList(ctx context.Context, req *relation.GetFollowListRequest) ([]*relation.User, error) {
 
 	resp, err := relationClient.GetFollowList(ctx, req)
-	fmt.Println(err)
-	fmt.Println("----------------------")
-	fmt.Println(resp)
+	// fmt.Println(err)
+	// fmt.Println("----------------------")
+	// fmt.Println(resp)
 	if err != nil {
 		return nil, err
 	}

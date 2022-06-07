@@ -5,9 +5,9 @@ import (
 	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/dal/redisdb"
 	"douyin/cmd/comment/pack"
+	"douyin/cmd/comment/pack/zapcomment"
 	"douyin/cmd/comment/repository"
 	"douyin/kitex_gen/comment"
-	"log"
 	"strconv"
 
 	"golang.org/x/sync/singleflight"
@@ -24,15 +24,18 @@ func NewQueryCommentsService(ctx context.Context) *QueryCommentsService {
 }
 
 func (s *QueryCommentsService) QueryComments(req *comment.QueryCommentsRequest) ([]*comment.Comment, error) {
-	status, res, err := redisdb.CheckGetCommentsCache(s.ctx, req.VideoId)
+	status, res, err := redisdb.CheckCommentsCache(s.ctx, req.VideoId)
 
 	if err != nil {
-		//TODO:log
-		log.Fatal("redisdb err: ", err)
+		zapcomment.Logger.Error("redisdb err: " + err.Error())
 	}
 
 	if status {
-		return res.Comments, nil
+		resp, err := pack.ChangeComments(s.ctx, res.Comments)
+		if err == nil {
+			return resp, nil
+		}
+		zapcomment.Logger.Error("redisdb err: " + err.Error())
 	}
 
 	key := strconv.FormatInt(req.VideoId, 10)
@@ -42,12 +45,12 @@ func (s *QueryCommentsService) QueryComments(req *comment.QueryCommentsRequest) 
 		if err != nil {
 			return nil, err
 		}
-		resD = pack.ReverseComments(resD)
-		res, err := pack.ChangeComments(s.ctx, resD, req.Token)
+		res, err := pack.ChangeComments(s.ctx, resD)
 		if err != nil {
 			return nil, err
 		}
-		repository.ProducerCommentsCache(s.ctx, 1, req.VideoId, res, nil, -10001, -10001)
+		cacheReq := repository.NewRepositoryCache(1, req.VideoId).WithComments(resD)
+		repository.ProducerCommentsCache(s.ctx, cacheReq)
 		return res, nil
 	})
 

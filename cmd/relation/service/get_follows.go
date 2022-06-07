@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"douyin/cmd/relation/dal/db"
+	"douyin/cmd/relation/dal/redisCache"
 	"douyin/kitex_gen/relation"
-	"fmt"
 )
 
 type GetFollowListService struct {
@@ -16,6 +16,6 @@ func NewGetFollowListService(ctx context.Context) *GetFollowListService {
 }
 
 func (s *GetFollowListService) GetFollowList(req *relation.GetFollowListRequest) ([]db.UserList, error) {
-	fmt.Println("进入db")
-	return db.GetFollows(s.ctx, req.UserId)
+
+	return redisCache.GetFollows(s.ctx, req.UserId)
 }

@@ -4,6 +4,8 @@ import (
 	"context"
 	"douyin/cmd/comment/dal/mysqldb"
 	"douyin/cmd/comment/pack"
+	"douyin/cmd/comment/pack/zapcomment"
+	"douyin/cmd/comment/rpc"
 	"douyin/kitex_gen/comment"
 
 	"douyin/pkg/snowflake"
@@ -16,9 +18,10 @@ var snowflakeNode *snowflake.Node
 func InitSnowflakeNode() {
 	tmpNode, err := snowflake.NewNode(1)
 	if err != nil {
-		panic("snowflake error")
+		zapcomment.Logger.Panic("snowflake error: " + err.Error())
 	}
 	snowflakeNode = tmpNode
+	zapcomment.Logger.Info("snowflake initialization succeeded")
 }
 
 type CreateCommentService struct {
@@ -32,13 +35,13 @@ func NewCreateCommentService(ctx context.Context) *CreateCommentService {
 func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) (*comment.Comment, error) {
 	commentId := snowflakeNode.Generate().Int64()
 
-	// user, err := rpc.GetUserInfo(s.ctx, req.UserId, req.Token)
+	user, err := rpc.GetUserInfo(s.ctx, req.UserId)
 
-	// if err != nil {
-	// 	return nil, err
-	// }
+	if err != nil {
+		return nil, err
+	}
 
-	commentModel := mysqldb.Comment{
+	commentModel := &mysqldb.Comment{
 		CommentID: commentId,
 		VideoID:   req.VideoId,
 		UserID:    req.UserId,
@@ -46,9 +49,11 @@ func (s *CreateCommentService) CreateComment(req *comment.CreateCommentRequest) 
 		Content:   req.Content,
 	}
 
-	if err := repository.ProducerComment(s.ctx, 1, &commentModel, -10001, -10001, pack.User, -10001); err != nil {
+	dbReq := repository.NewRepositoryCom(1).WithComment(commentModel).WithUser(user)
+
+	if err := repository.ProducerComment(s.ctx, dbReq); err != nil {
 		return nil, err
 	}
 
-	return pack.ChangeComment(&commentModel, pack.User), nil
+	return pack.ChangeComment(commentModel, user), nil
 }

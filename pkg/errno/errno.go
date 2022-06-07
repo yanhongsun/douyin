@@ -60,7 +60,7 @@ var (
 	CommentServiceErr = NewErrNo(CommentServiceErrCode, "Service is unable to start successfully")
 	CommentParamErr   = NewErrNo(CommentParamErrCode, "Wrong Comment Parameter has been given")
 	UserIdErr         = NewErrNo(UserIdErrCode, "Wrong UserId Parameter or Wrong UserId has been given")
-	VideoIdErr        = NewErrNo(VideoIdErrCode, "Wrong VedioId Parameter or Wrong VedioId has been given")
+	VideoIdErr        = NewErrNo(VideoIdErrCode, "Wrong VideoId Parameter or Wrong VideoId has been given")
 	CommentIdErr      = NewErrNo(CommentIdErrCode, "Wrong CommentId Parameter or Wrong CommentId has been given")
 	ActionTypeErr     = NewErrNo(ActionTypeErrCode, "Wrong ActionTypeErr has been given")
 )
