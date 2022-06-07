@@ -122,7 +122,7 @@ object
 ### MySQL数据表1定义：
 
 ```sql
-CREATE TABLE comment
+CREATE TABLE comment_index
 (
   id                BIGINT  NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   v_id              BIGINT  NOT NULL COMMENT '视频ID',
